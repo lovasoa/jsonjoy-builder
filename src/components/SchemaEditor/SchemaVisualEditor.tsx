@@ -6,6 +6,9 @@ import {
 import type { JSONSchema, NewField } from "@/types/jsonSchema";
 import { asObjectSchema, isBooleanSchema } from "@/types/jsonSchema";
 import type React from "react";
+import AddConditionalRuleButton, {
+  type ConditionalRule, // Import ConditionalRule
+} from "./AddConditionalRuleButton";
 import AddFieldButton from "./AddFieldButton";
 import SchemaFieldList from "./SchemaFieldList";
 
@@ -36,6 +39,19 @@ const SchemaVisualEditor: React.FC<SchemaVisualEditorProps> = ({
     }
 
     // Update the schema
+    onChange(newSchema);
+  };
+
+  // Handle adding a conditional rule (if/then/else)
+  const handleAddConditionalRule = (rule: ConditionalRule) => {
+    const newSchema: JSONSchema = {
+      ...asObjectSchema(schema),
+      if: rule.if,
+      then: rule.then,
+    };
+    if (rule.else) {
+      newSchema.else = rule.else;
+    }
     onChange(newSchema);
   };
 
@@ -116,8 +132,11 @@ const SchemaVisualEditor: React.FC<SchemaVisualEditorProps> = ({
 
   return (
     <div className="p-4 h-full flex flex-col overflow-auto">
-      <div className="mb-6 flex-shrink-0">
+      <div className="mb-6 flex-shrink-0 flex flex-wrap gap-2">
         <AddFieldButton onAddField={handleAddField} />
+        <AddConditionalRuleButton
+          onAddConditionalRule={handleAddConditionalRule}
+        />
       </div>
 
       <div className="flex-grow overflow-auto">

@@ -32,10 +32,14 @@
   "exports": {
     ".": {
       "types": "./dist/jsonjoy-builder.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "module": "./dist/index.js",
+      "default": "./dist/index.js"
     },
     "./styles.css": {
-      "import": "./dist/index.css"
+      "import": "./dist/index.css",
+      "module": "./dist/index.css",
+      "default": "./dist/index.css"
     }
   },
   "scripts": {

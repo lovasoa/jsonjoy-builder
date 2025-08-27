@@ -103,10 +103,10 @@ export function SchemaInferencer({
           {error && <p className="text-sm text-destructive mt-2">{error}</p>}
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={handleClose}>
+          <Button type="button" variant="outline" onClick={handleClose}>
             {t.inferrerCancel}
           </Button>
-          <Button onClick={inferSchemaFromJson}>{t.inferrerGenerate}</Button>
+          <Button type="button" onClick={inferSchemaFromJson}>{t.inferrerGenerate}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

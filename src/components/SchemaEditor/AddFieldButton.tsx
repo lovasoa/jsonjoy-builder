@@ -63,6 +63,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   return (
     <>
       <Button
+        type="button"
         onClick={() => setDialogOpen(true)}
         variant={variant === "primary" ? "default" : "outline"}
         size="sm"

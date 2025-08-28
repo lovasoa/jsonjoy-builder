@@ -2,6 +2,8 @@
 
 import tailwindCss from "@tailwindcss/postcss";
 
+const AllowedAtRules = new Set(["media", "supports", "layer"]);
+
 // tailwind is not suitable for libraries in general, so we use a plugin
 // to add proper scoping to the generated CSS.
 //
@@ -13,6 +15,9 @@ const CssScopingPlugin = () => {
     postcssPlugin: 'replace-root-with-new_design',
     Once(root) {
       root.walkRules(rule => {
+        if (rule.parent?.type === "atrule" && !AllowedAtRules.has(rule.parent.name)) {
+          return;
+        }
         const newSelectors = new Set();
         for (const selector of rule.selectors) {
           // Replace :root and :host with .jsonjoy

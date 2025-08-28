@@ -55,6 +55,13 @@ const cssScopingPlugin = () => {
         }
       });
 
+      // Prefix @layer with jsonjoy-
+      root.walkAtRules(atRule => {
+        if (atRule.name === "layer" && !atRule.params.startsWith("jsonjoy-")) {
+          atRule.params = `jsonjoy-${atRule.params}`;
+        }
+      });
+
       // Prefix built-in keyframe names from tailwind with jsonjoy-
       // See https://tailwindcss.com/docs/animation
       root.walkAtRules(atRule => {

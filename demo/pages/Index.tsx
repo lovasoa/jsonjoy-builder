@@ -55,7 +55,7 @@ const Index = () => {
 
   return (
     <TranslationContext value={translation}>
-      <div className="min-h-screen bg-linear-to-b from-background to-background/95 relative overflow-hidden">
+      <div className="min-h-screen bg-linear-to-b from-background to-background/95 relative overflow-hidden jsonjoy">
         {/* Background accent */}
         <div
           className="absolute -top-24 -right-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl opacity-50 animate-float"

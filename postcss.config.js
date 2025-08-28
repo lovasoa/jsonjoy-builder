@@ -2,12 +2,13 @@
 
 import tailwindCss from "@tailwindcss/postcss";
 
+// At-Rules that contain selectors that we want to scope
 const AllowedAtRules = new Set(["media", "supports", "layer"]);
 
 // tailwind is not suitable for libraries in general, so we use a plugin
 // to add proper scoping to the generated CSS.
 /** @type {() => import("postcss").Plugin} */
-const CssScopingPlugin = () => {
+const cssScopingPlugin = () => {
   return {
     postcssPlugin: 'replace-root-with-new_design',
     Once(root) {
@@ -33,7 +34,9 @@ const CssScopingPlugin = () => {
           else if (!selector.startsWith(".jsonjoy")) {
             newSelectors.add(`.jsonjoy ${selector}`);
             newSelectors.add(addClassSelectorScope("jsonjoy", selector));
-          } else {
+          }
+          // Already prefixed, so do nothing
+          else {
             newSelectors.add(selector);
           }
         }
@@ -86,25 +89,24 @@ const CssScopingPlugin = () => {
 
 /**
  * Adds the class name as a scope to the selector.
- * - table foo => table.jsonjoy foo
- * - .foo .bar => .jsonjoy.foo .bar
- * - [data-attr="foo bar"] baz => .jsonjoy[data-attr="foo bar"] baz
- * - :is(.foo, .bar) baz => .jsonjoy:is(.foo, .bar) baz
+ * 
+ * - `table foo` => `table.jsonjoy foo`
+ * - `#foo .bar` => `.jsonjoy#foo .bar`
+ * - `.foo .bar` => `.jsonjoy.foo .bar`
+ * - `[data-attr="foo bar"] baz` => `.jsonjoy[data-attr="foo bar"] baz`
+ * - `:is(.foo, .bar) baz` => `.jsonjoy:is(.foo, .bar) baz`
  * @param {string} className 
  * @param {string} selector 
  */
 function addClassSelectorScope(className, selector) {
-  // Class name, ID, or attribute selector
-  if (selector.startsWith(".") || selector.startsWith("#") || selector.startsWith("[")) {
-    return `.${className}${selector}`;
-  }
-
-  // Pseudo-class or pseudo-element
-  if (selector.startsWith(":")) {
+  // ID selector, class selector, attribute selector or pseudo-class / pseudo-element
+  if (selector.startsWith(".") || selector.startsWith("#") || selector.startsWith("[") || selector.startsWith(":")) {
     return `.${className}${selector}`;
   }
 
   // Tag name
+  // Note that for tag names, the class selector must be inserted after the tag name,
+  // as in `table.jsonjoy` instead of `.jsonjoytable`.
   const match = selector.match(/^([a-zA-Z0-9_-]+)/);
   if (match) {
     const tagName = match[1];
@@ -117,7 +119,7 @@ function addClassSelectorScope(className, selector) {
 
 /** @type {{plugins:import("postcss").AcceptedPlugin[] }} */
 export const config = {
-  plugins: [tailwindCss(), CssScopingPlugin()],
+  plugins: [tailwindCss(), cssScopingPlugin()],
 };
 
 export default config;

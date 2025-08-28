@@ -39,6 +39,28 @@ const CssScopingPlugin = () => {
         }
         rule.selectors = [...newSelectors];
       });
+
+      // Prefix built-in animation names from tailwind with jsonjoy-
+      // See https://tailwindcss.com/docs/animation
+      root.walkRules(rule => {
+        for (const node of rule.nodes) {
+          if (node.type === "decl" && node.variable) {
+            const animateMatch = /--animate-([a-zA-Z0-9_-]+)/.exec(node.prop);
+            if (animateMatch) {
+                const animationName = animateMatch[1];
+                node.value = node.value.replace(new RegExp(`\\b${animationName}\\b`, "g"), `jsonjoy-${animationName}`);
+            }
+          }
+        }
+      });
+
+      // Prefix built-in keyframe names from tailwind with jsonjoy-
+      // See https://tailwindcss.com/docs/animation
+      root.walkAtRules(atRule => {
+        if (atRule.name === "keyframes" && !atRule.params.startsWith("jsonjoy-")) {
+          atRule.params = `jsonjoy-${atRule.params}`;
+        }
+      });
     }
   };
 };

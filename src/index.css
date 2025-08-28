@@ -45,14 +45,14 @@
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
-  --animate-fade-in: fade-in 0.3s ease-out;
-  --animate-fade-out: fade-out 0.3s ease-out;
-  --animate-scale-in: scale-in 0.2s ease-out;
-  --animate-scale-out: scale-out 0.2s ease-out;
-  --animate-float: float 3s ease-in-out infinite;
+  --animate-fade-in: jsonjoy-fade-in 0.3s ease-out;
+  --animate-fade-out: jsonjoy-fade-out 0.3s ease-out;
+  --animate-scale-in: jsonjoy-scale-in 0.2s ease-out;
+  --animate-scale-out: jsonjoy-scale-out 0.2s ease-out;
+  --animate-float: jsonjoy-float 3s ease-in-out infinite;
   --animate-pulse-subtle: pulse-subtle 3s ease-in-out infinite;
-  --animate-enter: fade-in 0.4s ease-out, scale-in 0.3s ease-out;
-  --animate-exit: fade-out 0.3s ease-out, scale-out 0.2s ease-out;
+  --animate-enter: jsonjoy-fade-in 0.4s ease-out, jsonjoy-scale-in 0.3s ease-out;
+  --animate-exit: jsonjoy-fade-out 0.3s ease-out, jsonjoy-scale-out 0.2s ease-out;
 
   --font-sans: var(--font-sans), system-ui, sans-serif;
 
@@ -62,7 +62,7 @@
   --ease-bounce-in: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
-  @keyframes fade-in {
+  @keyframes jsonjoy-fade-in {
     0% {
       opacity: 0;
       transform: translateY(10px);
@@ -72,7 +72,7 @@
       transform: translateY(0);
     }
   }
-  @keyframes fade-out {
+  @keyframes jsonjoy-fade-out {
     0% {
       opacity: 1;
       transform: translateY(0);
@@ -82,7 +82,7 @@
       transform: translateY(10px);
     }
   }
-  @keyframes scale-in {
+  @keyframes jsonjoy-scale-in {
     0% {
       transform: scale(0.95);
       opacity: 0;
@@ -92,7 +92,7 @@
       opacity: 1;
     }
   }
-  @keyframes scale-out {
+  @keyframes jsonjoy-scale-out {
     from {
       transform: scale(1);
       opacity: 1;
@@ -102,7 +102,7 @@
       opacity: 0;
     }
   }
-  @keyframes float {
+  @keyframes jsonjoy-float {
     0%,
     100% {
       transform: translateY(0);

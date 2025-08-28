@@ -77,7 +77,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
       </Button>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="md:max-w-[1200px] max-h-[85vh] w-[95vw] p-4 sm:p-6">
+        <DialogContent className="md:max-w-[1200px] max-h-[85vh] w-[95vw] p-4 sm:p-6 jsonjoy">
           <DialogHeader className="mb-4">
             <DialogTitle className="text-xl flex flex-wrap items-center gap-2">
               {t.fieldAddNewLabel}

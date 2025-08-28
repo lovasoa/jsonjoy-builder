@@ -62,22 +62,6 @@
   --ease-bounce-in: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 
-  @keyframes accordion-down {
-    from {
-      height: 0;
-    }
-    to {
-      height: var(--radix-accordion-content-height);
-    }
-  }
-  @keyframes accordion-up {
-    from {
-      height: var(--radix-accordion-content-height);
-    }
-    to {
-      height: 0;
-    }
-  }
   @keyframes fade-in {
     0% {
       opacity: 0;
@@ -125,15 +109,6 @@
     }
     50% {
       transform: translateY(-5px);
-    }
-  }
-  @keyframes pulse-subtle {
-    0%,
-    100% {
-      opacity: 1;
-    }
-    50% {
-      opacity: 0.85;
     }
   }
 }
@@ -212,7 +187,7 @@
 }
 
 @layer base {
-  :root {
+  .jsonjoy {
     --background: 210 40% 98%;
     --foreground: 222.2 84% 4.9%;
 
@@ -248,7 +223,7 @@
       "Helvetica Neue", Arial, sans-serif;
   }
 
-  .dark {
+  .jsonjoy.dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
 
@@ -280,26 +255,28 @@
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground font-sans;
-  }
-
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-medium tracking-tight;
-  }
-
-  input,
-  textarea,
-  select {
-    @apply focus-visible:outline-hidden;
+  .jsonjoy {
+    * {
+      @apply border-border;
+    }
+  
+    body {
+      @apply bg-background text-foreground font-sans;
+    }
+  
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      @apply font-medium tracking-tight;
+    }
+  
+    input,
+    textarea,
+    select {
+      @apply focus-visible:outline-hidden;
+    }
   }
 }

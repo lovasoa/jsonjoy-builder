@@ -79,7 +79,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
 
   return (
     <div
-      className={cn("json-editor-container w-full", fullscreenClass, className)}
+      className={cn("json-editor-container w-full", fullscreenClass, className, "jsonjoy")}
     >
       {/* For mobile screens - show as tabs */}
       <div className="block lg:hidden w-full">

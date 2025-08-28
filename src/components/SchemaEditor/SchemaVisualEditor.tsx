@@ -119,7 +119,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     Object.keys(schema.properties).length > 0;
 
   return (
-    <div className="p-4 h-full flex flex-col overflow-auto">
+    <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
       <div className="mb-6 shrink-0">
         <AddFieldButton onAddField={handleAddField} />
       </div>

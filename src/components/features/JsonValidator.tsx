@@ -116,7 +116,7 @@ export function JsonValidator({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-5xl max-h-[700px] flex flex-col">
+      <DialogContent className="sm:max-w-5xl max-h-[700px] flex flex-col jsonjoy">
         <DialogHeader>
           <DialogTitle>{t.validatorTitle}</DialogTitle>
           <DialogDescription>{t.validatorDescription}</DialogDescription>

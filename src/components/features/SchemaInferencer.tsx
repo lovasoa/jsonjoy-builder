@@ -77,7 +77,7 @@ export function SchemaInferencer({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
+      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col jsonjoy">
         <DialogHeader>
           <DialogTitle>{t.inferrerTitle}</DialogTitle>
           <DialogDescription>{t.inferrerDescription}</DialogDescription>

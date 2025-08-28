@@ -79,8 +79,8 @@ const cssScopingPlugin = () => {
 
       // Prefix usages of CSS custom properties [var(--name)] with jsonjoy-
       root.walkDecls(decl => {
-        decl.value = decl.value.replace(/var\(--([^)]+)\)/g, (match, name) => {
-          return name.startsWith("jsonjoy-") ? match : `var(--jsonjoy-${name})`;
+        decl.value = decl.value.replace(/var\(--([a-zA-Z0-9_\-]+)/g, (match, name) => {
+          return name.startsWith("jsonjoy-") ? match : `var(--jsonjoy-${name}`;
         });
       });
 

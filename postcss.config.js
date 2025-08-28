@@ -6,22 +6,22 @@ const AllowedAtRules = new Set(["media", "supports", "layer"]);
 
 // tailwind is not suitable for libraries in general, so we use a plugin
 // to add proper scoping to the generated CSS.
-//
-// Also, see  https://github.com/tailwindlabs/tailwindcss/discussions/18108
-// Tailwind always uses :root / :host, but we want to scope it to .jsonjoy
 /** @type {() => import("postcss").Plugin} */
 const CssScopingPlugin = () => {
   return {
     postcssPlugin: 'replace-root-with-new_design',
     Once(root) {
+      // Add .jsonjoy class selector to all selectors
       root.walkRules(rule => {
         if (rule.parent?.type === "atrule" && !AllowedAtRules.has(rule.parent.name)) {
           return;
         }
         const newSelectors = new Set();
         for (const selector of rule.selectors) {
+          // See  https://github.com/tailwindlabs/tailwindcss/discussions/18108
+          // Tailwind always uses :root / :host, but we want to scope it to .jsonjoy
           // Replace :root and :host with .jsonjoy
-          if (selector === ":root" || selector === ":host" ) {
+          if (selector === ":root" || selector === ":host") {
             newSelectors.add(".jsonjoy");
           }
           // Scope universal selector
@@ -42,14 +42,12 @@ const CssScopingPlugin = () => {
 
       // Prefix built-in animation names from tailwind with jsonjoy-
       // See https://tailwindcss.com/docs/animation
-      root.walkRules(rule => {
-        for (const node of rule.nodes) {
-          if (node.type === "decl" && node.variable) {
-            const animateMatch = /--animate-([a-zA-Z0-9_-]+)/.exec(node.prop);
-            if (animateMatch) {
-                const animationName = animateMatch[1];
-                node.value = node.value.replace(new RegExp(`\\b${animationName}\\b`, "g"), `jsonjoy-${animationName}`);
-            }
+      root.walkDecls(decl => {
+        if (decl.variable) {
+          const animateMatch = /--animate-([a-zA-Z0-9_-]+)/.exec(decl.prop);
+          if (animateMatch) {
+            const animationName = animateMatch[1];
+            decl.value = decl.value.replace(new RegExp(`\\b${animationName}\\b`, "g"), `jsonjoy-${animationName}`);
           }
         }
       });
@@ -59,6 +57,27 @@ const CssScopingPlugin = () => {
       root.walkAtRules(atRule => {
         if (atRule.name === "keyframes" && !atRule.params.startsWith("jsonjoy-")) {
           atRule.params = `jsonjoy-${atRule.params}`;
+        }
+      });
+
+      // Prefix CSS custom properties with jsonjoy-
+      root.walkDecls(decl => {
+        if (decl.variable && !decl.prop.startsWith("--jsonjoy-")) {
+          decl.prop = `--jsonjoy-${decl.prop.substring(2)}`;
+        }
+      });
+
+      // Prefix usages of CSS custom properties [var(--name)] with jsonjoy-
+      root.walkDecls(decl => {
+        decl.value = decl.value.replace(/var\(--([^)]+)\)/g, (match, name) => {
+          return name.startsWith("jsonjoy-") ? match : `var(--jsonjoy-${name})`;
+        });
+      });
+
+      // Prefix custom @property rules with jsonjoy-
+      root.walkAtRules(atRule => {
+        if (atRule.name === "property" && !atRule.params.startsWith("--jsonjoy-")) {
+          atRule.params = `--jsonjoy-${atRule.params.substring(2)}`;
         }
       });
     }

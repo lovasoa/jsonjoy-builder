@@ -72,6 +72,8 @@ const es: Translation = {
 };
 ```
 
+See also the [English localizations file](https://github.com/lovasoa/jsonjoy-builder/blob/main/src/i18n/locales/en.ts) for the default localizations.
+
 ### Development
 
 ```bash
@@ -86,11 +88,11 @@ Start the development server:
 npm run dev
 ```
 
-The application will be available at http://localhost:5173
+The demo application will be available at http://localhost:5173
 
 ### Building for Production
 
-Build the application for production:
+Build this library for production:
 
 ```bash
 npm run build
@@ -112,7 +114,7 @@ The built files will be available in the `dist` directory.
 
 #### Schema Inference
 
-The application can automatically generate JSON Schema definitions from existing JSON data. This feature uses a recursion-based inference system to detect:
+The `SchemaInferencer` component can automatically generate JSON Schema definitions from existing JSON data. This feature uses a recursion-based inference system to detect:
 
 - Object structures and properties
 - Array types and their item schemas

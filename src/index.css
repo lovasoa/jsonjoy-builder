@@ -255,28 +255,26 @@
 }
 
 @layer base {
-  .jsonjoy {
-    * {
-      @apply border-border;
-    }
-  
-    body {
-      @apply bg-background text-foreground font-sans;
-    }
-  
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
-      @apply font-medium tracking-tight;
-    }
-  
-    input,
-    textarea,
-    select {
-      @apply focus-visible:outline-hidden;
-    }
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-medium tracking-tight;
+  }
+
+  input,
+  textarea,
+  select {
+    @apply focus-visible:outline-hidden;
   }
 }

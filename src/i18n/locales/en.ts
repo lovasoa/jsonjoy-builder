@@ -54,6 +54,9 @@ export const en: Translation = {
   arrayMaximumPlaceholder: "No maximum",
   arrayForceUniqueItemsLabel: "Force unique items",
   arrayItemTypeLabel: "Item Type",
+  arrayValidationErrorMinMax: "'minItems' cannot be greater than 'maxItems'.",
+  arrayValidationErrorContainsMinMax:
+    "'minContains' cannot be greater than 'maxContains'.",
 
   booleanAllowFalseLabel: "Allow false value",
   booleanAllowTrueLabel: "Allow true value",
@@ -73,8 +76,17 @@ export const en: Translation = {
   numberAllowedValuesEnumNone: "No restricted values set",
   numberAllowedValuesEnumAddLabel: "Add",
   numberAllowedValuesEnumAddPlaceholder: "Add allowed value...",
+  numberValidationErrorMinMax: "Minimum and maximum values must be consistent.",
+  numberValidationErrorBothExclusiveAndInclusiveMin:
+    "Both 'exclusiveMinimum' and 'minimum' cannot be set at the same time.",
+  numberValidationErrorBothExclusiveAndInclusiveMax:
+    "Both 'exclusiveMaximum' and 'maximum' cannot be set at the same time.",
+  numberValidationErrorEnumOutOfRange:
+    "Enum values must be within the defined range.",
 
   objectPropertiesNone: "No properties defined",
+  objectValidationErrorMinMax:
+    "'minProperties' cannot be greater than 'maxProperties'.",
 
   stringMinimumLengthLabel: "Minimum Length",
   stringMinimumLengthPlaceholder: "No minimum",
@@ -96,6 +108,8 @@ export const en: Translation = {
   stringAllowedValuesEnumLabel: "Allowed Values (enum)",
   stringAllowedValuesEnumNone: "No restricted values set",
   stringAllowedValuesEnumAddPlaceholder: "Add allowed value...",
+  stringValidationErrorLengthRange:
+    "'Minimum Length' cannot be greater than 'Maximum Length'.",
 
   schemaTypeArray: "List",
   schemaTypeBoolean: "Yes/No",

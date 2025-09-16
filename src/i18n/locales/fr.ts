@@ -10,7 +10,8 @@ export const fr: Translation = {
   fieldDescriptionTooltip: "Ajoutez du contexte sur ce que ce champ représente",
   fieldNameLabel: "Nom du champ",
   fieldNamePlaceholder: "ex. prenom, age, estActif",
-  fieldNameTooltip: "Utilisez camelCase pour une meilleure lisibilité (ex. prenom)",
+  fieldNameTooltip:
+    "Utilisez camelCase pour une meilleure lisibilité (ex. prenom)",
   fieldRequiredLabel: "Champ obligatoire",
   fieldType: "Type de champ",
   fieldTypeExample: "Exemple:",
@@ -27,7 +28,8 @@ export const fr: Translation = {
   fieldAddNewLabel: "Ajouter un nouveau champ",
 
   fieldTypeTextLabel: "Texte",
-  fieldTypeTextDescription: "Pour les valeurs textuelles comme les noms, descriptions, etc.",
+  fieldTypeTextDescription:
+    "Pour les valeurs textuelles comme les noms, descriptions, etc.",
   fieldTypeNumberLabel: "Nombre",
   fieldTypeNumberDescription: "Pour les nombres décimaux ou entiers",
   fieldTypeBooleanLabel: "Oui/Non",
@@ -54,10 +56,15 @@ export const fr: Translation = {
   arrayMaximumPlaceholder: "Pas de maximum",
   arrayForceUniqueItemsLabel: "Forcer les éléments uniques",
   arrayItemTypeLabel: "Type d'élément",
+  arrayValidationErrorMinMax:
+    "'minItems' ne peut pas être supérieur à 'maxItems'.",
+  arrayValidationErrorContainsMinMax:
+    "'minContains' ne peut pas être supérieur à 'maxContains'.",
 
   booleanAllowFalseLabel: "Autoriser la valeur faux",
   booleanAllowTrueLabel: "Autoriser la valeur vrai",
-  booleanNeitherWarning: "Avertissement: Vous devez autoriser au moins une valeur.",
+  booleanNeitherWarning:
+    "Avertissement: Vous devez autoriser au moins une valeur.",
 
   numberMinimumLabel: "Valeur minimale",
   numberMinimumPlaceholder: "Pas de minimum",
@@ -73,8 +80,17 @@ export const fr: Translation = {
   numberAllowedValuesEnumNone: "Aucune valeur restreinte définie",
   numberAllowedValuesEnumAddLabel: "Ajouter",
   numberAllowedValuesEnumAddPlaceholder: "Ajouter une valeur autorisée...",
+  numberValidationErrorMinMax: "Minimum et maximum doivent être cohérents.",
+  numberValidationErrorBothExclusiveAndInclusiveMin:
+    "Les champs 'exclusiveMinimum' et 'minimum' ne peuvent pas être définis en même temps.",
+  numberValidationErrorBothExclusiveAndInclusiveMax:
+    "Les champs 'exclusiveMaximum' et 'maximum' ne peuvent pas être définis en même temps.",
+  numberValidationErrorEnumOutOfRange:
+    "Les valeurs d'énumération doivent être dans la plage définie.",
 
   objectPropertiesNone: "Aucune propriété définie",
+  objectValidationErrorMinMax:
+    "'minProperties' ne peut pas être supérieur à 'maxProperties'.",
 
   stringMinimumLengthLabel: "Longueur minimale",
   stringMinimumLengthPlaceholder: "Pas de minimum",
@@ -96,6 +112,8 @@ export const fr: Translation = {
   stringAllowedValuesEnumLabel: "Valeurs autorisées (enum)",
   stringAllowedValuesEnumNone: "Aucune valeur restreinte définie",
   stringAllowedValuesEnumAddPlaceholder: "Ajouter une valeur autorisée...",
+  stringValidationErrorLengthRange:
+    "'Longueur minimale' ne peut pas être supérieure à 'Longueur maximale'.",
 
   schemaTypeArray: "Liste",
   schemaTypeBoolean: "Oui/Non",
@@ -109,7 +127,8 @@ export const fr: Translation = {
     "Collez votre document JSON ci-dessous pour en générer un schéma.",
   inferrerCancel: "Annuler",
   inferrerGenerate: "Générer le schéma",
-  inferrerErrorInvalidJson: "Format JSON invalide. Veuillez vérifier votre saisie.",
+  inferrerErrorInvalidJson:
+    "Format JSON invalide. Veuillez vérifier votre saisie.",
 
   validatorTitle: "Valider le JSON",
   validatorDescription:

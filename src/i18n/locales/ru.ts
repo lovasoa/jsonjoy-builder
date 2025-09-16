@@ -10,7 +10,8 @@ export const ru: Translation = {
   fieldDescriptionTooltip: "Добавьте контекст о том, что представляет это поле",
   fieldNameLabel: "Имя поля",
   fieldNamePlaceholder: "например, имя, возраст, активен",
-  fieldNameTooltip: "Используйте camelCase для лучшей читаемости (например, firstName)",
+  fieldNameTooltip:
+    "Используйте camelCase для лучшей читаемости (например, firstName)",
   fieldRequiredLabel: "Обязательное поле",
   fieldType: "Тип поля",
   fieldTypeExample: "Пример:",
@@ -27,7 +28,8 @@ export const ru: Translation = {
   fieldAddNewLabel: "Добавить новое поле",
 
   fieldTypeTextLabel: "Текст",
-  fieldTypeTextDescription: "Для текстовых значений, таких как имена, описания и т.д.",
+  fieldTypeTextDescription:
+    "Для текстовых значений, таких как имена, описания и т.д.",
   fieldTypeNumberLabel: "Число",
   fieldTypeNumberDescription: "Для десятичных или целых чисел",
   fieldTypeBooleanLabel: "Да/Нет",
@@ -54,6 +56,9 @@ export const ru: Translation = {
   arrayMaximumPlaceholder: "Нет максимума",
   arrayForceUniqueItemsLabel: "Требовать уникальные элементы",
   arrayItemTypeLabel: "Тип элемента",
+  arrayValidationErrorMinMax: "'minItems' не может быть больше 'maxItems'.",
+  arrayValidationErrorContainsMinMax:
+    "'minContains' не может быть больше 'maxContains'.",
 
   booleanAllowFalseLabel: "Разрешить значение ложь",
   booleanAllowTrueLabel: "Разрешить значение истина",
@@ -73,8 +78,18 @@ export const ru: Translation = {
   numberAllowedValuesEnumNone: "Нет ограниченных значений",
   numberAllowedValuesEnumAddLabel: "Добавить",
   numberAllowedValuesEnumAddPlaceholder: "Добавить разрешенное значение...",
+  numberValidationErrorMinMax:
+    "Минимальное и максимальное значения должны быть согласованы.",
+  numberValidationErrorBothExclusiveAndInclusiveMin:
+    "Оба поля 'exclusiveMinimum' и 'minimum' не могут быть установлены одновременно.",
+  numberValidationErrorBothExclusiveAndInclusiveMax:
+    "Оба поля 'exclusiveMaximum' и 'maximum' не могут быть установлены одновременно.",
+  numberValidationErrorEnumOutOfRange:
+    "Значения перечисления должны быть в пределах определенного диапазона.",
 
   objectPropertiesNone: "Нет определенных свойств",
+  objectValidationErrorMinMax:
+    "'minProperties' не может быть больше 'maxProperties'.",
 
   stringMinimumLengthLabel: "Минимальная длина",
   stringMinimumLengthPlaceholder: "Нет минимума",
@@ -96,6 +111,8 @@ export const ru: Translation = {
   stringAllowedValuesEnumLabel: "Разрешенные значения (enum)",
   stringAllowedValuesEnumNone: "Нет ограниченных значений",
   stringAllowedValuesEnumAddPlaceholder: "Добавить разрешенное значение...",
+  stringValidationErrorLengthRange:
+    "'Минимальная длина' не может быть больше 'Максимальной длины'.",
 
   schemaTypeArray: "Список",
   schemaTypeBoolean: "Да/Нет",
@@ -109,7 +126,8 @@ export const ru: Translation = {
     "Вставьте ваш документ JSON ниже, чтобы сгенерировать из него схему.",
   inferrerCancel: "Отмена",
   inferrerGenerate: "Сгенерировать схему",
-  inferrerErrorInvalidJson: "Неверный формат JSON. Пожалуйста, проверьте ваши данные.",
+  inferrerErrorInvalidJson:
+    "Неверный формат JSON. Пожалуйста, проверьте ваши данные.",
 
   validatorTitle: "Проверить JSON",
   validatorDescription:

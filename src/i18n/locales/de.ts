@@ -55,6 +55,10 @@ export const de: Translation = {
   arrayMaximumPlaceholder: "Kein Maximum",
   arrayForceUniqueItemsLabel: "Nur eindeutige Elemente erlauben",
   arrayItemTypeLabel: "Elementtyp",
+  arrayValidationErrorMinMax:
+    "'minItems' darf nicht größer als 'maxItems' sein.",
+  arrayValidationErrorContainsMinMax:
+    "'minContains' darf nicht größer als 'maxContains' sein.",
 
   booleanAllowFalseLabel: "Falsch-Werte erlauben",
   booleanAllowTrueLabel: "Wahr-Werte erlauben",
@@ -75,8 +79,17 @@ export const de: Translation = {
   numberAllowedValuesEnumNone: "Keine Einschränkung für Werte festgelegt",
   numberAllowedValuesEnumAddLabel: "Hinzufügen",
   numberAllowedValuesEnumAddPlaceholder: "Erlaubten Wert hinzufügen...",
+  numberValidationErrorMinMax: "Minimum und Maximum müssen konsistent sein.",
+  numberValidationErrorBothExclusiveAndInclusiveMin:
+    "Sowohl 'exclusiveMinimum' als auch 'minimum' dürfen nicht gleichzeitig festgelegt werden.",
+  numberValidationErrorBothExclusiveAndInclusiveMax:
+    "Sowohl 'exclusiveMaximum' als auch 'maximum' dürfen nicht gleichzeitig festgelegt werden.",
+  numberValidationErrorEnumOutOfRange:
+    "Enum-Werte müssen innerhalb des definierten Bereichs liegen.",
 
   objectPropertiesNone: "Keine Eigenschaften definiert",
+  objectValidationErrorMinMax:
+    "'minProperties' darf nicht größer als 'maxProperties' sein.",
 
   stringMinimumLengthLabel: "Minimale Länge",
   stringMinimumLengthPlaceholder: "Kein Minimum",
@@ -98,6 +111,8 @@ export const de: Translation = {
   stringAllowedValuesEnumLabel: "Erlaubte Werte (Enum)",
   stringAllowedValuesEnumNone: "Keine Einschränkung für Werte festgelegt",
   stringAllowedValuesEnumAddPlaceholder: "Erlaubten Wert hinzufügen...",
+  stringValidationErrorLengthRange:
+    "'Minimale Länge' darf nicht größer als 'Maximale Länge' sein.",
 
   schemaTypeArray: "Liste",
   schemaTypeBoolean: "Ja/Nein",

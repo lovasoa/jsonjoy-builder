@@ -92,13 +92,6 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
     [validationNode],
   );
 
-  // const minmaxContains = useMemo(
-  //   () =>
-  //     validationNode?.validation.errors?.find(
-  //       (err) => err.path[0] === "minmaxContains",
-  //     )?.message && true,
-  //   [validationNode],
-  // );
 
   return (
     <div className="space-y-6">

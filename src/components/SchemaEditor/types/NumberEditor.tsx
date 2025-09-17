@@ -1,14 +1,15 @@
 import { X } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
+import { useTranslation } from "../../../hooks/use-translation.ts";
+import { cn } from "../../../lib/utils.ts";
 import type { ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import {
   isBooleanSchema,
   withObjectSchema,
 } from "../../../types/jsonSchema.ts";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
-import { useTranslation } from "../../../hooks/use-translation.ts";
 
 interface NumberEditorProps extends TypeEditorProps {
   integer?: boolean;
@@ -24,6 +25,7 @@ type Property =
 
 const NumberEditor: React.FC<NumberEditorProps> = ({
   schema,
+  validationNode,
   onChange,
   integer = false,
 }) => {
@@ -169,27 +171,99 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
     }
   };
 
+  const minMaxError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find((err) => err.path[0] === "minMax")
+        ?.message,
+    [validationNode],
+  );
+
+  const redundantMinError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "redundantMinimum",
+      )?.message,
+    [validationNode],
+  );
+
+  const redundantMaxError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "redundantMaximum",
+      )?.message,
+    [validationNode],
+  );
+
+  const enumError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find((err) => err.path[0] === "enum")
+        ?.message,
+    [validationNode],
+  );
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-0 md:col-span-2">
+          {!!minMaxError && (
+            <div className="text-xs text-destructive italic">{minMaxError}</div>
+          )}
+          {!!redundantMinError && (
+            <div className="text-xs text-destructive italic">
+              {redundantMinError}
+            </div>
+          )}
+          {!!redundantMaxError && (
+            <div className="text-xs text-destructive italic">
+              {redundantMaxError}
+            </div>
+          )}
+          {!!enumError && (
+            <div className="text-xs text-destructive italic">{enumError}</div>
+          )}
+        </div>
+
         <div className="space-y-2">
-          <Label htmlFor={minimumId}>{t.numberMinimumLabel}</Label>
+          <Label
+            htmlFor={minimumId}
+            className={
+              minimum !== undefined &&
+              (!!minMaxError || !!redundantMinError) &&
+              "text-destructive"
+            }
+          >
+            {t.numberMinimumLabel}
+          </Label>
           <Input
             id={minimumId}
             type="number"
-            value={minimum ?? ""}
+            value={minimum !== undefined ? minimum : ""}
             onChange={(e) => {
               const value = e.target.value ? Number(e.target.value) : undefined;
               handleValidationChange("minimum", value);
             }}
             placeholder={t.numberMinimumPlaceholder}
-            className="h-8"
+            className={cn(
+              "h-8",
+              minimum !== undefined &&
+                (!!minMaxError || !!redundantMinError) &&
+                "border-destructive",
+            )}
             step={integer ? 1 : "any"}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor={maximumId}>{t.numberMaximumLabel}</Label>
+          <Label
+            htmlFor={maximumId}
+            className={
+              maximum !== undefined &&
+              (!!minMaxError || !!redundantMaxError) &&
+              "text-destructive"
+            }
+          >
+            {t.numberMaximumLabel}
+          </Label>
           <Input
             id={maximumId}
             type="number"
@@ -199,7 +273,12 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
               handleValidationChange("maximum", value);
             }}
             placeholder={t.numberMaximumPlaceholder}
-            className="h-8"
+            className={cn(
+              "h-8",
+              maximum !== undefined &&
+                (!!minMaxError || !!redundantMaxError) &&
+                "border-destructive",
+            )}
             step={integer ? 1 : "any"}
           />
         </div>
@@ -207,7 +286,14 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor={exclusiveMinimumId}>
+          <Label
+            htmlFor={exclusiveMinimumId}
+            className={
+              exclusiveMinimum !== undefined &&
+              (!!minMaxError || !!redundantMinError) &&
+              "text-destructive"
+            }
+          >
             {t.numberExclusiveMinimumLabel}
           </Label>
           <Input
@@ -219,13 +305,25 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
               handleValidationChange("exclusiveMinimum", value);
             }}
             placeholder={t.numberExclusiveMinimumPlaceholder}
-            className="h-8"
+            className={cn(
+              "h-8",
+              exclusiveMinimum !== undefined &&
+                (!!minMaxError || !!redundantMinError) &&
+                "border-destructive",
+            )}
             step={integer ? 1 : "any"}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor={exclusiveMaximumId}>
+          <Label
+            htmlFor={exclusiveMaximumId}
+            className={
+              exclusiveMaximum !== undefined &&
+              (!!minMaxError || !!redundantMaxError) &&
+              "text-destructive"
+            }
+          >
             {t.numberExclusiveMaximumLabel}
           </Label>
           <Input
@@ -237,7 +335,12 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
               handleValidationChange("exclusiveMaximum", value);
             }}
             placeholder={t.numberExclusiveMaximumPlaceholder}
-            className="h-8"
+            className={cn(
+              "h-8",
+              exclusiveMaximum !== undefined &&
+                (!!minMaxError || !!redundantMaxError) &&
+                "border-destructive",
+            )}
             step={integer ? 1 : "any"}
           />
         </div>
@@ -261,7 +364,9 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
       </div>
 
       <div className="space-y-2 pt-2 border-t border-border/40">
-        <Label>{t.numberAllowedValuesEnumLabel}</Label>
+        <Label className={!!enumError && "text-destructive"}>
+          {t.numberAllowedValuesEnumLabel}
+        </Label>
 
         <div className="flex flex-wrap gap-2 mb-4">
           {enumValues.length > 0 ? (

@@ -1,6 +1,7 @@
 import { ChevronDown, ChevronRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "../../components/ui/input.tsx";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type {
   JSONSchema,
@@ -12,14 +13,16 @@ import {
   getSchemaDescription,
   withObjectSchema,
 } from "../../types/jsonSchema.ts";
+import type { ValidationTreeNode } from "../../types/validation.ts";
+import { Badge } from "../ui/badge.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;
   required: boolean;
+  validationNode?: ValidationTreeNode;
   onDelete: () => void;
   onNameChange: (newName: string) => void;
   onRequiredChange: (required: boolean) => void;
@@ -31,6 +34,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   name,
   schema,
   required,
+  validationNode,
   onDelete,
   onNameChange,
   onRequiredChange,
@@ -192,6 +196,16 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
           </div>
         </div>
 
+        {/* Error badge */}
+        {validationNode?.cumulativeChildrenErrors > 0 && (
+          <Badge
+            className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums justify-center"
+            variant="destructive"
+          >
+            {validationNode.cumulativeChildrenErrors}
+          </Badge>
+        )}
+
         {/* Delete button */}
         <div className="flex items-center gap-1 text-muted-foreground">
           <button
@@ -210,6 +224,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
         <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
           <TypeEditor
             schema={schema}
+            validationNode={validationNode}
             onChange={handleSchemaUpdate}
             depth={depth + 1}
           />

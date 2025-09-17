@@ -13,6 +13,7 @@ import type { TypeEditorProps } from "../TypeEditor.tsx";
 
 const ObjectEditor: React.FC<TypeEditorProps> = ({
   schema,
+  validationNode,
   onChange,
   depth = 0,
 }) => {
@@ -117,6 +118,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
               name={property.name}
               schema={property.schema}
               required={property.required}
+              validationNode={validationNode?.children[property.name]}
               onDelete={() => handleDeleteProperty(property.name)}
               onNameChange={(newName) =>
                 handlePropertyNameChange(property.name, newName)

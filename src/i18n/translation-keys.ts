@@ -23,11 +23,6 @@ export interface Translation {
    *
    * > Describe the purpose of this field
    */
-  /**
-   * The translation for the key `fieldDescriptionPlaceholder`. English default is:
-   *
-   * > Describe the purpose of this field
-   */
   readonly fieldDescriptionPlaceholder: string;
   /**
    * The translation for the key `fieldNamePlaceholder`. English default is:
@@ -273,6 +268,18 @@ export interface Translation {
    * > Item Type
    */
   readonly arrayItemTypeLabel: string;
+  /**
+   * The translation for the key `arrayValidationErrorMinMax`. English default is:
+   *
+   * > 'minItems' cannot be greater than 'maxItems'.
+   */
+  readonly arrayValidationErrorMinMax: string;
+  /**
+   * The translation for the key `arrayValidationErrorContainsMinMax`. English default is:
+   *
+   * > 'minContains' cannot be greater than 'maxContains'.
+   */
+  readonly arrayValidationErrorContainsMinMax: string;
 
   /**
    * The translation for the key `booleanAllowTrueLabel`. English default is:
@@ -377,6 +384,30 @@ export interface Translation {
    * > Add
    */
   readonly numberAllowedValuesEnumAddLabel: string;
+  /**
+   * The translation for the key `numberValidationErrorExclusiveMinMax`. English default is:
+   *
+   * > Minimum and maximum values must be consistent.
+   */
+  readonly numberValidationErrorMinMax: string;
+  /**
+   * The translation for the key `numberValidationErrorBothExclusiveAndInclusive`. English default is:
+   *
+   * > Both 'exclusiveMinimum' and 'minimum' cannot be set at the same time.
+   */
+  readonly numberValidationErrorBothExclusiveAndInclusiveMin: string;
+  /**
+   * The translation for the key `numberValidationErrorBothExclusiveAndInclusiveMax`. English default is:
+   *
+   * > Both 'exclusiveMaximum' and 'maximum' cannot be set at the same time.
+   */
+  readonly numberValidationErrorBothExclusiveAndInclusiveMax: string;
+  /**
+   * The translation for the key `numberValidationErrorEnumOutOfRange`. English default is:
+   *
+   * > Enum values must be within the defined range.
+   */
+  readonly numberValidationErrorEnumOutOfRange: string;
 
   /**
    * The translation for the key `objectPropertiesNone`. English default is:
@@ -384,6 +415,12 @@ export interface Translation {
    * > No properties defined
    */
   readonly objectPropertiesNone: string;
+  /**
+   * The translation for the key `objectValidationErrorMinMax`. English default is:
+   *
+   * > 'minProperties' cannot be greater than 'maxProperties'.
+   */
+  readonly objectValidationErrorMinMax: string;
 
   /**
    * The translation for the key `stringMinimumLengthLabel`. English default is:
@@ -505,6 +542,12 @@ export interface Translation {
    * > Add allowed value...
    */
   readonly stringAllowedValuesEnumAddPlaceholder: string;
+  /**
+   * The translation for the key `stringValidationErrorMinLength`. English default is:
+   *
+   * > 'minLength' cannot be greater than 'maxLength'.
+   */
+  readonly stringValidationErrorLengthRange: string;
 
   /**
    * The translation for the key `schemaTypeString`. English default is:

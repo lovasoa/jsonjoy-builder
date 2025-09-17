@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import {
@@ -9,17 +9,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../../components/ui/select.tsx";
+import { useTranslation } from "../../../hooks/use-translation.ts";
+import { cn } from "../../../lib/utils.ts";
 import type { ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import {
   isBooleanSchema,
   withObjectSchema,
 } from "../../../types/jsonSchema.ts";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
-import { useTranslation } from "../../../hooks/use-translation.ts";
 
 type Property = "enum" | "minLength" | "maxLength" | "pattern" | "format";
 
-const StringEditor: React.FC<TypeEditorProps> = ({ schema, onChange }) => {
+const StringEditor: React.FC<TypeEditorProps> = ({
+  schema,
+  validationNode,
+  onChange,
+}) => {
   const t = useTranslation();
   const [enumValue, setEnumValue] = useState("");
 
@@ -56,6 +61,7 @@ const StringEditor: React.FC<TypeEditorProps> = ({ schema, onChange }) => {
       [property]: value,
     };
 
+    // Call onChange with the updated schema (even if there are validation errors)
     onChange(updatedValidation);
   };
 
@@ -93,11 +99,23 @@ const StringEditor: React.FC<TypeEditorProps> = ({ schema, onChange }) => {
     }
   };
 
+  const minMaxError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find((err) => err.path[0] === "length")
+        ?.message,
+    [validationNode],
+  );
+
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
         <div className="space-y-2">
-          <Label htmlFor={minLengthId}>{t.stringMinimumLengthLabel}</Label>
+          <Label
+            htmlFor={minLengthId}
+            className={!!minMaxError && "text-destructive"}
+          >
+            {t.stringMinimumLengthLabel}
+          </Label>
           <Input
             id={minLengthId}
             type="number"
@@ -108,12 +126,17 @@ const StringEditor: React.FC<TypeEditorProps> = ({ schema, onChange }) => {
               handleValidationChange("minLength", value);
             }}
             placeholder={t.stringMinimumLengthPlaceholder}
-            className="h-8"
+            className={cn("h-8", !!minMaxError && "border-destructive")}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor={maxLengthId}>{t.stringMaximumLengthLabel}</Label>
+          <Label
+            htmlFor={maxLengthId}
+            className={minMaxError && "text-destructive"}
+          >
+            {t.stringMaximumLengthLabel}
+          </Label>
           <Input
             id={maxLengthId}
             type="number"
@@ -124,9 +147,14 @@ const StringEditor: React.FC<TypeEditorProps> = ({ schema, onChange }) => {
               handleValidationChange("maxLength", value);
             }}
             placeholder={t.stringMaximumLengthPlaceholder}
-            className="h-8"
+            className={cn("h-8", minMaxError && "border-destructive")}
           />
         </div>
+        {minMaxError && (
+          <p className="text-xs text-destructive italic md:col-span-2">
+            {minMaxError}
+          </p>
+        )}
       </div>
 
       <div className="space-y-2">

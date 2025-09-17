@@ -1,4 +1,5 @@
-import type { FC } from "react";
+import { type FC, useMemo } from "react";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import { getSchemaProperties } from "../../lib/schemaEditor.ts";
 import type {
   JSONSchema as JSONSchemaType,
@@ -6,6 +7,7 @@ import type {
   ObjectJSONSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
+import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 
 interface SchemaFieldListProps {
@@ -20,6 +22,8 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   onEditField,
   onDeleteField,
 }) => {
+  const t = useTranslation();
+
   // Get the properties from the schema
   const properties = getSchemaProperties(schema);
 
@@ -97,6 +101,11 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     });
   };
 
+  const validationTree = useMemo(
+    () => buildValidationTree(schema, t),
+    [schema, t]
+  );
+
   return (
     <div className="space-y-2 animate-in">
       {properties.map((property) => (
@@ -105,6 +114,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           name={property.name}
           schema={property.schema}
           required={property.required}
+          validationNode={validationTree.children[property.name] ?? undefined}
           onDelete={() => onDeleteField(property.name)}
           onNameChange={(newName) => handleNameChange(property.name, newName)}
           onRequiredChange={(required) =>

@@ -1,8 +1,10 @@
-import { useId, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { Switch } from "../../../components/ui/switch.tsx";
+import { useTranslation } from "../../../hooks/use-translation.ts";
 import { getArrayItemsSchema } from "../../../lib/schemaEditor.ts";
+import { cn } from "../../../lib/utils.ts";
 import type {
   ObjectJSONSchema,
   SchemaType,
@@ -14,10 +16,10 @@ import {
 import TypeDropdown from "../TypeDropdown.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
 import TypeEditor from "../TypeEditor.tsx";
-import { useTranslation } from "../../../hooks/use-translation.ts";
 
 const ArrayEditor: React.FC<TypeEditorProps> = ({
   schema,
+  validationNode,
   onChange,
   depth = 0,
 }) => {
@@ -83,12 +85,25 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
     onChange(updatedSchema);
   };
 
+  const minMaxError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find((err) => err.path[0] === "minmax")
+        ?.message,
+    [validationNode],
+  );
+
+
   return (
     <div className="space-y-6">
       {/* Array validation settings */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor={minItemsId}>{t.arrayMinimumLabel}</Label>
+          <Label
+            htmlFor={minItemsId}
+            className={!!minMaxError && "text-destructive"}
+          >
+            {t.arrayMinimumLabel}
+          </Label>
           <Input
             id={minItemsId}
             type="number"
@@ -101,12 +116,17 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
             }}
             onBlur={handleValidationChange}
             placeholder={t.arrayMinimumPlaceholder}
-            className="h-8"
+            className={cn("h-8", !!minMaxError && "border-destructive")}
           />
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor={maxItemsId}>{t.arrayMaximumLabel}</Label>
+          <Label
+            htmlFor={maxItemsId}
+            className={!!minMaxError && "text-destructive"}
+          >
+            {t.arrayMaximumLabel}
+          </Label>
           <Input
             id={maxItemsId}
             type="number"
@@ -119,9 +139,14 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
             }}
             onBlur={handleValidationChange}
             placeholder={t.arrayMaximumPlaceholder}
-            className="h-8"
+            className={cn("h-8", !!minMaxError && "border-destructive")}
           />
         </div>
+        {!!minMaxError && (
+          <p className="text-xs text-destructive italic md:col-span-2">
+            {minMaxError}
+          </p>
+        )}
       </div>
 
       <div className="flex items-center space-x-2">
@@ -156,6 +181,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
         {/* Item schema editor */}
         <TypeEditor
           schema={itemsSchema}
+          validationNode={validationNode}
           onChange={handleItemSchemaChange}
           depth={depth + 1}
         />

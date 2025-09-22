@@ -148,4 +148,9 @@ export const ru: Translation = {
 
   visualEditorNoFieldsHint1: "Пока не определено ни одного поля",
   visualEditorNoFieldsHint2: "Добавьте ваше первое поле, чтобы начать",
+
+  typeValidationErrorNegativeLength:
+    "Значения длины не могут быть отрицательными.",
+  typeValidationErrorIntValue: "Значение должно быть целым числом.",
+  typeValidationErrorPositive: "Значение должно быть положительным.",
 };

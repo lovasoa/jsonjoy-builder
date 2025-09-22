@@ -106,13 +106,46 @@ const StringEditor: React.FC<TypeEditorProps> = ({
     [validationNode],
   );
 
+  const minLengthError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "minLength",
+      )?.message,
+    [validationNode],
+  );
+
+  const maxLengthError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "maxLength",
+      )?.message,
+    [validationNode],
+  );
+
+  const patternError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "pattern",
+      )?.message,
+    [validationNode],
+  );
+
+  const formatError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find((err) => err.path[0] === "format")
+        ?.message,
+    [validationNode],
+  );
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
         <div className="space-y-2">
           <Label
             htmlFor={minLengthId}
-            className={!!minMaxError && "text-destructive"}
+            className={
+              (!!minMaxError || !!minLengthError) && "text-destructive"
+            }
           >
             {t.stringMinimumLengthLabel}
           </Label>
@@ -126,14 +159,19 @@ const StringEditor: React.FC<TypeEditorProps> = ({
               handleValidationChange("minLength", value);
             }}
             placeholder={t.stringMinimumLengthPlaceholder}
-            className={cn("h-8", !!minMaxError && "border-destructive")}
+            className={cn(
+              "h-8",
+              (!!minMaxError || !!minLengthError) && "border-destructive",
+            )}
           />
         </div>
 
         <div className="space-y-2">
           <Label
             htmlFor={maxLengthId}
-            className={minMaxError && "text-destructive"}
+            className={
+              (!!minMaxError || !!maxLengthError) && "text-destructive"
+            }
           >
             {t.stringMaximumLengthLabel}
           </Label>
@@ -147,18 +185,28 @@ const StringEditor: React.FC<TypeEditorProps> = ({
               handleValidationChange("maxLength", value);
             }}
             placeholder={t.stringMaximumLengthPlaceholder}
-            className={cn("h-8", minMaxError && "border-destructive")}
+            className={cn(
+              "h-8",
+              (!!minMaxError || !!maxLengthError) && "border-destructive",
+            )}
           />
         </div>
-        {minMaxError && (
-          <p className="text-xs text-destructive italic md:col-span-2">
-            {minMaxError}
-          </p>
+        {(!!minMaxError || !!minLengthError || !!maxLengthError) && (
+          <div className="text-xs text-destructive italic md:col-span-2 whitespace-pre-line">
+            {[minMaxError, minLengthError ?? maxLengthError]
+              .filter(Boolean)
+              .join("\n")}
+          </div>
         )}
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={patternId}>{t.stringPatternLabel}</Label>
+        <Label
+          htmlFor={patternId}
+          className={!!patternError && "text-destructive"}
+        >
+          {t.stringPatternLabel}
+        </Label>
         <Input
           id={patternId}
           type="text"
@@ -173,7 +221,12 @@ const StringEditor: React.FC<TypeEditorProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={formatId}>{t.stringFormatLabel}</Label>
+        <Label
+          htmlFor={formatId}
+          className={!!formatError && "text-destructive"}
+        >
+          {t.stringFormatLabel}
+        </Label>
         <Select
           value={format || "none"}
           onValueChange={(value) => {

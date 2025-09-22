@@ -92,6 +92,21 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
     [validationNode],
   );
 
+  const minItemsError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "minItems",
+      )?.message,
+    [validationNode],
+  );
+
+  const maxItemsError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "maxItems",
+      )?.message,
+    [validationNode],
+  );
 
   return (
     <div className="space-y-6">
@@ -100,7 +115,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
         <div className="space-y-2">
           <Label
             htmlFor={minItemsId}
-            className={!!minMaxError && "text-destructive"}
+            className={(!!minMaxError || !!minItemsError) && "text-destructive"}
           >
             {t.arrayMinimumLabel}
           </Label>
@@ -123,7 +138,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
         <div className="space-y-2">
           <Label
             htmlFor={maxItemsId}
-            className={!!minMaxError && "text-destructive"}
+            className={(!!minMaxError || !!maxItemsError) && "text-destructive"}
           >
             {t.arrayMaximumLabel}
           </Label>
@@ -142,10 +157,12 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
             className={cn("h-8", !!minMaxError && "border-destructive")}
           />
         </div>
-        {!!minMaxError && (
-          <p className="text-xs text-destructive italic md:col-span-2">
-            {minMaxError}
-          </p>
+        {(!!minMaxError || !!minItemsError || !!maxItemsError) && (
+          <div className="text-xs text-destructive italic md:col-span-2 whitespace-pre-line">
+            {[minMaxError, minItemsError ?? maxItemsError]
+              .filter(Boolean)
+              .join("\n")}
+          </div>
         )}
       </div>
 

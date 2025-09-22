@@ -23,8 +23,16 @@ function refineRangeConsistency(
 const getJsonStringType = (t: Translation) =>
   z
     .object({
-      minLength: baseSchema.shape.minLength,
-      maxLength: baseSchema.shape.maxLength,
+      minLength: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
+      maxLength: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
       pattern: baseSchema.shape.pattern,
       format: baseSchema.shape.format,
       enum: baseSchema.shape.enum,
@@ -44,7 +52,10 @@ const getJsonStringType = (t: Translation) =>
 const getJsonNumberType = (t: Translation) =>
   z
     .object({
-      multipleOf: baseSchema.shape.multipleOf,
+      multipleOf: z
+        .number()
+        .positive({ message: t.typeValidationErrorPositive })
+        .optional(),
       minimum: baseSchema.shape.minimum,
       maximum: baseSchema.shape.maximum,
       exclusiveMinimum: baseSchema.shape.exclusiveMinimum,
@@ -111,11 +122,27 @@ const getJsonNumberType = (t: Translation) =>
 const getJsonArrayType = (t: Translation) =>
   z
     .object({
-      minItems: baseSchema.shape.minItems,
-      maxItems: baseSchema.shape.maxItems,
-      uniqueItems: baseSchema.shape.uniqueItems,
-      minContains: baseSchema.shape.minContains,
-      maxContains: baseSchema.shape.maxContains,
+      minItems: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
+      maxItems: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
+      uniqueItems: z.boolean().optional(),
+      minContains: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
+      maxContains: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
     })
     // If both minItems and maxItems are set, minItems must not be greater than maxItems.
     .refine(
@@ -139,8 +166,16 @@ const getJsonArrayType = (t: Translation) =>
 const getJsonObjectType = (t: Translation) =>
   z
     .object({
-      minProperties: baseSchema.shape.minProperties,
-      maxProperties: baseSchema.shape.maxProperties,
+      minProperties: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
+      maxProperties: z
+        .number()
+        .int({ message: t.typeValidationErrorIntValue })
+        .min(0, { message: t.typeValidationErrorNegativeLength })
+        .optional(),
     })
     // If both minProperties and maxProperties are set, minProperties must not be greater than maxProperties.
     .refine(

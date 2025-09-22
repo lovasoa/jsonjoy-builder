@@ -149,4 +149,9 @@ export const fr: Translation = {
 
   visualEditorNoFieldsHint1: "Aucun champ défini pour le moment",
   visualEditorNoFieldsHint2: "Ajoutez votre premier champ pour commencer",
+
+  typeValidationErrorNegativeLength:
+    "Les valeurs de longueur ne peuvent pas être négatives.",
+  typeValidationErrorIntValue: "La valeur doit être un nombre entier.",
+  typeValidationErrorPositive: "La valeur doit être positive.",
 };

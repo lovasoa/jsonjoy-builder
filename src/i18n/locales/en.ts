@@ -144,4 +144,8 @@ export const en: Translation = {
 
   visualEditorNoFieldsHint1: "No fields defined yet",
   visualEditorNoFieldsHint2: "Add your first field to get started",
+
+  typeValidationErrorNegativeLength: "Length values cannot be negative.",
+  typeValidationErrorIntValue: "Value must be an integer.",
+  typeValidationErrorPositive: "Value must be positive.",
 };

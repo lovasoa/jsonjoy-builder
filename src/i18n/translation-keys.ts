@@ -740,4 +740,23 @@ export interface Translation {
    * > Add your first field to get started
    */
   readonly visualEditorNoFieldsHint2: string;
+
+  /**
+   * The translation for the key `typeValidationErrorNegativeLength`. English default is:
+   *
+   * > Length values cannot be negative.
+   */
+  readonly typeValidationErrorNegativeLength: string;
+  /**
+   * The translation for the key `typeValidationErrorIntValue`. English default is:
+   *
+   * > Value must be an integer.
+   */
+  readonly typeValidationErrorIntValue: string;
+  /**
+   * The translation for the key `typeValidationErrorPositive`. English default is:
+   *
+   * > Value must be positive.
+   */
+  readonly typeValidationErrorPositive: string;
 }

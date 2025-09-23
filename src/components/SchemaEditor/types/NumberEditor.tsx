@@ -201,6 +201,14 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
     [validationNode],
   );
 
+  const multipleOfError = useMemo(
+    () =>
+      validationNode?.validation.errors?.find(
+        (err) => err.path[0] === "multipleOf",
+      )?.message,
+    [validationNode],
+  );
+
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -347,7 +355,12 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor={multipleOfId}>{t.numberMultipleOfLabel}</Label>
+        <Label
+          htmlFor={multipleOfId}
+          className={!!multipleOfError && "text-destructive"}
+        >
+          {t.numberMultipleOfLabel}
+        </Label>
         <Input
           id={multipleOfId}
           type="number"
@@ -357,10 +370,15 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
             handleValidationChange("multipleOf", value);
           }}
           placeholder={t.numberMultipleOfPlaceholder}
-          className="h-8"
+          className={cn("h-8", !!multipleOfError && "border-destructive")}
           min={0}
           step={integer ? 1 : "any"}
         />
+        {!!multipleOfError && (
+          <div className="text-xs text-destructive italic whitespace-pre-line">
+            {multipleOfError}
+          </div>
+        )}
       </div>
 
       <div className="space-y-2 pt-2 border-t border-border/40">

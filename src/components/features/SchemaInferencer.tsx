@@ -46,6 +46,14 @@ export function SchemaInferencer({
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
+    
+    // Unfold all content by default (users can fold manually if needed)
+    try {
+      editor.getAction('editor.unfoldAll')?.run();
+    } catch (e) {
+      // Ignore if action not available
+    }
+    
     editor.focus();
   };
 

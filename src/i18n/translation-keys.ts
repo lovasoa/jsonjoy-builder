@@ -759,4 +759,114 @@ export interface Translation {
    * > Value must be positive.
    */
   readonly typeValidationErrorPositive: string;
+
+  // Advanced Keywords - Conditional Schema
+  readonly conditionalTitle: string;
+  readonly conditionalRemoveAll: string;
+  readonly conditionalIfLabel: string;
+  readonly conditionalAddIf: string;
+  readonly conditionalIfHint: string;
+  readonly conditionalThenLabel: string;
+  readonly conditionalAddThen: string;
+  readonly conditionalThenHint: string;
+  readonly conditionalElseLabel: string;
+  readonly conditionalAddElse: string;
+  readonly conditionalElseHint: string;
+  readonly conditionalNoCondition: string;
+  readonly conditionalNoConditionHint: string;
+
+  // Advanced Keywords - Prefix Items
+  readonly prefixItemsTitle: string;
+  readonly prefixItemsDescription: string;
+  readonly prefixItemsAddPosition: string;
+  readonly prefixItemsPositionLabel: string;
+  readonly prefixItemsNoPositions: string;
+  readonly prefixItemsNoPositionsHint: string;
+  readonly prefixItemsAllowAdditional: string;
+  readonly prefixItemsAllowAdditionalHint: string;
+  readonly prefixItemsAdditionalSchema: string;
+  readonly prefixItemsAdditionalSchemaHint: string;
+  readonly prefixItemsTip: string;
+
+  // Advanced Keywords - Dynamic References
+  readonly dynamicRefsTitle: string;
+  readonly dynamicRefsDescription: string;
+  readonly dynamicAnchorLabel: string;
+  readonly dynamicAnchorPlaceholder: string;
+  readonly dynamicAnchorHint: string;
+  readonly dynamicRefLabel: string;
+  readonly dynamicRefPlaceholder: string;
+  readonly dynamicRefHint: string;
+  readonly dynamicRefsInfoTitle: string;
+  readonly dynamicRefsInfoDescription: string;
+  readonly dynamicRefsInfoExample: string;
+  readonly dynamicRefsMigrationNote: string;
+
+  // Advanced Keywords - Dependent Schemas
+  readonly dependentSchemasTitle: string;
+  readonly dependentSchemasDescription: string;
+  readonly dependentSchemasWhenPresent: string;
+  readonly dependentSchemasAppliesWhen: string;
+  readonly dependentSchemasNone: string;
+  readonly dependentSchemasNoneHint: string;
+  readonly dependentSchemasAddLabel: string;
+  readonly dependentSchemasPropertyPlaceholder: string;
+  readonly dependentSchemasPropertyHint: string;
+  readonly dependentSchemasExampleTitle: string;
+  readonly dependentSchemasExampleText: string;
+
+  // Advanced Keywords - Composition
+  readonly compositionTitle: string;
+  readonly compositionDescription: string;
+  readonly compositionAllOfLabel: string;
+  readonly compositionAllOfDescription: string;
+  readonly compositionAnyOfLabel: string;
+  readonly compositionAnyOfDescription: string;
+  readonly compositionOneOfLabel: string;
+  readonly compositionOneOfDescription: string;
+  readonly compositionNotLabel: string;
+  readonly compositionNotDescription: string;
+  readonly compositionAddSchema: string;
+  readonly compositionSchemaNumber: string;
+  readonly compositionNoSchemas: string;
+  readonly compositionAddNot: string;
+  readonly compositionInfoTitle: string;
+  readonly compositionInfoAllOf: string;
+  readonly compositionInfoAnyOf: string;
+  readonly compositionInfoOneOf: string;
+  readonly compositionInfoNot: string;
+
+  // Advanced Keywords - Unevaluated Properties
+  readonly unevaluatedPropsTitle: string;
+  readonly unevaluatedPropsDescription: string;
+  readonly unevaluatedPropsForbid: string;
+  readonly unevaluatedPropsAllow: string;
+  readonly unevaluatedPropsNoAdditional: string;
+  readonly unevaluatedPropsAdditionalAllowed: string;
+  readonly unevaluatedPropsSchema: string;
+  readonly unevaluatedPropsSchemaHint: string;
+  readonly unevaluatedPropsRemove: string;
+  readonly unevaluatedPropsInfoTitle: string;
+  readonly unevaluatedPropsInfoDescription: string;
+  readonly unevaluatedPropsInfoExample: string;
+  readonly unevaluatedPropsNoConstraint: string;
+
+  // Advanced Keywords - Unevaluated Items
+  readonly unevaluatedItemsTitle: string;
+  readonly unevaluatedItemsDescription: string;
+  readonly unevaluatedItemsForbid: string;
+  readonly unevaluatedItemsAllow: string;
+  readonly unevaluatedItemsNoAdditional: string;
+  readonly unevaluatedItemsAdditionalAllowed: string;
+  readonly unevaluatedItemsSchema: string;
+  readonly unevaluatedItemsSchemaHint: string;
+  readonly unevaluatedItemsRemove: string;
+  readonly unevaluatedItemsInfoTitle: string;
+  readonly unevaluatedItemsInfoDescription: string;
+  readonly unevaluatedItemsInfoExample: string;
+  readonly unevaluatedItemsNoConstraint: string;
+
+  // Common keywords
+  readonly remove: string;
+  readonly add: string;
 }

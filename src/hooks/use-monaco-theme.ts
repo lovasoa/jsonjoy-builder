@@ -1,6 +1,7 @@
 import type * as Monaco from "monaco-editor";
 import { useEffect, useState } from "react";
 import type { JSONSchema } from "../types/jsonSchema.ts";
+import { registerJsonSchemaLanguage } from "../utils/monaco-json-schema-language.ts";
 
 export interface MonacoEditorOptions {
   minimap?: { enabled: boolean };
@@ -34,6 +35,8 @@ export interface MonacoEditorOptions {
     bracketPairs?: boolean;
     indentation?: boolean;
   };
+  stickyScroll?: { enabled: boolean };
+  showFoldingControls?: "always" | "never" | "mouseover";
 }
 
 export const defaultEditorOptions: MonacoEditorOptions = {
@@ -50,8 +53,10 @@ export const defaultEditorOptions: MonacoEditorOptions = {
   tabSize: 2,
   insertSpaces: true,
   detectIndentation: true,
-  folding: true,
-  foldingStrategy: "indentation",
+  folding: true, // Enable folding for object/array scopes
+  showFoldingControls: 'mouseover', // Show folding controls on hover
+  foldingStrategy: "indentation", // Use indentation-based folding
+  stickyScroll: { enabled: false }, // Keep sticky scroll disabled
   renderLineHighlight: "all",
   matchBrackets: "always",
   autoClosingBrackets: "always",
@@ -95,65 +100,94 @@ export function useMonacoTheme() {
   }, []);
 
   const defineMonacoThemes = (monaco: typeof Monaco) => {
-    // Define custom light theme that matches app colors
+    // Register custom JSON Schema language for semantic colorization
+    registerJsonSchemaLanguage(monaco);
+
+    // Define custom light theme with vibrant, distinguishable colors
     monaco.editor.defineTheme("appLightTheme", {
       base: "vs",
       inherit: true,
       rules: [
-        // JSON syntax highlighting based on utils.ts type colors
-        { token: "string", foreground: "3B82F6" }, // text-blue-500
-        { token: "number", foreground: "A855F7" }, // text-purple-500
-        { token: "keyword", foreground: "3B82F6" }, // text-blue-500
-        { token: "delimiter", foreground: "0F172A" }, // text-slate-900
-        { token: "keyword.json", foreground: "A855F7" }, // text-purple-500
-        { token: "string.key.json", foreground: "2563EB" }, // text-blue-600
-        { token: "string.value.json", foreground: "3B82F6" }, // text-blue-500
-        { token: "boolean", foreground: "22C55E" }, // text-green-500
-        { token: "null", foreground: "64748B" }, // text-gray-500
+        // Property keys - vibrant colors
+        { token: "key", foreground: "0284C7", fontStyle: "bold" }, // Property keys (sky-600, bold)
+        { token: "schema-keyword-key", foreground: "0369A1", fontStyle: "bold" }, // Schema keywords (sky-700, bold)
+        
+        // Semantic type colorization - MATCHING VISUAL UI COLORS from utils.ts
+        { token: "type-string-value", foreground: "3B82F6", fontStyle: "bold" }, // blue-500 (matches UI)
+        { token: "type-number-value", foreground: "A855F7", fontStyle: "bold" }, // purple-500 (matches UI)
+        { token: "type-boolean-value", foreground: "22C55E", fontStyle: "bold" }, // green-500 (matches UI)
+        { token: "type-object-value", foreground: "F97316", fontStyle: "bold" }, // orange-500 (matches UI)
+        { token: "type-array-value", foreground: "EC4899", fontStyle: "bold" }, // pink-500 (matches UI)
+        { token: "type-null-value", foreground: "6B7280", fontStyle: "bold" }, // gray-500 (matches UI)
+        
+        // Default string values - vibrant cyan
+        { token: "string", foreground: "0891B2" }, // cyan-600 (vibrant)
+        
+        // Actual value types - vibrant colors
+        { token: "number", foreground: "D946EF" }, // fuchsia-500 (vibrant)
+        { token: "boolean", foreground: "10B981" }, // emerald-500 (vibrant)
+        { token: "null", foreground: "8B5CF6" }, // violet-500 (vibrant)
+        
+        // Structure - subtle
+        { token: "delimiter", foreground: "64748B" }, // slate-500
       ],
       colors: {
-        // Light theme colors (using hex values instead of CSS variables)
-        "editor.background": "#f8fafc", // --background
-        "editor.foreground": "#0f172a", // --foreground
-        "editorCursor.foreground": "#0f172a", // --foreground
-        "editor.lineHighlightBackground": "#f1f5f9", // --muted
-        "editorLineNumber.foreground": "#64748b", // --muted-foreground
-        "editor.selectionBackground": "#e2e8f0", // --accent
-        "editor.inactiveSelectionBackground": "#e2e8f0", // --accent
-        "editorIndentGuide.background": "#e2e8f0", // --border
-        "editor.findMatchBackground": "#cbd5e1", // --accent
-        "editor.findMatchHighlightBackground": "#cbd5e133", // --accent with opacity
+        // Light theme colors
+        "editor.background": "#ffffff", // Pure white for better contrast
+        "editor.foreground": "#0f172a", // text-slate-900
+        "editorCursor.foreground": "#0284C7", // text-sky-600
+        "editor.lineHighlightBackground": "#F0F9FF", // bg-sky-50
+        "editorLineNumber.foreground": "#94A3B8", // text-slate-400
+        "editor.selectionBackground": "#BAE6FD", // bg-sky-200
+        "editor.inactiveSelectionBackground": "#E0F2FE", // bg-sky-100
+        "editorIndentGuide.background": "#E2E8F0", // border-slate-200
+        "editorIndentGuide.activeBackground": "#CBD5E1", // border-slate-300
+        "editor.findMatchBackground": "#FDE047", // bg-yellow-300
+        "editor.findMatchHighlightBackground": "#FEF08A66", // bg-yellow-200 with opacity
       },
     });
 
-    // Define custom dark theme that matches app colors
+    // Define custom dark theme with vibrant, distinguishable colors
     monaco.editor.defineTheme("appDarkTheme", {
       base: "vs-dark",
       inherit: true,
       rules: [
-        // JSON syntax highlighting based on utils.ts type colors
-        { token: "string", foreground: "3B82F6" }, // text-blue-500
-        { token: "number", foreground: "A855F7" }, // text-purple-500
-        { token: "keyword", foreground: "3B82F6" }, // text-blue-500
-        { token: "delimiter", foreground: "F8FAFC" }, // text-slate-50
-        { token: "keyword.json", foreground: "A855F7" }, // text-purple-500
-        { token: "string.key.json", foreground: "60A5FA" }, // text-blue-400
-        { token: "string.value.json", foreground: "3B82F6" }, // text-blue-500
-        { token: "boolean", foreground: "22C55E" }, // text-green-500
-        { token: "null", foreground: "94A3B8" }, // text-gray-400
+        // Property keys - vibrant colors
+        { token: "key", foreground: "38BDF8", fontStyle: "bold" }, // Property keys (sky-400, bold)
+        { token: "schema-keyword-key", foreground: "7DD3FC", fontStyle: "bold" }, // Schema keywords (sky-300, bold)
+        
+        // Semantic type colorization - MATCHING VISUAL UI COLORS (lighter for dark mode)
+        { token: "type-string-value", foreground: "60A5FA", fontStyle: "bold" }, // blue-400 (matches UI pattern)
+        { token: "type-number-value", foreground: "C084FC", fontStyle: "bold" }, // purple-400 (matches UI pattern)
+        { token: "type-boolean-value", foreground: "4ADE80", fontStyle: "bold" }, // green-400 (matches UI pattern)
+        { token: "type-object-value", foreground: "FB923C", fontStyle: "bold" }, // orange-400 (matches UI pattern)
+        { token: "type-array-value", foreground: "F472B6", fontStyle: "bold" }, // pink-400 (matches UI pattern)
+        { token: "type-null-value", foreground: "9CA3AF", fontStyle: "bold" }, // gray-400 (matches UI pattern)
+        
+        // Default string values - vibrant cyan
+        { token: "string", foreground: "22D3EE" }, // cyan-400 (vibrant)
+        
+        // Actual value types - vibrant colors
+        { token: "number", foreground: "E879F9" }, // fuchsia-400 (vibrant)
+        { token: "boolean", foreground: "34D399" }, // emerald-400 (vibrant)
+        { token: "null", foreground: "A78BFA" }, // violet-400 (vibrant)
+        
+        // Structure - subtle
+        { token: "delimiter", foreground: "94A3B8" }, // slate-400
       ],
       colors: {
-        // Dark theme colors (using hex values instead of CSS variables)
-        "editor.background": "#0f172a", // --background
-        "editor.foreground": "#f8fafc", // --foreground
-        "editorCursor.foreground": "#f8fafc", // --foreground
-        "editor.lineHighlightBackground": "#1e293b", // --muted
-        "editorLineNumber.foreground": "#64748b", // --muted-foreground
-        "editor.selectionBackground": "#334155", // --accent
-        "editor.inactiveSelectionBackground": "#334155", // --accent
-        "editorIndentGuide.background": "#1e293b", // --border
-        "editor.findMatchBackground": "#475569", // --accent
-        "editor.findMatchHighlightBackground": "#47556933", // --accent with opacity
+        // Dark theme colors with better contrast
+        "editor.background": "#0c1222", // Darker blue-black
+        "editor.foreground": "#e2e8f0", // text-slate-200
+        "editorCursor.foreground": "#38BDF8", // text-sky-400
+        "editor.lineHighlightBackground": "#1e293b66", // subtle highlight
+        "editorLineNumber.foreground": "#64748b", // text-slate-500
+        "editor.selectionBackground": "#0EA5E966", // bg-sky-500 with opacity
+        "editor.inactiveSelectionBackground": "#0369A133", // bg-sky-700 with opacity
+        "editorIndentGuide.background": "#1e293b", // border-slate-800
+        "editorIndentGuide.activeBackground": "#334155", // border-slate-700
+        "editor.findMatchBackground": "#FBBF24", // bg-amber-400
+        "editor.findMatchHighlightBackground": "#FDE04766", // bg-yellow-300 with opacity
       },
     });
   };
@@ -161,36 +195,14 @@ export function useMonacoTheme() {
   // Helper to configure JSON language validation
   const configureJsonDefaults = (
     monaco: typeof Monaco,
-    schema?: JSONSchema,
+    draft: string = '2020-12',
   ) => {
-    // Create a new diagnostics options object
+    // Disable all schema validation to prevent Monaco from trying to load meta-schemas
+    // We use Ajv for all JSON Schema validation instead
     const diagnosticsOptions: Monaco.languages.json.DiagnosticsOptions = {
-      validate: true,
+      validate: false,            // Disable all validation
       allowComments: false,
-      schemaValidation: "error",
-      enableSchemaRequest: true,
-      schemas: schema
-        ? [
-            {
-              uri:
-                typeof schema === "object" && schema.$id
-                  ? schema.$id
-                  : "https://jsonjoy-builder/schema",
-              fileMatch: ["*"],
-              schema,
-            },
-          ]
-        : [
-            {
-              uri: "http://json-schema.org/draft-07/schema",
-              fileMatch: ["*"],
-              schema: {
-                $schema: "http://json-schema.org/draft-07/schema",
-                type: "object",
-                additionalProperties: true,
-              },
-            },
-          ],
+      schemas: []
     };
 
     monaco.languages.json.jsonDefaults.setDiagnosticsOptions(

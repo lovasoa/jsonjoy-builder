@@ -1,16 +1,18 @@
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Download, FileJson, Loader2 } from "lucide-react";
-import { type FC, useRef } from "react";
+import { type FC, useEffect, useRef } from "react";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { detectSchemaVersion } from "../../utils/schema-version.ts";
 
 /** @public */
 export interface JsonSchemaVisualizerProps {
   schema: JSONSchema;
   className?: string;
   onChange?: (schema: JSONSchema) => void;
+  draft?: string;
 }
 
 /** @public */
@@ -18,8 +20,10 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
   schema,
   className,
   onChange,
+  draft,
 }) => {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
+  const monacoRef = useRef<Parameters<BeforeMount>[0] | null>(null);
   const {
     currentTheme,
     defineMonacoThemes,
@@ -28,14 +32,32 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
   } = useMonacoTheme();
 
   const t = useTranslation();
+  const currentDraft = draft || detectSchemaVersion(schema);
 
   const handleBeforeMount: BeforeMount = (monaco) => {
+    monacoRef.current = monaco;
     defineMonacoThemes(monaco);
-    configureJsonDefaults(monaco);
+    configureJsonDefaults(monaco, currentDraft);
   };
+
+  // Reconfigure Monaco when draft changes
+  useEffect(() => {
+    if (monacoRef.current) {
+      configureJsonDefaults(monacoRef.current, currentDraft);
+    }
+  }, [currentDraft, configureJsonDefaults]);
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
+    
+    // Unfold all content by default (users can fold manually if needed)
+    try {
+      editor.getAction('editor.unfoldAll')?.run();
+    } catch (e) {
+      // Ignore if action not available
+    }
+    
+    // Focus the editor
     editor.focus();
   };
 
@@ -67,7 +89,7 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
 
   return (
     <div
-      className={cn("relative overflow-hidden h-full flex flex-col", className, "jsonjoy")}
+      className={cn("relative h-full flex flex-col", className, "jsonjoy")}
     >
       <div className="flex items-center justify-between bg-secondary/80 backdrop-blur-xs px-4 py-2 border-b shrink-0">
         <div className="flex items-center gap-2">
@@ -83,10 +105,10 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
           <Download size={16} />
         </button>
       </div>
-      <div className="grow flex min-h-0">
+      <div className="grow flex min-h-0 overflow-auto">
         <Editor
           height="100%"
-          defaultLanguage="json"
+          defaultLanguage="jsonschema"
           value={JSON.stringify(schema, null, 2)}
           onChange={handleEditorChange}
           beforeMount={handleBeforeMount}

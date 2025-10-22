@@ -9,6 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog.tsx";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select.tsx";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import {
@@ -19,6 +26,8 @@ import {
   formatTranslation,
   useTranslation,
 } from "../../hooks/use-translation.ts";
+import type { JSONSchemaDraft } from "../../utils/schema-version.ts";
+import { detectSchemaVersion, getDraftDisplayName } from "../../utils/schema-version.ts";
 
 /** @public */
 export interface JsonValidatorProps {
@@ -37,6 +46,9 @@ export function JsonValidator({
   const [jsonInput, setJsonInput] = useState("");
   const [validationResult, setValidationResult] =
     useState<ValidationResult | null>(null);
+  const [selectedDraft, setSelectedDraft] = useState<JSONSchemaDraft>(() =>
+    detectSchemaVersion(schema)
+  );
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const debounceTimerRef = useRef<number | null>(null);
   const monacoRef = useRef<typeof Monaco | null>(null);
@@ -48,15 +60,20 @@ export function JsonValidator({
     defaultEditorOptions,
   } = useMonacoTheme();
 
+  // Update selected draft when schema changes
+  useEffect(() => {
+    setSelectedDraft(detectSchemaVersion(schema));
+  }, [schema]);
+
   const validateJsonAgainstSchema = useCallback(() => {
     if (!jsonInput.trim()) {
       setValidationResult(null);
       return;
     }
 
-    const result = validateJson(jsonInput, schema);
+    const result = validateJson(jsonInput, schema, selectedDraft);
     setValidationResult(result);
-  }, [jsonInput, schema]);
+  }, [jsonInput, schema, selectedDraft]);
 
   useEffect(() => {
     if (debounceTimerRef.current) {
@@ -87,6 +104,14 @@ export function JsonValidator({
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
+    
+    // Unfold all content by default (users can fold manually if needed)
+    try {
+      editor.getAction('editor.unfoldAll')?.run();
+    } catch (e) {
+      // Ignore if action not available
+    }
+    
     editor.focus();
   };
 
@@ -121,6 +146,25 @@ export function JsonValidator({
           <DialogTitle>{t.validatorTitle}</DialogTitle>
           <DialogDescription>{t.validatorDescription}</DialogDescription>
         </DialogHeader>
+        
+        {/* Draft Version Selector */}
+        <div className="flex items-center gap-3 pb-2 border-b">
+          <label className="text-sm font-medium">JSON Schema Draft:</label>
+          <Select value={selectedDraft} onValueChange={(value) => setSelectedDraft(value as JSONSchemaDraft)}>
+            <SelectTrigger className="w-[200px]">
+              <SelectValue>{getDraftDisplayName(selectedDraft)}</SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="draft-07">Draft 07</SelectItem>
+              <SelectItem value="2019-09">Draft 2019-09</SelectItem>
+              <SelectItem value="2020-12">Draft 2020-12 (Latest)</SelectItem>
+            </SelectContent>
+          </Select>
+          <span className="text-xs text-muted-foreground">
+            Auto-detected: {getDraftDisplayName(detectSchemaVersion(schema))}
+          </span>
+        </div>
+
         <div className="flex-1 flex flex-col md:flex-row gap-4 py-4 overflow-hidden h-[600px]">
           <div className="flex-1 flex flex-col h-full">
             <div className="text-sm font-medium mb-2">{t.validatorContent}</div>

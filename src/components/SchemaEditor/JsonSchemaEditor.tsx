@@ -16,6 +16,10 @@ import type { JSONSchema } from "../../types/jsonSchema.ts";
 import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import SchemaVersionSelector from "../SchemaVersionSelector.tsx";
+import type { JSONSchemaDraft } from "../../utils/schema-version.ts";
+import { detectSchemaVersion, getSchemaURI } from "../../utils/schema-version.ts";
+import { asObjectSchema } from "../../types/jsonSchema.ts";
 
 /** @public */
 export interface JsonSchemaEditorProps {
@@ -37,11 +41,34 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
 
   const t = useTranslation();
 
+  // Detect or default to 2020-12
+  const getInitialDraft = (schema: JSONSchema): JSONSchemaDraft => {
+    // If no $schema specified, default to 2020-12 (latest)
+    if (typeof schema === 'object' && schema !== null && !schema.$schema) {
+      return '2020-12';
+    }
+    return detectSchemaVersion(schema);
+  };
+
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
+  const [selectedDraft, setSelectedDraft] = useState<JSONSchemaDraft>(() =>
+    getInitialDraft(schema)
+  );
   const resizeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDraggingRef = useRef(false);
+
+  // Handle draft version change - updates the $schema field
+  const handleDraftChange = (draft: JSONSchemaDraft) => {
+    setSelectedDraft(draft);
+    const objSchema = asObjectSchema(schema);
+    const newSchema = {
+      ...objSchema,
+      $schema: getSchemaURI(draft),
+    };
+    handleSchemaChange(newSchema);
+  };
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -113,7 +140,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               isFullscreen ? "h-screen" : "h-[500px]",
             )}
           >
-            <SchemaVisualEditor schema={schema} onChange={handleSchemaChange} />
+            <SchemaVisualEditor schema={schema} onChange={handleSchemaChange} draft={selectedDraft} />
           </TabsContent>
 
           <TabsContent
@@ -126,6 +153,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              draft={selectedDraft}
             />
           </TabsContent>
         </Tabs>
@@ -140,7 +168,16 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
         )}
       >
         <div className="flex items-center justify-between px-4 py-3 border-b w-full shrink-0">
-          <h3 className="font-medium">{t.schemaEditorTitle}</h3>
+          <div className="flex items-center gap-4">
+            <h3 className="font-medium">{t.schemaEditorTitle}</h3>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">Draft:</span>
+              <SchemaVersionSelector
+                version={selectedDraft}
+                onChange={handleDraftChange}
+              />
+            </div>
+          </div>
           <button
             type="button"
             onClick={toggleFullscreen}
@@ -155,7 +192,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             className="h-full min-h-0"
             style={{ width: `${leftPanelWidth}%` }}
           >
-            <SchemaVisualEditor schema={schema} onChange={handleSchemaChange} />
+            <SchemaVisualEditor schema={schema} onChange={handleSchemaChange} draft={selectedDraft} />
           </div>
           {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
           <div
@@ -170,6 +207,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              draft={selectedDraft}
             />
           </div>
         </div>

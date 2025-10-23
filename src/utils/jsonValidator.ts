@@ -1,15 +1,7 @@
-import Ajv from "ajv";
-import addFormats from "ajv-formats";
 import type { JSONSchema } from "../types/jsonSchema.ts";
-
-// Initialize Ajv with all supported formats and meta-schemas
-const ajv = new Ajv({
-  allErrors: true,
-  strict: false,
-  validateSchema: false,
-  validateFormats: false,
-});
-addFormats(ajv);
+import type { JSONSchemaDraft } from "./schema-version.ts";
+import { detectSchemaVersion } from "./schema-version.ts";
+import { createValidator } from "./validator.ts";
 
 export interface ValidationError {
   path: string;
@@ -150,10 +142,12 @@ export function extractErrorPosition(
 
 /**
  * Validates a JSON string against a schema and returns validation results
+ * Automatically detects and uses the appropriate JSON Schema draft version
  */
 export function validateJson(
   jsonInput: string,
   schema: JSONSchema,
+  draft?: JSONSchemaDraft,
 ): ValidationResult {
   if (!jsonInput.trim()) {
     return {
@@ -170,6 +164,12 @@ export function validateJson(
   try {
     // Parse the JSON input
     const jsonObject = JSON.parse(jsonInput);
+
+    // Auto-detect draft version if not provided
+    const draftVersion = draft || detectSchemaVersion(schema);
+
+    // Create appropriate validator for the detected draft
+    const ajv = createValidator(draftVersion);
 
     // Use Ajv to validate the JSON against the schema
     const validate = ajv.compile(schema);

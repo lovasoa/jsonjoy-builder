@@ -1,11 +1,17 @@
 {
-  "name": "jsonjoy-builder",
+  "name": "@usercourses63/jsonjoy-builder",
   "license": "MIT",
-  "description": "Visual JSON Schema editor for creating and manipulating JSON Schema definitions with an intuitive interface.",
+  "description": "Enhanced JSON Schema editor with complete Draft 2020-12 support, multi-language UI, and advanced features. Visual editor for creating and manipulating JSON Schema definitions.",
   "author": {
-    "name": "Ophir LOJKINE",
-    "url": "http://ophir.dev/"
+    "name": "usercourses63",
+    "url": "https://github.com/usercourses63"
   },
+  "contributors": [
+    {
+      "name": "Ophir LOJKINE (Original Author)",
+      "url": "http://ophir.dev/"
+    }
+  ],
   "keywords": [
     "json",
     "schema",
@@ -14,12 +20,16 @@
     "react"
   ],
   "private": false,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/lovasoa/jsonjoy-builder"
+    "url": "https://github.com/usercourses63/jsonjoy-builder"
+  },
+  "homepage": "https://github.com/usercourses63/jsonjoy-builder#readme",
+  "bugs": {
+    "url": "https://github.com/usercourses63/jsonjoy-builder/issues"
   },
   "files": [
     "dist",
@@ -53,7 +63,7 @@
     "check": "biome check .",
     "fix": "biome check --fix --unsafe",
     "typecheck": "tsc --build --force",
-    "test": "node --test test/*.test.{js,ts}",
+    "test": "tsx --test test/*.test.{js,ts}",
     "prepack": "npm run build"
   },
   "dependencies": {
@@ -102,6 +112,7 @@
     "sonner": "^2.0.7",
     "tailwindcss": "^4.1.12",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2"
   },
   "packageManager": "npm@10.9.3+sha512.e84875bb943e908557780f1eee5d9cfc7a67145730ae4b77ef10ccba30f96ded6096859af69ea3dc5b2fde60725d79aa247cbed9c12544c30bf28a4d4fbc4825"

@@ -354,7 +354,7 @@ export function createSchemaFromJson(jsonObject: unknown): JSONSchema {
   // Ensure the root schema is always an object, even if input is array/primitive
   const rootSchema = asObjectSchema(inferredSchema);
   const finalSchema: Record<string, unknown> = {
-    $schema: "https://json-schema.org/draft-07/schema",
+    $schema: "https://json-schema.org/draft/2020-12/schema",
     title: "Generated Schema",
     description: "Generated from JSON data",
   };

@@ -13,6 +13,90 @@ A modern, React-based visual JSON Schema editor for creating and manipulating JS
 - **Schema Inference**: Generate schemas automatically from existing JSON data
 - **JSON Validation**: Test JSON data against your schema with detailed validation feedback
 - **Responsive Design**: Fully responsive interface that works on desktop and mobile devices
+- **🆕 JSON Schema Draft 2020-12 Support**: Full support for the latest JSON Schema specification
+- **🆕 Multi-Draft Support**: Switch between Draft-07, 2019-09, and 2020-12
+- **🆕 Advanced Keywords**: Visual editors for conditional validation, composition, dynamic references, and more
+- **🌍 Internationalization**: Support for English, Hebrew, German, French, and Russian
+
+## JSON Schema Draft 2020-12 Support
+
+This fork includes complete support for JSON Schema Draft 2020-12, the latest specification.
+
+### New 2020-12 Features
+
+#### ✨ Tuple Validation with `prefixItems`
+Define schemas for specific array positions:
+```json
+{
+  "type": "array",
+  "prefixItems": [
+    { "type": "string" },
+    { "type": "number" },
+    { "type": "boolean" }
+  ],
+  "items": false
+}
+```
+
+#### ✨ Dynamic References (`$dynamicRef` & `$dynamicAnchor`)
+Create extensible schemas with dynamic composition:
+```json
+{
+  "$dynamicAnchor": "node",
+  "type": "object",
+  "properties": {
+    "children": {
+      "type": "array",
+      "items": { "$dynamicRef": "#node" }
+    }
+  }
+}
+```
+
+#### ✨ Enhanced `unevaluatedProperties`
+Works correctly with schema composition (allOf/anyOf/oneOf):
+```json
+{
+  "properties": { "name": { "type": "string" } },
+  "allOf": [
+    { "properties": { "age": { "type": "number" } } }
+  ],
+  "unevaluatedProperties": false
+}
+```
+
+#### ✨ Conditional Validation (if/then/else)
+```json
+{
+  "if": { "properties": { "country": { "const": "USA" } } },
+  "then": { "properties": { "postal_code": { "pattern": "^[0-9]{5}$" } } },
+  "else": { "properties": { "postal_code": { "minLength": 4 } } }
+}
+```
+
+### Supported Drafts
+
+- **Draft-07** (2018) - Stable baseline with if/then/else
+- **Draft 2019-09** - Adds dependentSchemas and basic unevaluated support
+- **Draft 2020-12** (Latest) - Full feature set including prefixItems and dynamic references
+
+Switch between drafts using the selector in the editor header.
+
+### Migration Guides
+
+- 📄 [English Migration Guide](./MIGRATION-GUIDE.md)
+- 📄 [מדריך מעבר בעברית (Hebrew Migration Guide)](./MIGRATION-GUIDE.he.md)
+
+### Visual Editors for Advanced Keywords
+
+- **Conditional Validation** - if/then/else editor
+- **Schema Composition** - allOf/anyOf/oneOf/not editor
+- **Tuple Validation** - prefixItems editor (2020-12)
+- **Dynamic References** - $dynamicRef/$dynamicAnchor editor (2020-12)
+- **Dependent Schemas** - Property-dependent validation (2019-09+)
+- **Unevaluated Properties/Items** - Advanced validation control (2019-09+)
+
+All advanced editors support both Visual and JSON editing modes.
 
 ## Getting Started
 
@@ -190,10 +274,34 @@ Validate any JSON document against your schema with:
 | `npm run preview` | Preview production build |
 | `npm run test` | Run tests |
 
+## Documentation
+
+- 📖 [English README](./README.md) (this file)
+- 📖 [Hebrew README - קרא אותי בעברית](./README.he.md)
+- 📄 [Migration Guide (English)](./MIGRATION-GUIDE.md)
+- 📄 [מדריך מעבר (Hebrew)](./MIGRATION-GUIDE.he.md)
+- 📄 [Feature Documentation](./README-features.md)
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Authors
+
+**Original Author**: [@ophir.dev](https://ophir.dev) - [lovasoa/jsonjoy-builder](https://github.com/lovasoa/jsonjoy-builder)
+
+**JSON Schema 2020-12 Enhanced Fork**: [@usercourses63](https://github.com/usercourses63) - [usercourses63/jsonjoy-builder](https://github.com/usercourses63/jsonjoy-builder)
+
+### Enhanced Fork Features
+- ✅ Complete JSON Schema Draft 2020-12 support
+- ✅ Multi-draft validation (Draft-07, 2019-09, 2020-12)
+- ✅ 7 advanced keyword editors with Visual/JSON toggle
+- ✅ Conditional display based on draft version
+- ✅ Full internationalization (English, Hebrew, German, French, Russian)
+- ✅ Comprehensive migration guides (English + Hebrew)
+- ✅ Draft prop inheritance for nested schemas
+- ✅ Visual editing mode for all nested schemas
+
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Author
-
-[@ophir.dev](https://ophir.dev)

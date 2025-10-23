@@ -8,27 +8,19 @@ import { Plus, X } from "lucide-react";
 import { type FC, useState } from "react";
 import { Button } from "../../components/ui/button.tsx";
 import { Label } from "../../components/ui/label.tsx";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../components/ui/select.tsx";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/tabs.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import { asObjectSchema } from "../../types/jsonSchema.ts";
+import type { JSONSchemaDraft } from "../../utils/schema-version.ts";
 import JsonSchemaVisualizer from "../SchemaEditor/JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "../SchemaEditor/SchemaVisualEditor.tsx";
 
 export interface CompositionEditorProps {
   schema: JSONSchema;
   onChange: (schema: JSONSchema) => void;
-  draft?: string;
+  draft?: JSONSchemaDraft;
 }
-
-type CompositionType = "allOf" | "anyOf" | "oneOf" | "not";
 
 /**
  * CompositionEditor Component

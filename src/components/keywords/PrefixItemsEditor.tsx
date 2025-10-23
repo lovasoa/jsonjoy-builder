@@ -13,13 +13,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import { asObjectSchema } from "../../types/jsonSchema.ts";
+import type { JSONSchemaDraft } from "../../utils/schema-version.ts";
 import JsonSchemaVisualizer from "../SchemaEditor/JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "../SchemaEditor/SchemaVisualEditor.tsx";
 
 export interface PrefixItemsEditorProps {
   schema: JSONSchema;
   onChange: (schema: JSONSchema) => void;
-  draft?: string;
+  draft?: JSONSchemaDraft;
 }
 
 /**
@@ -31,11 +32,10 @@ const PrefixItemsEditor: FC<PrefixItemsEditorProps> = ({ schema, onChange, draft
   const [editMode, setEditMode] = useState<'visual' | 'json'>('visual');
   const objSchema = asObjectSchema(schema);
   const prefixItems = objSchema.prefixItems || [];
-  const itemsIsBoolean = typeof objSchema.items === "boolean";
   const itemsValue = objSchema.items;
 
   const handleAddTuplePosition = () => {
-    const newPrefixItems = [...prefixItems, { type: "string" }];
+    const newPrefixItems: JSONSchema[] = [...prefixItems, { type: "string" as const }];
     onChange({
       ...objSchema,
       type: "array",

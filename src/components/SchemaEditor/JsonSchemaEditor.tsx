@@ -43,12 +43,11 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
 
   // Detect or default to 2020-12
   const getInitialDraft = (schema: JSONSchema): JSONSchemaDraft => {
-    const detected = detectSchemaVersion(schema);
     // If no $schema specified, default to 2020-12 (latest)
-    if (!schema.$schema) {
+    if (typeof schema === 'object' && schema !== null && !schema.$schema) {
       return '2020-12';
     }
-    return detected;
+    return detectSchemaVersion(schema);
   };
 
   const [isFullscreen, setIsFullscreen] = useState(false);

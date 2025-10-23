@@ -1,6 +1,5 @@
 import type * as Monaco from "monaco-editor";
 import { useEffect, useState } from "react";
-import type { JSONSchema } from "../types/jsonSchema.ts";
 import { registerJsonSchemaLanguage } from "../utils/monaco-json-schema-language.ts";
 
 export interface MonacoEditorOptions {

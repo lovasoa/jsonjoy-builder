@@ -33,7 +33,9 @@ export function migrateToSchema202012(
   }
   
   // Set the correct $schema URI
-  migrated.$schema = getSchemaURI('2020-12');
+  if (typeof migrated === 'object' && migrated !== null) {
+    migrated.$schema = getSchemaURI('2020-12');
+  }
   
   return migrated;
 }
@@ -235,21 +237,29 @@ export function validateMigration(
 ): { success: boolean; warnings: string[] } {
   const warnings: string[] = [];
   
+  // Type guard for object schemas
+  if (typeof migrated !== 'object' || migrated === null || typeof migrated === 'boolean') {
+    return { success: true, warnings };
+  }
+  
+  // Cast to any for legacy keyword access
+  const migratedAny = migrated as any;
+  
   // Check if $schema was updated
   if (!migrated.$schema || !migrated.$schema.includes('2020-12')) {
     warnings.push('$schema URI not updated to 2020-12');
   }
   
   // Check for leftover old keywords
-  if (migrated.definitions) {
+  if (migratedAny.definitions) {
     warnings.push('Old "definitions" keyword still present (should be $defs)');
   }
   
-  if (migrated.additionalItems !== undefined) {
+  if (migratedAny.additionalItems !== undefined) {
     warnings.push('Old "additionalItems" keyword still present (should be items)');
   }
   
-  if (migrated.$recursiveRef || migrated.$recursiveAnchor) {
+  if (migratedAny.$recursiveRef || migratedAny.$recursiveAnchor) {
     warnings.push('Old recursive keywords still present (should be $dynamic*)');
   }
   
@@ -283,20 +293,29 @@ export function getMigrationSummary(
     return { sourceDraft, targetDraft: '2020-12', changes };
   }
   
+  // Type guard
+  if (typeof schema !== 'object' || schema === null || typeof schema === 'boolean') {
+    changes.push('No structural changes needed - only $schema update');
+    return { sourceDraft, targetDraft: '2020-12', changes };
+  }
+  
+  // Cast to any for legacy keyword access
+  const schemaAny = schema as any;
+  
   // Check for Draft-07 specific changes
   if (sourceDraft === 'draft-07') {
-    if (schema.definitions) {
+    if (schemaAny.definitions) {
       changes.push('Convert "definitions" → "$defs"');
-      changes.push(`Update ${Object.keys(schema.definitions).length} definition references`);
+      changes.push(`Update ${Object.keys(schemaAny.definitions).length} definition references`);
     }
   }
   
   // Check for 2019-09 specific changes
   if (sourceDraft === '2019-09') {
-    if (schema.$recursiveRef) {
+    if (schemaAny.$recursiveRef) {
       changes.push('Convert "$recursiveRef" → "$dynamicRef"');
     }
-    if (schema.$recursiveAnchor !== undefined) {
+    if (schemaAny.$recursiveAnchor !== undefined) {
       changes.push('Convert "$recursiveAnchor" → "$dynamicAnchor"');
     }
   }
@@ -304,7 +323,7 @@ export function getMigrationSummary(
   // Check for array items conversion (both drafts)
   if (Array.isArray(schema.items)) {
     changes.push(`Convert array "items" → "prefixItems" (${schema.items.length} positions)`);
-    if (schema.additionalItems !== undefined) {
+    if (schemaAny.additionalItems !== undefined) {
       changes.push('Convert "additionalItems" → "items"');
     }
   }
@@ -345,18 +364,4 @@ export function migrateWithReport(
     summary,
     validation
   };
-}
-
-/**
- * Helper: Check if a value is a schema object
- */
-function isSchemaObject(value: any): value is JSONSchema {
-  return value !== null && typeof value === 'object' && !Array.isArray(value);
-}
-
-/**
- * Helper: Deep clone an object
- */
-function deepClone<T>(obj: T): T {
-  return JSON.parse(JSON.stringify(obj));
 }

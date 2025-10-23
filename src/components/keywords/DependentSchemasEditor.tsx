@@ -13,13 +13,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../components/ui/ta
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import { asObjectSchema } from "../../types/jsonSchema.ts";
+import type { JSONSchemaDraft } from "../../utils/schema-version.ts";
 import JsonSchemaVisualizer from "../SchemaEditor/JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "../SchemaEditor/SchemaVisualEditor.tsx";
 
 export interface DependentSchemasEditorProps {
   schema: JSONSchema;
   onChange: (schema: JSONSchema) => void;
-  draft?: string;
+  draft?: JSONSchemaDraft;
 }
 
 /**

@@ -69,7 +69,7 @@ describe("Schema Inference", () => {
     const schema = createSchemaFromJson(json);
     assert.strictEqual(
       schema.$schema,
-      "https://json-schema.org/draft-07/schema",
+      "https://json-schema.org/draft/2020-12/schema",
     );
     assert.strictEqual(schema.properties.users.type, "array");
     assert.strictEqual(schema.properties.users.items.type, "object");

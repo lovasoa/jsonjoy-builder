@@ -212,7 +212,6 @@ describe('JSON Schema Draft 2020-12 Support', () => {
           { type: 'string' },
           { type: 'number' }
         ],
-        contains: { type: 'boolean' },
         unevaluatedItems: false
       };
 

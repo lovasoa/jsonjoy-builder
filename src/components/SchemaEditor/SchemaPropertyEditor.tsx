@@ -22,6 +22,7 @@ export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;
   required: boolean;
+  readOnly: boolean;
   validationNode?: ValidationTreeNode;
   onDelete: () => void;
   onNameChange: (newName: string) => void;
@@ -34,6 +35,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   name,
   schema,
   required,
+  readOnly = false,
   validationNode,
   onDelete,
   onNameChange,
@@ -113,7 +115,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
           {/* Property name */}
           <div className="flex items-center gap-2 grow min-w-0 overflow-visible">
             <div className="flex items-center gap-2 min-w-0 grow overflow-visible">
-              {isEditingName ? (
+              {!readOnly && isEditingName ? (
                 <Input
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
@@ -135,7 +137,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               )}
 
               {/* Description */}
-              {isEditingDesc ? (
+              {!readOnly && isEditingDesc ? (
                 <Input
                   value={tempDesc}
                   onChange={(e) => setTempDesc(e.target.value)}
@@ -171,6 +173,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
             <div className="flex items-center gap-2 justify-end shrink-0">
               <TypeDropdown
                 value={type}
+                readOnly={readOnly}
                 onChange={(newType) => {
                   onSchemaChange({
                     ...asObjectSchema(schema),
@@ -182,7 +185,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               {/* Required toggle */}
               <button
                 type="button"
-                onClick={() => onRequiredChange(!required)}
+                onClick={() => !readOnly && onRequiredChange(!required)}
                 className={cn(
                   "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center cursor-pointer hover:shadow-xs hover:ring-2 hover:ring-ring/30 active:scale-95 transition-all whitespace-nowrap",
                   required
@@ -207,23 +210,27 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
         )}
 
         {/* Delete button */}
-        <div className="flex items-center gap-1 text-muted-foreground">
-          <button
-            type="button"
-            onClick={onDelete}
-            className="p-1 rounded-md hover:bg-secondary hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-            aria-label={t.propertyDelete}
-          >
-            <X size={16} />
-          </button>
-        </div>
+        {!readOnly && (
+          <div className="flex items-center gap-1 text-muted-foreground">
+            <button
+              type="button"
+              onClick={onDelete}
+              className="p-1 rounded-md hover:bg-secondary hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+              aria-label={t.propertyDelete}
+            >
+              <X size={16} />
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Type-specific editor */}
       {expanded && (
         <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
+          {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
           <TypeEditor
             schema={schema}
+            readOnly={readOnly}
             validationNode={validationNode}
             onChange={handleSchemaUpdate}
             depth={depth + 1}

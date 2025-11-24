@@ -1,7 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-import type { SchemaType } from "../types/jsonSchema.ts";
 import type { Translation } from "../i18n/translation-keys.ts";
+import type { SchemaType } from "../types/jsonSchema.ts";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));

@@ -49,6 +49,7 @@ export const de: Translation = {
   schemaEditorEditModeVisual: "Visuell",
   schemaEditorEditModeJson: "JSON",
 
+  arrayNoConstraint: "Keine Einschränkung",
   arrayMinimumLabel: "Mindestanzahl an Elementen",
   arrayMinimumPlaceholder: "Kein Minimum",
   arrayMaximumLabel: "Maximale Anzahl an Elemente",
@@ -60,11 +61,13 @@ export const de: Translation = {
   arrayValidationErrorContainsMinMax:
     "'minContains' darf nicht größer als 'maxContains' sein.",
 
+  booleanNoConstraint: "Keine Einschränkung",
   booleanAllowFalseLabel: "Falsch-Werte erlauben",
   booleanAllowTrueLabel: "Wahr-Werte erlauben",
   booleanNeitherWarning:
     "Achtung: Mindestens einer von beiden Werten muss erlaubt sein.",
 
+  numberNoConstraint: "Keine Einschränkung",
   numberMinimumLabel: "Minimalwert",
   numberMinimumPlaceholder: "Kein Minimum",
   numberMaximumLabel: "Maximalwert",
@@ -91,6 +94,7 @@ export const de: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' darf nicht größer als 'maxProperties' sein.",
 
+  stringNoConstraint: "Keine Einschränkung",
   stringMinimumLengthLabel: "Minimale Länge",
   stringMinimumLengthPlaceholder: "Kein Minimum",
   stringMaximumLengthLabel: "Maximale Länge",

@@ -4,8 +4,8 @@ import { X } from "lucide-react";
 import {
   type ComponentPropsWithoutRef,
   type ComponentRef,
-  type HTMLAttributes,
   forwardRef,
+  type HTMLAttributes,
   useId,
 } from "react";
 import { cn } from "../../lib/utils.ts";

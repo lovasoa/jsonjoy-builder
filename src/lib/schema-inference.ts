@@ -1,4 +1,4 @@
-import { type JSONSchema, asObjectSchema } from "../types/jsonSchema.ts";
+import { asObjectSchema, type JSONSchema } from "../types/jsonSchema.ts";
 
 /**
  * Merges two JSON schemas.

@@ -16,6 +16,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   validationNode,
   onChange,
   depth = 0,
+  readOnly = false,
 }) => {
   const t = useTranslation();
 
@@ -114,6 +115,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
         <div className="space-y-2">
           {properties.map((property) => (
             <SchemaPropertyEditor
+              readOnly={readOnly}
               key={property.name}
               name={property.name}
               schema={property.schema}
@@ -139,9 +141,11 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
         </div>
       )}
 
-      <div className="mt-4">
-        <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
-      </div>
+      {!readOnly && (
+        <div className="mt-4">
+          <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
+        </div>
+      )}
     </div>
   );
 };

@@ -1,13 +1,14 @@
 import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn, getTypeColor, getTypeLabel } from "../../lib/utils.ts";
 import type { SchemaType } from "../../types/jsonSchema.ts";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 export interface TypeDropdownProps {
   value: SchemaType;
   onChange: (value: SchemaType) => void;
   className?: string;
+  readOnly: boolean;
 }
 
 const typeOptions: SchemaType[] = [
@@ -23,6 +24,7 @@ export const TypeDropdown: React.FC<TypeDropdownProps> = ({
   value,
   onChange,
   className,
+  readOnly,
 }) => {
   const t = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -50,15 +52,16 @@ export const TypeDropdown: React.FC<TypeDropdownProps> = ({
       <button
         type="button"
         className={cn(
-          "text-xs px-3.5 py-1.5 rounded-md font-medium w-[92px] text-center flex items-center justify-between",
+          "text-xs px-3.5 py-1.5 rounded-md font-medium text-center flex items-center justify-between",
           getTypeColor(value),
           "hover:shadow-xs hover:ring-1 hover:ring-ring/30 active:scale-95 transition-all",
+          readOnly ? "" : "w-[92px]",
           className,
         )}
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => !readOnly && setIsOpen(!isOpen)}
       >
         <span>{getTypeLabel(t, value)}</span>
-        <ChevronDown size={14} className="ml-1" />
+        {!readOnly && <ChevronDown size={14} className="ml-1" />}
       </button>
 
       {isOpen && (

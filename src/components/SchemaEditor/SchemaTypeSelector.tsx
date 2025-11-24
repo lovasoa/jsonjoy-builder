@@ -1,8 +1,8 @@
 import type { FC } from "react";
-import { cn } from "../../lib/utils.ts";
-import type { SchemaType } from "../../types/jsonSchema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { Translation } from "../../i18n/translation-keys.ts";
+import { cn } from "../../lib/utils.ts";
+import type { SchemaType } from "../../types/jsonSchema.ts";
 
 interface SchemaTypeSelectorProps {
   id?: string;

@@ -4,18 +4,18 @@ import {
   Code,
   FileJson,
   GitBranch,
-  User,
   Package,
+  Pencil,
+  PencilOff,
   RefreshCw,
+  User,
 } from "lucide-react";
 import React, { useState } from "react";
 import { exampleSchema } from "../../demo/utils/schemaExample.ts";
-import JsonSchemaEditor from "../../src/components/SchemaEditor/JsonSchemaEditor.tsx";
 import { JsonValidator } from "../../src/components/features/JsonValidator.tsx";
 import { SchemaInferencer } from "../../src/components/features/SchemaInferencer.tsx";
+import JsonSchemaEditor from "../../src/components/SchemaEditor/JsonSchemaEditor.tsx";
 import { Button } from "../../src/components/ui/button.tsx";
-import type { JSONSchema } from "../../src/types/jsonSchema.ts";
-import { en } from "../../src/i18n/locales/en.ts";
 import {
   Select,
   SelectContent,
@@ -23,16 +23,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../src/components/ui/select.tsx";
+import { en } from "../../src/i18n/locales/en.ts";
 import { TranslationContext } from "../../src/i18n/translation-context.ts";
+import type { JSONSchema } from "../../src/types/jsonSchema.ts";
 
 const Index = () => {
   const [schema, setSchema] = useState<JSONSchema>(exampleSchema);
+  const [readOnly, setReadOnly] = useState<boolean>(false);
   const [inferDialogOpen, setInferDialogOpen] = useState(false);
   const [validateDialogOpen, setValidateDialogOpen] = useState(false);
   const [language, setLanguage] = useState("en");
   const [translation, setTranslation] = useState(en);
 
   const handleReset = () => setSchema(exampleSchema);
+
+  const handleReadOnlyToggle = () => setReadOnly(!readOnly);
 
   const handleClear = () =>
     setSchema({
@@ -90,42 +95,68 @@ const Index = () => {
 
             {/* Action Buttons */}
             <div className="flex flex-wrap justify-center gap-4 mb-8 animate-in">
-              <Button variant="outline" onClick={handleReset} className="gap-2">
-                <RefreshCw size={16} />
-                Reset to Example
-              </Button>
-              <Button variant="outline" onClick={handleClear} className="gap-2">
-                <CirclePlus size={16} />
-                Start from Scratch
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleInferSchema}
-                className="gap-2"
-              >
-                <Code size={16} />
-                Infer from JSON
-              </Button>
-              <Button
-                variant="outline"
-                onClick={handleValidateJson}
-                className="gap-2"
-              >
-                <CheckCircle size={16} />
-                Validate JSON
-              </Button>
-              <div>
-                <Select value={language} onValueChange={handleLanguageChange}>
-                  <SelectTrigger className="h-10 font-medium">
-                    <SelectValue placeholder="Language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="de">German</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
-                    <SelectItem value="ru">Russian</SelectItem>
-                  </SelectContent>
-                </Select>
+              <div className="flex flex-nowrap gap-4">
+                <Button
+                  variant="outline"
+                  onClick={handleReset}
+                  className="gap-2"
+                >
+                  <RefreshCw size={16} />
+                  Reset to Example
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleClear}
+                  className="gap-2"
+                >
+                  <CirclePlus size={16} />
+                  Start from Scratch
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleInferSchema}
+                  className="gap-2"
+                >
+                  <Code size={16} />
+                  Infer from JSON
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleValidateJson}
+                  className="gap-2"
+                >
+                  <CheckCircle size={16} />
+                  Validate JSON
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleReadOnlyToggle}
+                  className="gap-2"
+                >
+                  {!readOnly && (
+                    <>
+                      <PencilOff size={16} /> Read-Only
+                    </>
+                  )}
+                  {readOnly && (
+                    <>
+                      <Pencil size={16} /> Writable
+                    </>
+                  )}
+                </Button>
+                <div>
+                  <Select value={language} onValueChange={handleLanguageChange}>
+                    <SelectTrigger className="h-10 font-medium">
+                      <SelectValue placeholder="Language" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en">English</SelectItem>
+                      <SelectItem value="de">German</SelectItem>
+                      <SelectItem value="fr">French</SelectItem>
+                      <SelectItem value="ru">Russian</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
               </div>
             </div>
           </div>
@@ -137,6 +168,7 @@ const Index = () => {
           <div className="max-w-4xl mx-auto lg:max-w-none">
             <JsonSchemaEditor
               schema={schema}
+              readOnly={readOnly}
               setSchema={setSchema}
               className="shadow-lg animate-in border-border/50 backdrop-blur-xs"
             />
@@ -427,7 +459,9 @@ const Index = () => {
                       <link.icon size={14} className="opacity-70" />
                       <span>{link.text}</span>
                     </a>
-                    {index < array.length - 1 && <span className="mx-1">•</span>}
+                    {index < array.length - 1 && (
+                      <span className="mx-1">•</span>
+                    )}
                   </React.Fragment>
                 ))}
               </div>

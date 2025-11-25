@@ -1,26 +1,26 @@
-import { render } from '@testing-library/react';
-import 'global-jsdom/register';
+import { render } from "@testing-library/react";
+import "global-jsdom/register";
 import { describe, test } from "node:test";
-import React from 'react';
-import NumberEditor from '../../../../src/components/SchemaEditor/types/NumberEditor';
+import React from "react";
+import NumberEditor from "../../../../src/components/SchemaEditor/types/NumberEditor.tsx";
 
 describe("NumberEditor", () => {
-  test("write mode does show constraints", t => {
+  test("write mode does show constraints", (t) => {
     const element = React.createElement(NumberEditor, {
       readOnly: false,
-      onChange: () => { },
+      onChange: () => {},
       schema: {
-        type: 'number',
+        type: "number",
       },
     });
     t.assert.snapshot(render(element).container.innerHTML);
   });
-  test("read-only mode doesn't show constraints", t => {
+  test("read-only mode doesn't show constraints", (t) => {
     const element = React.createElement(NumberEditor, {
       readOnly: true,
-      onChange: () => { },
+      onChange: () => {},
       schema: {
-        type: 'number',
+        type: "number",
       },
     });
     t.assert.snapshot(render(element).container.innerHTML);

@@ -2,7 +2,7 @@
   "extends": "./tsconfig-base.json",
   "include": ["rslib.config.ts", "rsbuild.config.ts"],
   "compilerOptions": {
-    "outDir": "build/ts/root",
+    "outDir": "build/ts/root"
   },
   "references": [
     {

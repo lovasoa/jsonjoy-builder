@@ -50,6 +50,7 @@ export const ru: Translation = {
   schemaEditorEditModeVisual: "Визуальный",
   schemaEditorEditModeJson: "JSON",
 
+  arrayNoConstraint: "Без ограничений",
   arrayMinimumLabel: "Минимум элементов",
   arrayMinimumPlaceholder: "Нет минимума",
   arrayMaximumLabel: "Максимум элементов",
@@ -60,10 +61,12 @@ export const ru: Translation = {
   arrayValidationErrorContainsMinMax:
     "'minContains' не может быть больше 'maxContains'.",
 
+  booleanNoConstraint: "Без ограничений",
   booleanAllowFalseLabel: "Разрешить значение ложь",
   booleanAllowTrueLabel: "Разрешить значение истина",
   booleanNeitherWarning: "Внимание: Вы должны разрешить хотя бы одно значение.",
 
+  numberNoConstraint: "Без ограничений",
   numberMinimumLabel: "Минимальное значение",
   numberMinimumPlaceholder: "Нет минимума",
   numberMaximumLabel: "Максимальное значение",
@@ -91,6 +94,7 @@ export const ru: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' не может быть больше 'maxProperties'.",
 
+  stringNoConstraint: "Без ограничений",
   stringMinimumLengthLabel: "Минимальная длина",
   stringMinimumLengthPlaceholder: "Нет минимума",
   stringMaximumLengthLabel: "Максимальная длина",

@@ -53,7 +53,8 @@
     "check": "biome check .",
     "fix": "biome check --fix --unsafe",
     "typecheck": "tsc --build --force",
-    "test": "node --test test/*.test.{js,ts}",
+    "test": "tsx --tsconfig tsconfig.test.json --test test/**/*.test.{js,ts,tsx}",
+    "test:snapshots": "tsx --test-update-snapshots --tsconfig tsconfig.test.json --test test/**/*.test.{js,ts,tsx}",
     "prepack": "npm run build"
   },
   "dependencies": {
@@ -90,9 +91,11 @@
     "@rslib/core": "^0.12.2",
     "@tailwindcss/postcss": "^4.1.12",
     "@tanstack/react-query": "^5.85.0",
+    "@testing-library/react": "^16.3.0",
     "@types/node": "^22.17.2",
     "@types/react": "^19.1.10",
     "@types/react-dom": "^19.1.7",
+    "global-jsdom": "^27.0.0",
     "monaco-editor": "^0.52.2",
     "next-themes": "^0.4.6",
     "postcss": "^8.5.6",
@@ -102,6 +105,7 @@
     "sonner": "^2.0.7",
     "tailwindcss": "^4.1.12",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.20.6",
     "typescript": "^5.9.2"
   },
   "packageManager": "npm@10.9.3+sha512.e84875bb943e908557780f1eee5d9cfc7a67145730ae4b77ef10ccba30f96ded6096859af69ea3dc5b2fde60725d79aa247cbed9c12544c30bf28a4d4fbc4825"

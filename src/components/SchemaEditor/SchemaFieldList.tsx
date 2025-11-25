@@ -12,6 +12,7 @@ import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 
 interface SchemaFieldListProps {
   schema: JSONSchemaType;
+  readOnly: boolean;
   onAddField: (newField: NewField) => void;
   onEditField: (name: string, updatedField: NewField) => void;
   onDeleteField: (name: string) => void;
@@ -21,6 +22,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   schema,
   onEditField,
   onDeleteField,
+  readOnly = false,
 }) => {
   const t = useTranslation();
 
@@ -103,7 +105,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
   const validationTree = useMemo(
     () => buildValidationTree(schema, t),
-    [schema, t]
+    [schema, t],
   );
 
   return (
@@ -121,6 +123,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
             handleRequiredChange(property.name, required)
           }
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema)}
+          readOnly={readOnly}
         />
       ))}
     </div>

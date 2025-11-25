@@ -11,15 +11,16 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs.tsx";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 /** @public */
 export interface JsonSchemaEditorProps {
   schema?: JSONSchema;
+  readOnly: boolean;
   setSchema?: (schema: JSONSchema) => void;
   className?: string;
 }
@@ -27,6 +28,7 @@ export interface JsonSchemaEditorProps {
 /** @public */
 const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   schema = { type: "object" },
+  readOnly = false,
   setSchema,
   className,
 }) => {
@@ -79,7 +81,12 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
 
   return (
     <div
-      className={cn("json-editor-container w-full", fullscreenClass, className, "jsonjoy")}
+      className={cn(
+        "json-editor-container w-full",
+        fullscreenClass,
+        className,
+        "jsonjoy",
+      )}
     >
       {/* For mobile screens - show as tabs */}
       <div className="block lg:hidden w-full">
@@ -113,7 +120,11 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               isFullscreen ? "h-screen" : "h-[500px]",
             )}
           >
-            <SchemaVisualEditor schema={schema} onChange={handleSchemaChange} />
+            <SchemaVisualEditor
+              readOnly={readOnly}
+              schema={schema}
+              onChange={handleSchemaChange}
+            />
           </TabsContent>
 
           <TabsContent
@@ -155,7 +166,11 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             className="h-full min-h-0"
             style={{ width: `${leftPanelWidth}%` }}
           >
-            <SchemaVisualEditor schema={schema} onChange={handleSchemaChange} />
+            <SchemaVisualEditor
+              readOnly={readOnly}
+              schema={schema}
+              onChange={handleSchemaChange}
+            />
           </div>
           {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
           <div

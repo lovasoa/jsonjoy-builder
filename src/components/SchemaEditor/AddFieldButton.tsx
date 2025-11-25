@@ -17,9 +17,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../../components/ui/tooltip.tsx";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 interface AddFieldButtonProps {
   onAddField: (field: NewField) => void;

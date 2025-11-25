@@ -233,6 +233,12 @@ export interface Translation {
   readonly propertyDelete: string;
 
   /**
+   * The translation for the key `arrayNoConstraint`. English default is:
+   *
+   * > No constraint
+   */
+  readonly arrayNoConstraint: string;
+  /**
    * The translation for the key `arrayMinimumLabel`. English default is:
    *
    * > Minimum Items
@@ -282,6 +288,12 @@ export interface Translation {
   readonly arrayValidationErrorContainsMinMax: string;
 
   /**
+   * The translation for the key `booleanNoConstraint`. English default is:
+   *
+   * > No constraint
+   */
+  readonly booleanNoConstraint: string;
+  /**
    * The translation for the key `booleanAllowTrueLabel`. English default is:
    *
    * > Allow true value
@@ -300,6 +312,12 @@ export interface Translation {
    */
   readonly booleanNeitherWarning: string;
 
+  /**
+   * The translation for the key `numberNoConstraint`. English default is:
+   *
+   * > No constraint
+   */
+  readonly numberNoConstraint: string;
   /**
    * The translation for the key `numberMinimumLabel`. English default is:
    *
@@ -428,6 +446,12 @@ export interface Translation {
    * > Minimum Length
    */
   readonly stringMinimumLengthLabel: string;
+  /**
+   * The translation for the key `stringNoConstraint`. English default is:
+   *
+   * > No constraint
+   */
+  readonly stringNoConstraint: string;
   /**
    * The translation for the key `stringMinimumLengthPlaceholder`. English default is:
    *

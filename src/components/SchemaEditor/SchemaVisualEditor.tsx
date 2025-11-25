@@ -1,4 +1,5 @@
 import type { FC } from "react";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   createFieldSchema,
   updateObjectProperty,
@@ -8,11 +9,11 @@ import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 /** @public */
 export interface SchemaVisualEditorProps {
   schema: JSONSchema;
+  readOnly: boolean;
   onChange: (schema: JSONSchema) => void;
 }
 
@@ -20,6 +21,7 @@ export interface SchemaVisualEditorProps {
 const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   schema,
   onChange,
+  readOnly = false,
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
@@ -120,9 +122,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
   return (
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
-      <div className="mb-6 shrink-0">
-        <AddFieldButton onAddField={handleAddField} />
-      </div>
+      {!readOnly && (
+        <div className="mb-6 shrink-0">
+          <AddFieldButton onAddField={handleAddField} />
+        </div>
+      )}
 
       <div className="grow overflow-auto">
         {!hasFields ? (
@@ -133,6 +137,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         ) : (
           <SchemaFieldList
             schema={schema}
+            readOnly={readOnly}
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}

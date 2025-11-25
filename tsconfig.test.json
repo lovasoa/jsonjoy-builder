@@ -1,0 +1,9 @@
+{
+  "extends": "./tsconfig-base.json",
+  "compilerOptions": {
+    "composite": true,
+    "types": [],
+    "allowJs": true
+  },
+  "include": ["**/*.ts", "**/*.tsx"]
+}

@@ -1,14 +1,13 @@
 import * as ToastPrimitives from "@radix-ui/react-toast";
-import { type VariantProps, cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import { X } from "lucide-react";
-
-import { cn } from "../../../src/lib/utils.ts";
 import {
-  forwardRef,
   type ComponentPropsWithoutRef,
   type ComponentRef,
+  forwardRef,
   type ReactElement,
 } from "react";
+import { cn } from "../../../src/lib/utils.ts";
 
 const ToastProvider = ToastPrimitives.Provider;
 

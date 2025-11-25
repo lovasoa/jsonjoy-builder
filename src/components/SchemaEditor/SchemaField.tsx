@@ -1,4 +1,5 @@
 import React, { Suspense } from "react";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import type {
   JSONSchema as JSONSchemaType,
   NewField,
@@ -11,7 +12,6 @@ import {
   withObjectSchema,
 } from "../../types/jsonSchema.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 // This component is now just a simple wrapper around SchemaPropertyEditor
 // to maintain backward compatibility during migration
@@ -19,6 +19,7 @@ interface SchemaFieldProps {
   name: string;
   schema: JSONSchemaType;
   required?: boolean;
+  readOnly: boolean;
   onDelete: () => void;
   onEdit: (updatedField: NewField) => void;
   onAddField?: (newField: NewField) => void;
@@ -27,7 +28,15 @@ interface SchemaFieldProps {
 }
 
 const SchemaField: React.FC<SchemaFieldProps> = (props) => {
-  const { name, schema, required = false, onDelete, onEdit, depth = 0 } = props;
+  const {
+    name,
+    schema,
+    required = false,
+    onDelete,
+    onEdit,
+    depth = 0,
+    readOnly = false,
+  } = props;
 
   // Handle name change
   const handleNameChange = (newName: string) => {
@@ -95,6 +104,7 @@ const SchemaField: React.FC<SchemaFieldProps> = (props) => {
   return (
     <SchemaPropertyEditor
       name={name}
+      readOnly={readOnly}
       schema={schema}
       required={required}
       onDelete={onDelete}

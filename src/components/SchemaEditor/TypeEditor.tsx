@@ -16,6 +16,7 @@ const ArrayEditor = lazy(() => import("./types/ArrayEditor.tsx"));
 
 export interface TypeEditorProps {
   schema: JSONSchema;
+  readOnly: boolean;
   validationNode: ValidationTreeNode | undefined;
   onChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
@@ -26,6 +27,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
   validationNode,
   onChange,
   depth = 0,
+  readOnly = false,
 }) => {
   const type = withObjectSchema(
     schema,
@@ -37,6 +39,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
     <Suspense fallback={<div>Loading editor...</div>}>
       {type === "string" && (
         <StringEditor
+          readOnly={readOnly}
           schema={schema}
           onChange={onChange}
           depth={depth}
@@ -45,6 +48,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "number" && (
         <NumberEditor
+          readOnly={readOnly}
           schema={schema}
           onChange={onChange}
           depth={depth}
@@ -53,6 +57,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "integer" && (
         <NumberEditor
+          readOnly={readOnly}
           schema={schema}
           onChange={onChange}
           depth={depth}
@@ -62,6 +67,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "boolean" && (
         <BooleanEditor
+          readOnly={readOnly}
           schema={schema}
           onChange={onChange}
           depth={depth}
@@ -70,6 +76,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "object" && (
         <ObjectEditor
+          readOnly={readOnly}
           schema={schema}
           onChange={onChange}
           depth={depth}
@@ -78,6 +85,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "array" && (
         <ArrayEditor
+          readOnly={readOnly}
           schema={schema}
           onChange={onChange}
           depth={depth}

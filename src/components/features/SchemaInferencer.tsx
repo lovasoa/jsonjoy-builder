@@ -11,9 +11,9 @@ import {
   DialogTitle,
 } from "../../components/ui/dialog.tsx";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import { createSchemaFromJson } from "../../lib/schema-inference.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 /** @public */
 export interface SchemaInferencerProps {
@@ -106,7 +106,9 @@ export function SchemaInferencer({
           <Button type="button" variant="outline" onClick={handleClose}>
             {t.inferrerCancel}
           </Button>
-          <Button type="button" onClick={inferSchemaFromJson}>{t.inferrerGenerate}</Button>
+          <Button type="button" onClick={inferSchemaFromJson}>
+            {t.inferrerGenerate}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

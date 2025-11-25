@@ -2,9 +2,9 @@ import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Download, FileJson, Loader2 } from "lucide-react";
 import { type FC, useRef } from "react";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 /** @public */
 export interface JsonSchemaVisualizerProps {
@@ -67,7 +67,11 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
 
   return (
     <div
-      className={cn("relative overflow-hidden h-full flex flex-col", className, "jsonjoy")}
+      className={cn(
+        "relative overflow-hidden h-full flex flex-col",
+        className,
+        "jsonjoy",
+      )}
     >
       <div className="flex items-center justify-between bg-secondary/80 backdrop-blur-xs px-4 py-2 border-b shrink-0">
         <div className="flex items-center gap-2">

@@ -10,15 +10,15 @@ import {
   DialogTitle,
 } from "../../components/ui/dialog.tsx";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
+import {
+  formatTranslation,
+  useTranslation,
+} from "../../hooks/use-translation.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import {
   type ValidationResult,
   validateJson,
 } from "../../utils/jsonValidator.ts";
-import {
-  formatTranslation,
-  useTranslation,
-} from "../../hooks/use-translation.ts";
 
 /** @public */
 export interface JsonValidatorProps {

@@ -10,11 +10,14 @@ const AllowedAtRules = new Set(["media", "supports", "layer"]);
 /** @type {() => import("postcss").Plugin} */
 const cssScopingPlugin = () => {
   return {
-    postcssPlugin: 'replace-root-with-new_design',
+    postcssPlugin: "replace-root-with-new_design",
     Once(root) {
       // Add .jsonjoy class selector to all selectors
-      root.walkRules(rule => {
-        if (rule.parent?.type === "atrule" && !AllowedAtRules.has(rule.parent.name)) {
+      root.walkRules((rule) => {
+        if (
+          rule.parent?.type === "atrule" &&
+          !AllowedAtRules.has(rule.parent.name)
+        ) {
           return;
         }
         const newSelectors = new Set();
@@ -45,18 +48,21 @@ const cssScopingPlugin = () => {
 
       // Prefix built-in animation names from tailwind with jsonjoy-
       // See https://tailwindcss.com/docs/animation
-      root.walkDecls(decl => {
+      root.walkDecls((decl) => {
         if (decl.variable) {
           const animateMatch = /--animate-([a-zA-Z0-9_-]+)/.exec(decl.prop);
           if (animateMatch) {
             const animationName = animateMatch[1];
-            decl.value = decl.value.replace(new RegExp(`\\b${animationName}\\b`, "g"), `jsonjoy-${animationName}`);
+            decl.value = decl.value.replace(
+              new RegExp(`\\b${animationName}\\b`, "g"),
+              `jsonjoy-${animationName}`,
+            );
           }
         }
       });
 
       // Prefix @layer with jsonjoy-
-      root.walkAtRules(atRule => {
+      root.walkAtRules((atRule) => {
         if (atRule.name === "layer" && !atRule.params.startsWith("jsonjoy-")) {
           atRule.params = `jsonjoy-${atRule.params}`;
         }
@@ -64,50 +70,66 @@ const cssScopingPlugin = () => {
 
       // Prefix built-in keyframe names from tailwind with jsonjoy-
       // See https://tailwindcss.com/docs/animation
-      root.walkAtRules(atRule => {
-        if (atRule.name === "keyframes" && !atRule.params.startsWith("jsonjoy-")) {
+      root.walkAtRules((atRule) => {
+        if (
+          atRule.name === "keyframes" &&
+          !atRule.params.startsWith("jsonjoy-")
+        ) {
           atRule.params = `jsonjoy-${atRule.params}`;
         }
       });
 
       // Prefix CSS custom properties with jsonjoy-
-      root.walkDecls(decl => {
+      root.walkDecls((decl) => {
         if (decl.variable && !decl.prop.startsWith("--jsonjoy-")) {
           decl.prop = `--jsonjoy-${decl.prop.substring(2)}`;
         }
       });
 
       // Prefix usages of CSS custom properties [var(--name)] with jsonjoy-
-      root.walkDecls(decl => {
-        decl.value = decl.value.replace(/var\(--([a-zA-Z0-9_\-]+)/g, (match, name) => {
-          return name.startsWith("jsonjoy-") ? match : `var(--jsonjoy-${name}`;
-        });
+      root.walkDecls((decl) => {
+        decl.value = decl.value.replace(
+          /var\(--([a-zA-Z0-9_-]+)/g,
+          (match, name) => {
+            return name.startsWith("jsonjoy-")
+              ? match
+              : `var(--jsonjoy-${name}`;
+          },
+        );
       });
 
       // Prefix custom @property rules with jsonjoy-
-      root.walkAtRules(atRule => {
-        if (atRule.name === "property" && !atRule.params.startsWith("--jsonjoy-")) {
+      root.walkAtRules((atRule) => {
+        if (
+          atRule.name === "property" &&
+          !atRule.params.startsWith("--jsonjoy-")
+        ) {
           atRule.params = `--jsonjoy-${atRule.params.substring(2)}`;
         }
       });
-    }
+    },
   };
 };
 
 /**
  * Adds the class name as a scope to the selector.
- * 
+ *
  * - `table foo` => `table.jsonjoy foo`
  * - `#foo .bar` => `.jsonjoy#foo .bar`
  * - `.foo .bar` => `.jsonjoy.foo .bar`
  * - `[data-attr="foo bar"] baz` => `.jsonjoy[data-attr="foo bar"] baz`
  * - `:is(.foo, .bar) baz` => `.jsonjoy:is(.foo, .bar) baz`
- * @param {string} className 
- * @param {string} selector 
+ * @param {string} className
+ * @param {string} selector
  */
 function addClassSelectorScope(className, selector) {
   // ID selector, class selector, attribute selector or pseudo-class / pseudo-element
-  if (selector.startsWith(".") || selector.startsWith("#") || selector.startsWith("[") || selector.startsWith(":")) {
+  if (
+    selector.startsWith(".") ||
+    selector.startsWith("#") ||
+    selector.startsWith("[") ||
+    selector.startsWith(":")
+  ) {
     return `.${className}${selector}`;
   }
 
@@ -121,7 +143,6 @@ function addClassSelectorScope(className, selector) {
   }
 
   return selector;
-
 }
 
 /** @type {{plugins:import("postcss").AcceptedPlugin[] }} */

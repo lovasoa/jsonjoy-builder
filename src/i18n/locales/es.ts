@@ -1,0 +1,158 @@
+import type { Translation } from "../translation-keys.ts";
+
+export const es: Translation = {
+  collapse: "Colapsar",
+  expand: "Expandir",
+
+  fieldDescriptionPlaceholder: "Describe el propósito de este campo",
+  fieldDelete: "Eliminar campo",
+  fieldDescription: "Descripción",
+  fieldDescriptionTooltip: "Añade contexto sobre lo que representa este campo",
+  fieldNameLabel: "Nombre del Campo",
+  fieldNamePlaceholder: "ej. firstName, age, isActive",
+  fieldNameTooltip: "Usa camelCase para mejor legibilidad (ej., firstName)",
+  fieldRequiredLabel: "Campo Requerido",
+  fieldType: "Tipo de Campo",
+  fieldTypeExample: "Ejemplo:",
+  fieldTypeTooltipString: "string: Texto",
+  fieldTypeTooltipNumber: "number: Numérico",
+  fieldTypeTooltipBoolean: "boolean: Verdadero/falso",
+  fieldTypeTooltipObject: "object: JSON anidado",
+  fieldTypeTooltipArray: "array: Listas de valores",
+  fieldAddNewButton: "Agregar Campo",
+  fieldAddNewBadge: "Constructor de Schema",
+  fieldAddNewCancel: "Cancelar",
+  fieldAddNewConfirm: "Agregar Campo",
+  fieldAddNewDescription: "Crea un nuevo campo para tu JSON schema",
+  fieldAddNewLabel: "Agregar Nuevo Campo",
+
+  fieldTypeTextLabel: "Texto",
+  fieldTypeTextDescription:
+    "Para valores de texto como nombres, descripciones, etc.",
+  fieldTypeNumberLabel: "Número",
+  fieldTypeNumberDescription: "Para números decimales o enteros",
+  fieldTypeBooleanLabel: "Sí/No",
+  fieldTypeBooleanDescription: "Para valores verdadero/falso",
+  fieldTypeObjectLabel: "Grupo",
+  fieldTypeObjectDescription: "Para agrupar campos relacionados",
+  fieldTypeArrayLabel: "Lista",
+  fieldTypeArrayDescription: "Para colecciones de elementos",
+
+  propertyDescriptionPlaceholder: "Agregar descripción...",
+  propertyDescriptionButton: "Agregar descripción...",
+  propertyRequired: "Requerido",
+  propertyOptional: "Opcional",
+  propertyDelete: "Eliminar campo",
+
+  schemaEditorTitle: "Editor de JSON Schema",
+  schemaEditorToggleFullscreen: "Cambiar a pantalla completa",
+  schemaEditorEditModeVisual: "Visual",
+  schemaEditorEditModeJson: "JSON",
+
+  arrayNoConstraint: "Sin restricción",
+  arrayMinimumLabel: "Mínimo de Elementos",
+  arrayMinimumPlaceholder: "Sin mínimo",
+  arrayMaximumLabel: "Máximo de Elementos",
+  arrayMaximumPlaceholder: "Sin máximo",
+  arrayForceUniqueItemsLabel: "Forzar elementos únicos",
+  arrayItemTypeLabel: "Tipo de Elemento",
+  arrayValidationErrorMinMax: "'minItems' no puede ser mayor que 'maxItems'.",
+  arrayValidationErrorContainsMinMax:
+    "'minContains' no puede ser mayor que 'maxContains'.",
+
+  booleanNoConstraint: "Sin restricción",
+  booleanAllowFalseLabel: "Permitir valor falso",
+  booleanAllowTrueLabel: "Permitir valor verdadero",
+  booleanNeitherWarning: "Advertencia: Debes permitir al menos un valor.",
+
+  numberNoConstraint: "Sin restricción",
+  numberMinimumLabel: "Valor Mínimo",
+  numberMinimumPlaceholder: "Sin mínimo",
+  numberMaximumLabel: "Valor Máximo",
+  numberMaximumPlaceholder: "Sin máximo",
+  numberExclusiveMinimumLabel: "Mínimo Exclusivo",
+  numberExclusiveMinimumPlaceholder: "Sin mínimo exclusivo",
+  numberExclusiveMaximumLabel: "Máximo Exclusivo",
+  numberExclusiveMaximumPlaceholder: "Sin máximo exclusivo",
+  numberMultipleOfLabel: "Múltiplo De",
+  numberMultipleOfPlaceholder: "Cualquiera",
+  numberAllowedValuesEnumLabel: "Valores Permitidos (enum)",
+  numberAllowedValuesEnumNone: "No hay valores restringidos",
+  numberAllowedValuesEnumAddLabel: "Agregar",
+  numberAllowedValuesEnumAddPlaceholder: "Agregar valor permitido...",
+  numberValidationErrorMinMax:
+    "Los valores mínimo y máximo deben ser consistentes.",
+  numberValidationErrorBothExclusiveAndInclusiveMin:
+    "No puedes definir a la vez 'exclusiveMinimum' y 'minimum'.",
+  numberValidationErrorBothExclusiveAndInclusiveMax:
+    "No puedes definir a la vez 'exclusiveMaximum' y 'maximum'.",
+  numberValidationErrorEnumOutOfRange:
+    "Los valores del enum deben estar dentro del rango definido.",
+
+  objectPropertiesNone: "No hay propiedades definidas",
+  objectValidationErrorMinMax:
+    "'minProperties' no puede ser mayor que 'maxProperties'.",
+
+  stringNoConstraint: "Sin restricción",
+  stringMinimumLengthLabel: "Longitud Mínima",
+  stringMinimumLengthPlaceholder: "Sin mínimo",
+  stringMaximumLengthLabel: "Longitud Máxima",
+  stringMaximumLengthPlaceholder: "Sin máximo",
+  stringPatternLabel: "Patrón (regex)",
+  stringPatternPlaceholder: "^[a-zA-Z]+$",
+  stringFormatLabel: "Formato",
+  stringFormatNone: "Ninguno",
+  stringFormatDateTime: "Fecha-Hora",
+  stringFormatDate: "Fecha",
+  stringFormatTime: "Hora",
+  stringFormatEmail: "Correo",
+  stringFormatUri: "URI",
+  stringFormatUuid: "UUID",
+  stringFormatHostname: "Hostname",
+  stringFormatIpv4: "Dirección IPv4",
+  stringFormatIpv6: "Dirección IPv6",
+  stringAllowedValuesEnumLabel: "Valores Permitidos (enum)",
+  stringAllowedValuesEnumNone: "No hay valores restringidos",
+  stringAllowedValuesEnumAddPlaceholder: "Agregar valor permitido...",
+  stringValidationErrorLengthRange:
+    "'Longitud Mínima' no puede ser mayor que 'Longitud Máxima'.",
+
+  schemaTypeArray: "Lista",
+  schemaTypeBoolean: "Sí/No",
+  schemaTypeNumber: "Número",
+  schemaTypeObject: "Objeto",
+  schemaTypeString: "Texto",
+  schemaTypeNull: "Vacío",
+
+  inferrerTitle: "Inferir JSON Schema",
+  inferrerDescription:
+    "Pega tu documento JSON abajo para generar un schema a partir de él.",
+  inferrerCancel: "Cancelar",
+  inferrerGenerate: "Generar Schema",
+  inferrerErrorInvalidJson: "Formato JSON inválido. Revisa tu entrada.",
+
+  validatorTitle: "Validar JSON",
+  validatorDescription:
+    "Pega tu documento JSON para validarlo contra el schema actual. La validación se hace automáticamente mientras escribes.",
+  validatorCurrentSchema: "Schema Actual:",
+  validatorContent: "Tu JSON:",
+  validatorValid: "¡El JSON es válido según el schema!",
+  validatorErrorInvalidSyntax: "Sintaxis JSON inválida",
+  validatorErrorSchemaValidation: "Error de validación del schema",
+  validatorErrorCount: "{count} errores de validación detectados",
+  validatorErrorPathRoot: "Raíz",
+  validatorErrorLocationLineAndColumn: "Línea {line}, Col {column}",
+  validatorErrorLocationLineOnly: "Línea {line}",
+
+  visualizerDownloadTitle: "Descargar Schema",
+  visualizerDownloadFileName: "schema.json",
+  visualizerSource: "Fuente del JSON Schema",
+
+  visualEditorNoFieldsHint1: "Aún no hay campos definidos",
+  visualEditorNoFieldsHint2: "Agrega tu primer campo para comenzar",
+
+  typeValidationErrorNegativeLength:
+    "Los valores de longitud no pueden ser negativos.",
+  typeValidationErrorIntValue: "El valor debe ser un entero.",
+  typeValidationErrorPositive: "El valor debe ser positivo.",
+};

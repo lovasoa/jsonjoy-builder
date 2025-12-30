@@ -6,9 +6,9 @@ A modern, React-based visual JSON Schema editor for creating and manipulating JS
 
 **Try online**: https://json.ophir.dev
 
-![NPM Downloads](https://img.shields.io/npm/dw/jsonjoy-builder)
-![NPM Version](https://img.shields.io/npm/v/jsonjoy-builder)
-![NPM License](https://img.shields.io/npm/l/jsonjoy-builder)
+[![NPM Downloads](https://img.shields.io/npm/dw/jsonjoy-builder)](https://www.npmjs.com/package/jsonjoy-builder)
+[![NPM Version](https://img.shields.io/npm/v/jsonjoy-builder)](https://www.npmjs.com/package/jsonjoy-builder)
+[![NPM License](https://img.shields.io/npm/l/jsonjoy-builder)](https://www.npmjs.com/package/jsonjoy-builder)
 
 ## Features
 

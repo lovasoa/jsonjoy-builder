@@ -269,7 +269,7 @@ const StringEditor: React.FC<TypeEditorProps> = ({
             }}
           >
             <SelectTrigger id={formatId} className="h-8">
-              <SelectValue placeholder="Select format" />
+              <SelectValue placeholder={t.stringFormatSelectPlaceholder} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="none">{t.stringFormatNone}</SelectItem>
@@ -333,7 +333,7 @@ const StringEditor: React.FC<TypeEditorProps> = ({
               onClick={handleAddEnumValue}
               className="px-3 py-1 h-8 rounded-md bg-secondary text-xs font-medium hover:bg-secondary/80"
             >
-              Add
+              {t.stringAllowedValuesEnumAddLabel}
             </button>
           </div>
         </div>

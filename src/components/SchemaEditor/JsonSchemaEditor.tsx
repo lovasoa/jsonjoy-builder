@@ -98,7 +98,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
                 type="button"
                 onClick={toggleFullscreen}
                 className="p-1.5 rounded-md hover:bg-secondary transition-colors"
-                aria-label="Toggle fullscreen"
+                aria-label={t.schemaEditorToggleFullscreen}
               >
                 <Maximize2 size={16} />
               </button>

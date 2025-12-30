@@ -306,6 +306,12 @@ export interface Translation {
    */
   readonly booleanAllowFalseLabel: string;
   /**
+   * The translation for the key `booleanAllowedValuesLabel`. English default is:
+   *
+   * > Allowed Values
+   */
+  readonly booleanAllowedValuesLabel: string;
+  /**
    * The translation for the key `booleanNeitherWarning`. English default is:
    *
    * > Warning: You must allow at least one value.
@@ -567,6 +573,18 @@ export interface Translation {
    */
   readonly stringAllowedValuesEnumAddPlaceholder: string;
   /**
+   * The translation for the key `stringAllowedValuesEnumAddLabel`. English default is:
+   *
+   * > Add
+   */
+  readonly stringAllowedValuesEnumAddLabel: string;
+  /**
+   * The translation for the key `stringFormatSelectPlaceholder`. English default is:
+   *
+   * > Select format
+   */
+  readonly stringFormatSelectPlaceholder: string;
+  /**
    * The translation for the key `stringValidationErrorMinLength`. English default is:
    *
    * > 'minLength' cannot be greater than 'maxLength'.
@@ -634,6 +652,12 @@ export interface Translation {
    * > JSON
    */
   readonly schemaEditorEditModeJson: string;
+  /**
+   * The translation for the key `schemaEditorLoading`. English default is:
+   *
+   * > Loading editor...
+   */
+  readonly schemaEditorLoading: string;
 
   /**
    * The translation for the key `inferrerTitle`. English default is:

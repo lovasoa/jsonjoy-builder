@@ -6,6 +6,7 @@ import type {
 } from "../../types/jsonSchema.ts";
 import { withObjectSchema } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
+import { useTranslation } from "../../hooks/use-translation.ts";
 
 // Lazy load specific type editors to avoid circular dependencies
 const StringEditor = lazy(() => import("./types/StringEditor.tsx"));
@@ -29,6 +30,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
   depth = 0,
   readOnly = false,
 }) => {
+  const t = useTranslation();
   const type = withObjectSchema(
     schema,
     (s) => (s.type || "object") as SchemaType,
@@ -36,7 +38,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
   );
 
   return (
-    <Suspense fallback={<div>Loading editor...</div>}>
+    <Suspense fallback={<div>{t.schemaEditorLoading}</div>}>
       {type === "string" && (
         <StringEditor
           readOnly={readOnly}

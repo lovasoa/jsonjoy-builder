@@ -51,12 +51,27 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
 
   // Handle validation settings change
   const handleValidationChange = () => {
+    const propsToKeep = buildValidationProps();
+
+    onChange(propsToKeep as ObjectJSONSchema);
+  };
+
+  // 构建验证对象的辅助函数，接受 uniqueItems 参数
+  const buildValidationProps = ({
+    minItems: overrideMinItems,
+    maxItems: overrideMaxItems,
+    uniqueItems: overrideUniqueItems,
+  }: {
+    minItems?: number;
+    maxItems?: number;
+    uniqueItems?: boolean;
+  } = {}) => {
     const validationProps: ObjectJSONSchema = {
       type: "array",
       ...(isBooleanSchema(schema) ? {} : schema),
-      minItems: minItems,
-      maxItems: maxItems,
-      uniqueItems: uniqueItems || undefined,
+      minItems: overrideMinItems || minItems,
+      maxItems: overrideMaxItems || maxItems,
+      uniqueItems: overrideUniqueItems || undefined,
     };
 
     // Keep the items schema
@@ -72,7 +87,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
       }
     }
 
-    onChange(propsToKeep as ObjectJSONSchema);
+    return propsToKeep as ObjectJSONSchema;
   };
 
   // Handle item schema changes
@@ -188,7 +203,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
             checked={uniqueItems}
             onCheckedChange={(checked) => {
               setUniqueItems(checked);
-              setTimeout(handleValidationChange, 0);
+              onChange(buildValidationProps({ uniqueItems: checked }));
             }}
           />
           <Label htmlFor={uniqueItemsId} className="cursor-pointer">

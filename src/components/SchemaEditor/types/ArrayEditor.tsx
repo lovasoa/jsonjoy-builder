@@ -56,7 +56,13 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
     onChange(propsToKeep as ObjectJSONSchema);
   };
 
-  // 构建验证对象的辅助函数，接受 uniqueItems 参数
+  /**
+   * Builds and normalizes the JSON Schema validation properties for an array schema.
+   *
+   * This helper merges base schema constraints with optional overrides,
+   * preserves the `items` schema when not explicitly provided,
+   * and removes any undefined properties to produce a clean schema object.
+  */
   const buildValidationProps = ({
     minItems: overrideMinItems,
     maxItems: overrideMaxItems,

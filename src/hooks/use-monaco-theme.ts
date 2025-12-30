@@ -1,4 +1,6 @@
 import type * as Monaco from "monaco-editor";
+import type { json as MonacoJson } from "monaco-editor";
+import * as MonacoModule from "monaco-editor";
 import { useEffect, useState } from "react";
 import type { JSONSchema } from "../types/jsonSchema.ts";
 
@@ -160,11 +162,11 @@ export function useMonacoTheme() {
 
   // Helper to configure JSON language validation
   const configureJsonDefaults = (
-    monaco: typeof Monaco,
+    _monaco?: typeof Monaco,
     schema?: JSONSchema,
   ) => {
     // Create a new diagnostics options object
-    const diagnosticsOptions: Monaco.languages.json.DiagnosticsOptions = {
+    const diagnosticsOptions: MonacoJson.DiagnosticsOptions = {
       validate: true,
       allowComments: false,
       schemaValidation: "error",
@@ -193,7 +195,7 @@ export function useMonacoTheme() {
           ],
     };
 
-    monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
+    MonacoModule.json.jsonDefaults.setDiagnosticsOptions(
       diagnosticsOptions,
     );
   };

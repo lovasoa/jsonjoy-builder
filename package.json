@@ -19,7 +19,7 @@
   "sideEffects": false,
   "repository": {
     "type": "git",
-    "url": "https://github.com/lovasoa/jsonjoy-builder"
+    "url": "git+https://github.com/lovasoa/jsonjoy-builder.git"
   },
   "files": [
     "dist",

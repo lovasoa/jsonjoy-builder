@@ -158,6 +158,40 @@ export function getArrayItemsSchema(schema: JSONSchema): JSONSchema | null {
 }
 
 /**
+ * Renames a property while preserving order in the object schema
+ */
+export function renameObjectProperty(
+  schema: ObjectJSONSchema,
+  oldName: string,
+  newName: string,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema) || !schema.properties) return schema;
+
+  const newSchema = copySchema(schema);
+  const newProperties: Record<string, JSONSchema> = {};
+
+  // Iterate through properties in order, replacing old key with new key
+  for (const [key, value] of Object.entries(newSchema.properties)) {
+    if (key === oldName) {
+      newProperties[newName] = value;
+    } else {
+      newProperties[key] = value;
+    }
+  }
+
+  newSchema.properties = newProperties;
+
+  // Update required array if the field name changed
+  if (newSchema.required) {
+    newSchema.required = newSchema.required.map((field) =>
+      field === oldName ? newName : field,
+    );
+  }
+
+  return newSchema;
+}
+
+/**
  * Checks if a schema has children
  */
 export function hasChildren(schema: JSONSchema): boolean {

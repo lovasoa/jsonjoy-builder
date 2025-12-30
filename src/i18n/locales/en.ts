@@ -47,6 +47,7 @@ export const en: Translation = {
   schemaEditorToggleFullscreen: "Toggle fullscreen",
   schemaEditorEditModeVisual: "Visual",
   schemaEditorEditModeJson: "JSON",
+  schemaEditorLoading: "Loading editor...",
 
   arrayNoConstraint: "No constraint",
   arrayMinimumLabel: "Minimum Items",
@@ -60,6 +61,7 @@ export const en: Translation = {
     "'minContains' cannot be greater than 'maxContains'.",
 
   booleanNoConstraint: "No constraint",
+  booleanAllowedValuesLabel: "Allowed Values",
   booleanAllowFalseLabel: "Allow false value",
   booleanAllowTrueLabel: "Allow true value",
   booleanNeitherWarning: "Warning: You must allow at least one value.",
@@ -112,6 +114,8 @@ export const en: Translation = {
   stringAllowedValuesEnumLabel: "Allowed Values (enum)",
   stringAllowedValuesEnumNone: "No restricted values set",
   stringAllowedValuesEnumAddPlaceholder: "Add allowed value...",
+  stringAllowedValuesEnumAddLabel: "Add",
+  stringFormatSelectPlaceholder: "Select format",
   stringValidationErrorLengthRange:
     "'Minimum Length' cannot be greater than 'Maximum Length'.",
 

@@ -47,6 +47,7 @@ export const zh: Translation = {
   schemaEditorToggleFullscreen: "切换全屏",
   schemaEditorEditModeVisual: "可视化",
   schemaEditorEditModeJson: "JSON",
+  schemaEditorLoading: "正在加载编辑器...",
 
   arrayNoConstraint: "无约束",
   arrayMinimumLabel: "最少子项数",
@@ -60,6 +61,7 @@ export const zh: Translation = {
     "「最少包含子项数」不能大于「最多包含子项数」",
 
   booleanNoConstraint: "无约束",
+  booleanAllowedValuesLabel: "允许的值",
   booleanAllowFalseLabel: "允许值为 false",
   booleanAllowTrueLabel: "允许值为 true",
   booleanNeitherWarning: "警告：你必须允许至少一个值。",
@@ -110,6 +112,8 @@ export const zh: Translation = {
   stringAllowedValuesEnumLabel: "允许的值 (枚举)",
   stringAllowedValuesEnumNone: "当前没有设置限制的值",
   stringAllowedValuesEnumAddPlaceholder: "添加允许的值...",
+  stringAllowedValuesEnumAddLabel: "添加",
+  stringFormatSelectPlaceholder: "选择格式",
   stringValidationErrorLengthRange: "「最小长度」不能大于「最大长度」",
 
   schemaTypeArray: "数组",

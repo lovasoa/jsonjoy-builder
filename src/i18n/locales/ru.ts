@@ -49,6 +49,7 @@ export const ru: Translation = {
   schemaEditorToggleFullscreen: "Переключить полноэкранный режим",
   schemaEditorEditModeVisual: "Визуальный",
   schemaEditorEditModeJson: "JSON",
+  schemaEditorLoading: "Загрузка редактора...",
 
   arrayNoConstraint: "Без ограничений",
   arrayMinimumLabel: "Минимум элементов",
@@ -62,6 +63,7 @@ export const ru: Translation = {
     "'minContains' не может быть больше 'maxContains'.",
 
   booleanNoConstraint: "Без ограничений",
+  booleanAllowedValuesLabel: "Разрешенные значения",
   booleanAllowFalseLabel: "Разрешить значение ложь",
   booleanAllowTrueLabel: "Разрешить значение истина",
   booleanNeitherWarning: "Внимание: Вы должны разрешить хотя бы одно значение.",
@@ -115,6 +117,8 @@ export const ru: Translation = {
   stringAllowedValuesEnumLabel: "Разрешенные значения (enum)",
   stringAllowedValuesEnumNone: "Нет ограниченных значений",
   stringAllowedValuesEnumAddPlaceholder: "Добавить разрешенное значение...",
+  stringAllowedValuesEnumAddLabel: "Добавить",
+  stringFormatSelectPlaceholder: "Выберите формат",
   stringValidationErrorLengthRange:
     "'Минимальная длина' не может быть больше 'Максимальной длины'.",
 

@@ -90,7 +90,7 @@ const BooleanEditor: React.FC<TypeEditorProps> = ({
         <div className="space-y-2 pt-2">
           {(!readOnly || hasEnum) && (
             <>
-              <Label>Allowed Values</Label>
+              <Label>{t.booleanAllowedValuesLabel}</Label>
 
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">

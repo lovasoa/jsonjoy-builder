@@ -87,8 +87,7 @@ export const zh: Translation = {
   numberValidationErrorEnumOutOfRange: "枚举值必须在定义的范围内。",
 
   objectPropertiesNone: "没有定义属性",
-  objectValidationErrorMinMax:
-    "「最少属性数」不能大于「最多属性数」.",
+  objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」.",
 
   stringNoConstraint: "无约束",
   stringMinimumLengthLabel: "最小长度",
@@ -111,8 +110,7 @@ export const zh: Translation = {
   stringAllowedValuesEnumLabel: "允许的值 (枚举)",
   stringAllowedValuesEnumNone: "当前没有设置限制的值",
   stringAllowedValuesEnumAddPlaceholder: "添加允许的值...",
-  stringValidationErrorLengthRange:
-    "「最小长度」不能大于「最大长度」",
+  stringValidationErrorLengthRange: "「最小长度」不能大于「最大长度」",
 
   schemaTypeArray: "数组",
   schemaTypeBoolean: "布尔值",
@@ -122,8 +120,7 @@ export const zh: Translation = {
   schemaTypeNull: "空",
 
   inferrerTitle: "推断 JSON Schema",
-  inferrerDescription:
-    "粘贴您的 JSON 文档以生成对应的 Schema。",
+  inferrerDescription: "粘贴您的 JSON 文档以生成对应的 Schema。",
   inferrerCancel: "取消",
   inferrerGenerate: "生成 Schema",
   inferrerErrorInvalidJson: "无效的 JSON 格式。请检查您的输入。",

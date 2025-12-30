@@ -62,7 +62,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
    * This helper merges base schema constraints with optional overrides,
    * preserves the `items` schema when not explicitly provided,
    * and removes any undefined properties to produce a clean schema object.
-  */
+   */
   const buildValidationProps = ({
     minItems: overrideMinItems,
     maxItems: overrideMaxItems,

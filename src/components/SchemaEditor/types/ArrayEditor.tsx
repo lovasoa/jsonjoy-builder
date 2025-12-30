@@ -51,12 +51,33 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
 
   // Handle validation settings change
   const handleValidationChange = () => {
+    const propsToKeep = buildValidationProps();
+
+    onChange(propsToKeep as ObjectJSONSchema);
+  };
+
+  /**
+   * Builds and normalizes the JSON Schema validation properties for an array schema.
+   *
+   * This helper merges base schema constraints with optional overrides,
+   * preserves the `items` schema when not explicitly provided,
+   * and removes any undefined properties to produce a clean schema object.
+  */
+  const buildValidationProps = ({
+    minItems: overrideMinItems,
+    maxItems: overrideMaxItems,
+    uniqueItems: overrideUniqueItems,
+  }: {
+    minItems?: number;
+    maxItems?: number;
+    uniqueItems?: boolean;
+  } = {}) => {
     const validationProps: ObjectJSONSchema = {
       type: "array",
       ...(isBooleanSchema(schema) ? {} : schema),
-      minItems: minItems,
-      maxItems: maxItems,
-      uniqueItems: uniqueItems || undefined,
+      minItems: overrideMinItems || minItems,
+      maxItems: overrideMaxItems || maxItems,
+      uniqueItems: overrideUniqueItems || undefined,
     };
 
     // Keep the items schema
@@ -72,7 +93,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
       }
     }
 
-    onChange(propsToKeep as ObjectJSONSchema);
+    return propsToKeep as ObjectJSONSchema;
   };
 
   // Handle item schema changes
@@ -188,7 +209,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
             checked={uniqueItems}
             onCheckedChange={(checked) => {
               setUniqueItems(checked);
-              setTimeout(handleValidationChange, 0);
+              onChange(buildValidationProps({ uniqueItems: checked }));
             }}
           />
           <Label htmlFor={uniqueItemsId} className="cursor-pointer">

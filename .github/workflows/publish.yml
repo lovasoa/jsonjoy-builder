@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  id-token: write  # Required for OIDC trusted publisher on npm
+  contents: read
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -17,5 +21,3 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: npm install
       - run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}

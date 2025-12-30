@@ -44,7 +44,7 @@ export function App() {
 
 ### Styling
 
-To style the component, add custom CSS. For basic styling, there are some CSS custom properties ("variables)
+To style the component, add custom CSS. For basic styling, there are some CSS custom properties ("variables")
 you can set:
 
 ```css

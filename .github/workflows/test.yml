@@ -4,13 +4,32 @@ on: [push, pull_request]
 
 jobs:
   test:
+    name: Run Unit Tests
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-      - name: Use Node.js 22.x
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - name: Use Node.js 24.x
+        uses: actions/setup-node@v6
         with:
-          node-version: '22.x'
+          node-version: '24.x'
       - run: npm install
       - run: npm test
+  codeql-scan:
+    name: CodeQL Security Scan
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: javascript
+      
+      # 3. Perform Analysis
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4

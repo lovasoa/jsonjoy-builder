@@ -99,7 +99,7 @@ export function App() {
 }
 ```
 
-Currently we have localizations for English, German, French, Russian, Spanish and Chinese. You can define your own translation like this.
+Currently we have localizations for English, German, French, Russian, Ukrainian, Spanish and Chinese. You can define your own translation like this.
 If you do, consider opening a PR with the translations!
 
 ```ts

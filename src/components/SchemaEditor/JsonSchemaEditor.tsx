@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
+import { DragProvider } from "./DragContext.tsx";
 import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
 
@@ -43,7 +44,6 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
   const resizeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -80,14 +80,15 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        "json-editor-container w-full",
-        fullscreenClass,
-        className,
-        "jsonjoy",
-      )}
-    >
+    <DragProvider>
+      <div
+        className={cn(
+          "json-editor-container w-full",
+          fullscreenClass,
+          className,
+          "jsonjoy",
+        )}
+      >
       {/* For mobile screens - show as tabs */}
       <div className="block lg:hidden w-full">
         <Tabs defaultValue="visual" className="w-full">
@@ -190,6 +191,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
         </div>
       </div>
     </div>
+  </DragProvider>
   );
 };
 

@@ -207,3 +207,123 @@ export function hasChildren(schema: JSONSchema): boolean {
 
   return false;
 }
+
+/**
+ * Reorders properties in an object schema by moving one property to a new position
+ */
+export function reorderProperty(
+  schema: ObjectJSONSchema,
+  propertyName: string,
+  newIndex: number,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema) || !schema.properties) return schema;
+
+  const propertyNames = Object.keys(schema.properties);
+  const currentIndex = propertyNames.indexOf(propertyName);
+
+  if (currentIndex === -1 || currentIndex === newIndex) return schema;
+
+  const newSchema = copySchema(schema);
+  const newProperties: Record<string, JSONSchema> = {};
+
+  // Remove the property from its current position
+  const [movedName] = propertyNames.splice(currentIndex, 1);
+
+  // Insert at the new position
+  propertyNames.splice(newIndex, 0, movedName);
+
+  // Rebuild properties object in the new order
+  for (const name of propertyNames) {
+    newProperties[name] = newSchema.properties?.[name];
+  }
+
+  newSchema.properties = newProperties;
+
+  return newSchema;
+}
+
+/**
+ * Moves a property from one position to another in an object schema
+ */
+export function moveProperty(
+  schema: ObjectJSONSchema,
+  fromName: string,
+  toName: string,
+  after: boolean = true,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema) || !schema.properties) return schema;
+
+  const propertyNames = Object.keys(schema.properties);
+  const fromIndex = propertyNames.indexOf(fromName);
+  const toIndex = propertyNames.indexOf(toName);
+
+  if (fromIndex === -1 || toIndex === -1) return schema;
+
+  let newIndex = after ? toIndex + 1 : toIndex;
+
+  // Adjust if moving forward
+  if (fromIndex < newIndex) {
+    newIndex--;
+  }
+
+  return reorderProperty(schema, fromName, newIndex);
+}
+
+/**
+ * Moves a property from one schema to another
+ */
+export function movePropertyBetweenSchemas(
+  sourceSchema: ObjectJSONSchema,
+  targetSchema: ObjectJSONSchema,
+  propertyName: string,
+  newName: string,
+  targetIndex: number,
+): {
+  updatedSource: ObjectJSONSchema;
+  updatedTarget: ObjectJSONSchema;
+} {
+  if (!isObjectSchema(sourceSchema) || !sourceSchema.properties) {
+    return { updatedSource: sourceSchema, updatedTarget: targetSchema };
+  }
+
+  if (!isObjectSchema(targetSchema)) {
+    targetSchema = { type: "object", properties: {} };
+  }
+
+  if (!targetSchema.properties) {
+    targetSchema.properties = {};
+  }
+
+  // Get the property from source
+  const property = sourceSchema.properties[propertyName];
+  const required = sourceSchema.required?.includes(propertyName);
+
+  // Remove from source
+  const updatedSource = removeObjectProperty(sourceSchema, propertyName);
+
+  // Insert into target at the specified position
+  const targetPropertyNames = Object.keys(targetSchema.properties);
+  const newProperties: Record<string, JSONSchema> = {};
+
+  // Add properties before the target index
+  for (let i = 0; i < targetIndex && i < targetPropertyNames.length; i++) {
+    newProperties[targetPropertyNames[i]] = targetSchema.properties[targetPropertyNames[i]];
+  }
+
+  // Add the moved property
+  newProperties[newName] = property;
+
+  // Add properties after the target index
+  for (let i = targetIndex; i < targetPropertyNames.length; i++) {
+    newProperties[targetPropertyNames[i]] = targetSchema.properties[targetPropertyNames[i]];
+  }
+
+  const updatedTarget = { ...targetSchema, properties: newProperties };
+
+  // Update required status in target if needed
+  if (required) {
+    updatedTarget.required = [...(updatedTarget.required || []), newName];
+  }
+
+  return { updatedSource, updatedTarget };
+}

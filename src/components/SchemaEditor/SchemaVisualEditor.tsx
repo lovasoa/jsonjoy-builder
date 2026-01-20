@@ -124,6 +124,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
+            onSchemaChange={onChange}
           />
         )}
       </div>

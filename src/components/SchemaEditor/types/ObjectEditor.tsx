@@ -4,6 +4,9 @@ import {
   type FieldDropTarget,
   type FieldMoveLocation,
   getSchemaProperties,
+  removeObjectProperty,
+  updateObjectProperty,
+  updatePropertyRequired,
 } from "../../../lib/schemaEditor.ts";
 import type { NewField, ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";

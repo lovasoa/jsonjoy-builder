@@ -1,9 +1,9 @@
-import { useMemo, type FC } from "react";
+import { type FC, useMemo } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
-  getSchemaProperties,
   type FieldDropTarget,
   type FieldMoveLocation,
+  getSchemaProperties,
 } from "../../lib/schemaEditor.ts";
 import type {
   JSONSchema as JSONSchemaType,

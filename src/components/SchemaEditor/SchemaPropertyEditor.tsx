@@ -2,16 +2,16 @@ import { ChevronDown, ChevronRight, GripVertical, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import type {
+  FieldDropTarget,
+  FieldMoveLocation,
+} from "../../lib/schemaEditor.ts";
 import { cn } from "../../lib/utils.ts";
 import type {
   JSONSchema,
   ObjectJSONSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
-import type {
-  FieldDropTarget,
-  FieldMoveLocation,
-} from "../../lib/schemaEditor.ts";
 import {
   asObjectSchema,
   getSchemaDescription,

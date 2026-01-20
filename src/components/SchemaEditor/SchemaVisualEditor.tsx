@@ -2,12 +2,12 @@ import type { FC } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   createFieldSchema,
-  updateObjectProperty,
-  updatePropertyRequired,
-  renameObjectProperty,
-  moveFieldInSchema,
   type FieldDropTarget,
   type FieldMoveLocation,
+  moveFieldInSchema,
+  renameObjectProperty,
+  updateObjectProperty,
+  updatePropertyRequired,
 } from "../../lib/schemaEditor.ts";
 import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
@@ -49,7 +49,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     onChange(newSchema);
   };
 
-// Handle editing a top-level field
+  // Handle editing a top-level field
   const handleEditField = (name: string, updatedField: NewField) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
@@ -60,7 +60,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     if (name !== updatedField.name) {
       newSchema = renameObjectProperty(newSchema, name, updatedField.name);
       // Update the field schema after rename
-      newSchema = updateObjectProperty(newSchema, updatedField.name, fieldSchema);
+      newSchema = updateObjectProperty(
+        newSchema,
+        updatedField.name,
+        fieldSchema,
+      );
     } else {
       // Name didn't change, just update the schema
       newSchema = updateObjectProperty(newSchema, name, fieldSchema);
@@ -133,10 +137,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
           <SchemaFieldList
             schema={schema}
             readOnly={readOnly}
-            onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
-            onSchemaChange={onChange}
             parentPath={[]}
             onFieldDrop={handleFieldDrop}
           />

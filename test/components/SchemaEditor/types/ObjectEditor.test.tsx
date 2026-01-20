@@ -2,8 +2,8 @@ import { render } from "@testing-library/react";
 import "global-jsdom/register";
 import { describe, test } from "node:test";
 import React from "react";
-import ObjectEditor from "../../../../src/components/SchemaEditor/types/ObjectEditor.tsx";
 import { DragProvider } from "../../../../src/components/SchemaEditor/DragContext.tsx";
+import ObjectEditor from "../../../../src/components/SchemaEditor/types/ObjectEditor.tsx";
 
 describe("ObjectEditor", () => {
   test("write mode does show constraints", (t) => {

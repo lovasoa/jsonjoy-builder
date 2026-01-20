@@ -1,16 +1,16 @@
 import { useMemo } from "react";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import {
-  getSchemaProperties,
   type FieldDropTarget,
   type FieldMoveLocation,
+  getSchemaProperties,
 } from "../../../lib/schemaEditor.ts";
 import type { NewField, ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
 import AddFieldButton from "../AddFieldButton.tsx";
+import { useDragContext } from "../DragContext.tsx";
 import SchemaPropertyEditor from "../SchemaPropertyEditor.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
-import { useDragContext } from "../DragContext.tsx";
 
 const ObjectEditor: React.FC<TypeEditorProps> = ({
   schema,
@@ -22,8 +22,11 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   onFieldDrop,
 }) => {
   const t = useTranslation();
-  const containerId = useMemo(() => `object-editor-${depth}-${Math.random().toString(36).substr(2, 9)}`, [depth]);
-  
+  const containerId = useMemo(
+    () => `object-editor-${depth}-${Math.random().toString(36).substr(2, 9)}`,
+    [depth],
+  );
+
   const {
     draggedItem,
     setDraggedItem,
@@ -140,7 +143,10 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   // Handle drag over for items
   const handleDragOver = (e: React.DragEvent, name: string) => {
     e.preventDefault();
-    if (!draggedItem || (draggedItem.sourceContainerId === containerId && draggedItem.id === name)) {
+    if (
+      !draggedItem ||
+      (draggedItem.sourceContainerId === containerId && draggedItem.id === name)
+    ) {
       setDropPosition(null);
       return;
     }
@@ -242,7 +248,10 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 onDrop={handleDrop}
                 onDragEnd={handleDragEnd}
                 onFieldDrop={onFieldDrop}
-                isDragging={draggedItem?.id === property.name && draggedItem.sourceContainerId === containerId}
+                isDragging={
+                  draggedItem?.id === property.name &&
+                  draggedItem.sourceContainerId === containerId
+                }
                 isDragOver={dragOverItem === property.name}
                 dropPosition={
                   dragOverItem === property.name &&

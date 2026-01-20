@@ -195,9 +195,7 @@ export function useMonacoTheme() {
           ],
     };
 
-    MonacoModule.json.jsonDefaults.setDiagnosticsOptions(
-      diagnosticsOptions,
-    );
+    MonacoModule.json.jsonDefaults.setDiagnosticsOptions(diagnosticsOptions);
   };
 
   return {

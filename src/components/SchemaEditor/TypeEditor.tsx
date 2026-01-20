@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import type {
   JSONSchema,
   ObjectJSONSchema,
@@ -6,7 +7,6 @@ import type {
 } from "../../types/jsonSchema.ts";
 import { withObjectSchema } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 // Lazy load specific type editors to avoid circular dependencies
 const StringEditor = lazy(() => import("./types/StringEditor.tsx"));
@@ -21,6 +21,17 @@ export interface TypeEditorProps {
   validationNode: ValidationTreeNode | undefined;
   onChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
+  /**
+   * Path (from the root visual-editor schema) to this type's schema node.
+   */
+  path: string[];
+  /**
+   * Centralized field drop handler forwarded down to object/field editors.
+   */
+  onFieldDrop?: (
+    source: import("../../lib/schemaEditor.ts").FieldMoveLocation,
+    target: import("../../lib/schemaEditor.ts").FieldDropTarget,
+  ) => void;
 }
 
 const TypeEditor: React.FC<TypeEditorProps> = ({
@@ -29,6 +40,8 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
   onChange,
   depth = 0,
   readOnly = false,
+  path,
+  onFieldDrop,
 }) => {
   const t = useTranslation();
   const type = withObjectSchema(
@@ -83,6 +96,8 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           onChange={onChange}
           depth={depth}
           validationNode={validationNode}
+          path={path}
+          onFieldDrop={onFieldDrop}
         />
       )}
       {type === "array" && (
@@ -92,6 +107,8 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           onChange={onChange}
           depth={depth}
           validationNode={validationNode}
+          path={path}
+          onFieldDrop={onFieldDrop}
         />
       )}
     </Suspense>

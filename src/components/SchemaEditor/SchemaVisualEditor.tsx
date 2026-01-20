@@ -2,9 +2,12 @@ import type { FC } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   createFieldSchema,
+  type FieldDropTarget,
+  type FieldMoveLocation,
+  moveFieldInSchema,
+  renameObjectProperty,
   updateObjectProperty,
   updatePropertyRequired,
-  renameObjectProperty,
 } from "../../lib/schemaEditor.ts";
 import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
@@ -57,7 +60,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     if (name !== updatedField.name) {
       newSchema = renameObjectProperty(newSchema, name, updatedField.name);
       // Update the field schema after rename
-      newSchema = updateObjectProperty(newSchema, updatedField.name, fieldSchema);
+      newSchema = updateObjectProperty(
+        newSchema,
+        updatedField.name,
+        fieldSchema,
+      );
     } else {
       // Name didn't change, just update the schema
       newSchema = updateObjectProperty(newSchema, name, fieldSchema);
@@ -103,6 +110,15 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     schema.properties &&
     Object.keys(schema.properties).length > 0;
 
+  const handleFieldDrop = (
+    source: FieldMoveLocation,
+    target: FieldDropTarget,
+  ) => {
+    if (!onChange) return;
+    const updated = moveFieldInSchema(schema, source, target);
+    onChange(updated);
+  };
+
   return (
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
       {!readOnly && (
@@ -121,9 +137,10 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
           <SchemaFieldList
             schema={schema}
             readOnly={readOnly}
-            onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
+            parentPath={[]}
+            onFieldDrop={handleFieldDrop}
           />
         )}
       </div>

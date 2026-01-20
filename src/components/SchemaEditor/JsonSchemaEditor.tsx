@@ -14,6 +14,7 @@ import {
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
+import { DragProvider } from "./DragContext.tsx";
 import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
 
@@ -43,7 +44,6 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
   const resizeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const isDraggingRef = useRef(false);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
@@ -80,116 +80,118 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   };
 
   return (
-    <div
-      className={cn(
-        "json-editor-container w-full",
-        fullscreenClass,
-        className,
-        "jsonjoy",
-      )}
-    >
-      {/* For mobile screens - show as tabs */}
-      <div className="block lg:hidden w-full">
-        <Tabs defaultValue="visual" className="w-full">
-          <div className="flex items-center justify-between px-4 py-3 border-b w-full">
-            <h3 className="font-medium">{t.schemaEditorTitle}</h3>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={toggleFullscreen}
-                className="p-1.5 rounded-md hover:bg-secondary transition-colors"
-                aria-label={t.schemaEditorToggleFullscreen}
-              >
-                <Maximize2 size={16} />
-              </button>
-              <TabsList className="grid grid-cols-2 w-[200px]">
-                <TabsTrigger value="visual">
-                  {t.schemaEditorEditModeVisual}
-                </TabsTrigger>
-                <TabsTrigger value="json">
-                  {t.schemaEditorEditModeJson}
-                </TabsTrigger>
-              </TabsList>
-            </div>
-          </div>
-
-          <TabsContent
-            value="visual"
-            className={cn(
-              "focus:outline-hidden w-full",
-              isFullscreen ? "h-screen" : "h-[500px]",
-            )}
-          >
-            <SchemaVisualEditor
-              readOnly={readOnly}
-              schema={schema}
-              onChange={handleSchemaChange}
-            />
-          </TabsContent>
-
-          <TabsContent
-            value="json"
-            className={cn(
-              "focus:outline-hidden w-full",
-              isFullscreen ? "h-screen" : "h-[500px]",
-            )}
-          >
-            <JsonSchemaVisualizer
-              schema={schema}
-              onChange={handleSchemaChange}
-            />
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* For large screens - show side by side */}
+    <DragProvider>
       <div
-        ref={containerRef}
         className={cn(
-          "hidden lg:flex lg:flex-col w-full",
-          isFullscreen ? "h-screen" : "h-[600px]",
+          "json-editor-container w-full",
+          fullscreenClass,
+          className,
+          "jsonjoy",
         )}
       >
-        <div className="flex items-center justify-between px-4 py-3 border-b w-full shrink-0">
-          <h3 className="font-medium">{t.schemaEditorTitle}</h3>
-          <button
-            type="button"
-            onClick={toggleFullscreen}
-            className="p-1.5 rounded-md hover:bg-secondary transition-colors"
-            aria-label={t.schemaEditorToggleFullscreen}
-          >
-            <Maximize2 size={16} />
-          </button>
+        {/* For mobile screens - show as tabs */}
+        <div className="block lg:hidden w-full">
+          <Tabs defaultValue="visual" className="w-full">
+            <div className="flex items-center justify-between px-4 py-3 border-b w-full">
+              <h3 className="font-medium">{t.schemaEditorTitle}</h3>
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={toggleFullscreen}
+                  className="p-1.5 rounded-md hover:bg-secondary transition-colors"
+                  aria-label={t.schemaEditorToggleFullscreen}
+                >
+                  <Maximize2 size={16} />
+                </button>
+                <TabsList className="grid grid-cols-2 w-[200px]">
+                  <TabsTrigger value="visual">
+                    {t.schemaEditorEditModeVisual}
+                  </TabsTrigger>
+                  <TabsTrigger value="json">
+                    {t.schemaEditorEditModeJson}
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+            </div>
+
+            <TabsContent
+              value="visual"
+              className={cn(
+                "focus:outline-hidden w-full",
+                isFullscreen ? "h-screen" : "h-[500px]",
+              )}
+            >
+              <SchemaVisualEditor
+                readOnly={readOnly}
+                schema={schema}
+                onChange={handleSchemaChange}
+              />
+            </TabsContent>
+
+            <TabsContent
+              value="json"
+              className={cn(
+                "focus:outline-hidden w-full",
+                isFullscreen ? "h-screen" : "h-[500px]",
+              )}
+            >
+              <JsonSchemaVisualizer
+                schema={schema}
+                onChange={handleSchemaChange}
+              />
+            </TabsContent>
+          </Tabs>
         </div>
-        <div className="flex flex-row w-full grow min-h-0">
-          <div
-            className="h-full min-h-0"
-            style={{ width: `${leftPanelWidth}%` }}
-          >
-            <SchemaVisualEditor
-              readOnly={readOnly}
-              schema={schema}
-              onChange={handleSchemaChange}
-            />
+
+        {/* For large screens - show side by side */}
+        <div
+          ref={containerRef}
+          className={cn(
+            "hidden lg:flex lg:flex-col w-full",
+            isFullscreen ? "h-screen" : "h-[600px]",
+          )}
+        >
+          <div className="flex items-center justify-between px-4 py-3 border-b w-full shrink-0">
+            <h3 className="font-medium">{t.schemaEditorTitle}</h3>
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="p-1.5 rounded-md hover:bg-secondary transition-colors"
+              aria-label={t.schemaEditorToggleFullscreen}
+            >
+              <Maximize2 size={16} />
+            </button>
           </div>
-          {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
-          <div
-            ref={resizeRef}
-            className="w-1 bg-border hover:bg-primary cursor-col-resize shrink-0"
-            onMouseDown={handleMouseDown}
-          />
-          <div
-            className="h-full min-h-0"
-            style={{ width: `${100 - leftPanelWidth}%` }}
-          >
-            <JsonSchemaVisualizer
-              schema={schema}
-              onChange={handleSchemaChange}
+          <div className="flex flex-row w-full grow min-h-0">
+            <div
+              className="h-full min-h-0"
+              style={{ width: `${leftPanelWidth}%` }}
+            >
+              <SchemaVisualEditor
+                readOnly={readOnly}
+                schema={schema}
+                onChange={handleSchemaChange}
+              />
+            </div>
+            {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
+            <div
+              ref={resizeRef}
+              className="w-1 bg-border hover:bg-primary cursor-col-resize shrink-0"
+              onMouseDown={handleMouseDown}
             />
+            <div
+              className="h-full min-h-0"
+              style={{ width: `${100 - leftPanelWidth}%` }}
+            >
+              <JsonSchemaVisualizer
+                schema={schema}
+                onChange={handleSchemaChange}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </DragProvider>
   );
 };
 

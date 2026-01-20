@@ -8,6 +8,10 @@ import type {
   ObjectJSONSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
+import type {
+  FieldDropTarget,
+  FieldMoveLocation,
+} from "../../lib/schemaEditor.ts";
 import {
   asObjectSchema,
   getSchemaDescription,
@@ -25,6 +29,8 @@ interface DropIndicatorProps {
 
 const DropIndicator: React.FC<DropIndicatorProps> = ({ onDrop, position }) => (
   <div
+    role="presentation"
+    aria-hidden="true"
     className={cn(
       "pointer-events-auto absolute left-0 right-0 h-3 flex items-center justify-center",
       position === "top" ? "-top-2.5" : "-bottom-2.5",
@@ -49,6 +55,10 @@ export interface SchemaPropertyEditorProps {
   onNameChange: (newName: string) => void;
   onRequiredChange: (required: boolean) => void;
   onSchemaChange: (schema: ObjectJSONSchema) => void;
+  /**
+   * Path to the object schema that owns this property.
+   */
+  parentPath: string[];
   depth?: number;
   onDragStart?: (e: React.DragEvent, name: string) => void;
   onDragOver?: (e: React.DragEvent, name: string) => void;
@@ -57,6 +67,11 @@ export interface SchemaPropertyEditorProps {
   isDragging?: boolean;
   isDragOver?: boolean;
   dropPosition?: "top" | "bottom" | null;
+  /**
+   * Centralized field drop handler, forwarded down to nested editors so
+   * they can report drag-and-drop operations back to the visual editor.
+   */
+  onFieldDrop?: (source: FieldMoveLocation, target: FieldDropTarget) => void;
 }
 
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
@@ -69,6 +84,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onNameChange,
   onRequiredChange,
   onSchemaChange,
+  parentPath,
   depth = 0,
   onDragStart,
   onDragOver,
@@ -77,6 +93,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   isDragging = false,
   isDragOver = false,
   dropPosition = null,
+  onFieldDrop,
 }) => {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -336,6 +353,8 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               validationNode={validationNode}
               onChange={handleSchemaUpdate}
               depth={depth + 1}
+              path={[...parentPath, "properties", name]}
+              onFieldDrop={onFieldDrop}
             />
           </div>
         )}

@@ -1,12 +1,9 @@
-import { type FC, useMemo } from "react";
+import { useMemo, type FC } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   getSchemaProperties,
-  moveProperty,
-  removeObjectProperty,
-  reorderProperty,
-  updateObjectProperty,
-  updatePropertyRequired,
+  type FieldDropTarget,
+  type FieldMoveLocation,
 } from "../../lib/schemaEditor.ts";
 import type {
   JSONSchema as JSONSchemaType,
@@ -14,7 +11,6 @@ import type {
   ObjectJSONSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
-import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import { useDragContext } from "./DragContext.tsx";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
@@ -22,10 +18,10 @@ import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 interface SchemaFieldListProps {
   schema: JSONSchemaType;
   readOnly: boolean;
-  onAddField: (newField: NewField) => void;
   onEditField: (name: string, updatedField: NewField) => void;
   onDeleteField: (name: string) => void;
-  onSchemaChange?: (schema: JSONSchemaType) => void;
+  parentPath: string[];
+  onFieldDrop?: (source: FieldMoveLocation, target: FieldDropTarget) => void;
 }
 
 const SchemaFieldList: FC<SchemaFieldListProps> = ({
@@ -33,13 +29,14 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   onEditField,
   onDeleteField,
   readOnly = false,
-  onSchemaChange,
+  parentPath,
+  onFieldDrop,
 }) => {
   const t = useTranslation();
-  const containerId = useMemo(
-    () => `schema-field-list-${Math.random().toString(36).substr(2, 9)}`,
-    [],
-  );
+  const containerId = useMemo(() => {
+    const uniqueId = crypto.randomUUID();
+    return `schema-field-list-${uniqueId}`;
+  }, []);
 
   const {
     draggedItem,
@@ -135,17 +132,10 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
     setDraggedItem({
       id: name,
+      parentPath,
       sourceContainerId: containerId,
       propertySchema: property.schema,
       required: property.required,
-      // Enable true move semantics for cross-container drops by providing
-      // a callback that removes this property from the current schema.
-      removeFromSource: () => {
-        if (!onSchemaChange || isBooleanSchema(schema)) return;
-        const objectSchema = asObjectSchema(schema);
-        const updated = removeObjectProperty(objectSchema, name);
-        onSchemaChange(updated);
-      },
     });
   };
 
@@ -174,85 +164,26 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     }
   };
 
-  // Handle drop
+  // Handle drop – delegate to the centralized handler in the visual editor
   const handleDrop = (e: React.DragEvent, targetName: string | null = null) => {
     e.preventDefault();
-    if (!draggedItem) {
+    if (!draggedItem || !onFieldDrop) {
       clearDragState();
       return;
     }
 
-    if (onSchemaChange && !isBooleanSchema(schema)) {
-      const objectSchema = asObjectSchema(schema);
+    const source: FieldMoveLocation = {
+      parentPath: draggedItem.parentPath,
+      name: draggedItem.id,
+    };
 
-      let newSchema: ObjectJSONSchema;
+    const target: FieldDropTarget = {
+      parentPath,
+      anchorName: targetName ?? dragOverItem,
+      position: dropPosition,
+    };
 
-      // Check if this is a cross-container drop
-      if (draggedItem.sourceContainerId !== containerId) {
-        // Cross-container drop: move the property to this container.
-        // Compute the intended insertion index based on the current
-        // target name and drop position (top/bottom), which matches
-        // the visual separator shown in the UI.
-        const propertyKeys = Object.keys(objectSchema.properties || {});
-        const baseIndex = targetName ? propertyKeys.indexOf(targetName) : -1;
-        const targetIndex =
-          baseIndex >= 0
-            ? baseIndex + (dropPosition === "bottom" ? 1 : 0)
-            : propertyKeys.length;
-
-        // Generate a unique name for the moved property in this container
-        let newName = draggedItem.id;
-        let counter = 1;
-        while (objectSchema.properties && objectSchema.properties[newName]) {
-          newName = `${draggedItem.id}_${counter}`;
-          counter++;
-        }
-
-        // Add the property to the schema
-        newSchema = updateObjectProperty(
-          objectSchema,
-          newName,
-          draggedItem.propertySchema,
-        );
-
-        // Update required status if needed
-        if (draggedItem.required) {
-          newSchema = updatePropertyRequired(newSchema, newName, true);
-        }
-
-        // Reorder the newly added property so it matches the visual
-        // drop position indicated by the separator.
-        newSchema = reorderProperty(newSchema, newName, targetIndex);
-
-        // Finally, remove the field from its original container to
-        // implement move (not copy) semantics across containers.
-        draggedItem.removeFromSource?.();
-      } else if (targetName) {
-        // Same container drop: move relative to target item
-        if (dropPosition === "top") {
-          // Move before the target item
-          newSchema = moveProperty(
-            objectSchema,
-            draggedItem.id,
-            targetName,
-            false,
-          );
-        } else {
-          // Move after the target item (default)
-          newSchema = moveProperty(
-            objectSchema,
-            draggedItem.id,
-            targetName,
-            true,
-          );
-        }
-      } else {
-        newSchema = objectSchema;
-      }
-
-      onSchemaChange(newSchema);
-    }
-
+    onFieldDrop(source, target);
     clearDragState();
   };
 
@@ -269,6 +200,23 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
     e.preventDefault();
     e.dataTransfer.dropEffect = "move";
+  };
+
+  // Handle keyboard events for accessibility
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    // Escape key cancels any active drag operation
+    if (e.key === "Escape" && draggedItem) {
+      clearDragState();
+      e.preventDefault();
+    }
+  };
+
+  // Handle focus events for accessibility
+  const handleFocus = () => {
+    // When container receives focus, announce its purpose
+    if (draggedItem) {
+      // Container is a valid drop target
+    }
   };
 
   // Handle drop on the container using the existing dragOverItem and dropPosition state
@@ -288,8 +236,12 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   );
 
   return (
-    <div
+    <section
       className="space-y-2 animate-in pt-2"
+      aria-label="Field list drop zone"
+      tabIndex={readOnly ? -1 : 0}
+      onKeyDown={handleKeyDown}
+      onFocus={handleFocus}
       onDragOver={handleContainerDragOver}
       onDrop={handleContainerDrop}
     >
@@ -307,10 +259,12 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           }
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema)}
           readOnly={readOnly}
+          parentPath={parentPath}
           onDragStart={handleDragStart}
           onDragOver={handleDragOver}
           onDrop={handleDrop}
           onDragEnd={handleDragEnd}
+          onFieldDrop={onFieldDrop}
           isDragging={
             draggedItem?.id === property.name &&
             draggedItem.sourceContainerId === containerId
@@ -324,7 +278,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           }
         />
       ))}
-    </div>
+    </section>
   );
 };
 

@@ -2,11 +2,8 @@ import { useMemo } from "react";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import {
   getSchemaProperties,
-  moveProperty,
-  removeObjectProperty,
-  updateObjectProperty,
-  updatePropertyRequired,
-  reorderProperty,
+  type FieldDropTarget,
+  type FieldMoveLocation,
 } from "../../../lib/schemaEditor.ts";
 import type { NewField, ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
@@ -21,6 +18,8 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   onChange,
   depth = 0,
   readOnly = false,
+  path,
+  onFieldDrop,
 }) => {
   const t = useTranslation();
   const containerId = useMemo(() => `object-editor-${depth}-${Math.random().toString(36).substr(2, 9)}`, [depth]);
@@ -131,15 +130,10 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
     setDraggedItem({
       id: name,
+      parentPath: path,
       sourceContainerId: containerId,
       propertySchema: property.schema,
       required: property.required,
-      // Allow moving this field out into another container by providing
-      // a callback that removes it from this object schema.
-      removeFromSource: () => {
-        const updated = removeObjectProperty(normalizedSchema, name);
-        onChange(updated);
-      },
     });
   };
 
@@ -165,79 +159,26 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     }
   };
 
-  // Handle drop
+  // Handle drop – delegate to the centralized handler in the visual editor
   const handleDrop = (e: React.DragEvent, targetName: string | null = null) => {
     e.preventDefault();
-    if (!draggedItem) {
+    if (!draggedItem || !onFieldDrop) {
       clearDragState();
       return;
     }
 
-    let newSchema: ObjectJSONSchema;
+    const source: FieldMoveLocation = {
+      parentPath: draggedItem.parentPath,
+      name: draggedItem.id,
+    };
 
-    // Check if this is a cross-container drop
-    if (draggedItem.sourceContainerId !== containerId) {
-      // Cross-container drop: move the property to this object.
-      // Compute the intended insertion index from the target name and
-      // drop position so it matches the visual separator.
-      const propertyKeys = Object.keys(normalizedSchema.properties || {});
-      const baseIndex = targetName ? propertyKeys.indexOf(targetName) : -1;
-      const targetIndex =
-        baseIndex >= 0
-          ? baseIndex + (dropPosition === "bottom" ? 1 : 0)
-          : propertyKeys.length;
+    const target: FieldDropTarget = {
+      parentPath: path,
+      anchorName: targetName ?? dragOverItem,
+      position: dropPosition,
+    };
 
-      // Generate a unique name for the moved property in this object
-      let newName = draggedItem.id;
-      let counter = 1;
-      while (normalizedSchema.properties && normalizedSchema.properties[newName]) {
-        newName = `${draggedItem.id}_${counter}`;
-        counter++;
-      }
-
-      // Add the property to the schema
-      newSchema = updateObjectProperty(
-        normalizedSchema,
-        newName,
-        draggedItem.propertySchema,
-      );
-
-      // Update required status if needed
-      if (draggedItem.required) {
-        newSchema = updatePropertyRequired(newSchema, newName, true);
-      }
-
-      // Reorder the newly added property into the intended position
-      // indicated by the separator.
-      newSchema = reorderProperty(newSchema, newName, targetIndex);
-
-      // Remove the field from its original container to complete the move.
-      draggedItem.removeFromSource?.();
-    } else if (targetName) {
-      // Same container drop: move relative to target item
-      if (dropPosition === "top") {
-        // Move before the target item
-        newSchema = moveProperty(
-          normalizedSchema,
-          draggedItem.id,
-          targetName,
-          false,
-        );
-      } else {
-        // Move after the target item (default)
-        newSchema = moveProperty(
-          normalizedSchema,
-          draggedItem.id,
-          targetName,
-          true,
-        );
-      }
-    } else {
-      newSchema = normalizedSchema;
-    }
-
-    onChange(newSchema);
-
+    onFieldDrop(source, target);
     clearDragState();
   };
 
@@ -270,45 +211,49 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   return (
     <div className="space-y-4">
       {properties.length > 0 ? (
-        <div
+        <ul
           className="space-y-2"
+          aria-label="Object properties drop zone"
           onDragOver={handleContainerDragOver}
           onDrop={handleContainerDrop}
         >
           {properties.map((property) => (
-            <SchemaPropertyEditor
-              readOnly={readOnly}
-              key={property.name}
-              name={property.name}
-              schema={property.schema}
-              required={property.required}
-              validationNode={validationNode?.children[property.name]}
-              onDelete={() => handleDeleteProperty(property.name)}
-              onNameChange={(newName) =>
-                handlePropertyNameChange(property.name, newName)
-              }
-              onRequiredChange={(required) =>
-                handlePropertyRequiredChange(property.name, required)
-              }
-              onSchemaChange={(schema) =>
-                handlePropertySchemaChange(property.name, schema)
-              }
-              depth={depth}
-              onDragStart={handleDragStart}
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              onDragEnd={handleDragEnd}
-              isDragging={draggedItem?.id === property.name && draggedItem.sourceContainerId === containerId}
-              isDragOver={dragOverItem === property.name}
-              dropPosition={
-                dragOverItem === property.name &&
-                (dropPosition === "top" || dropPosition === "bottom")
-                  ? dropPosition
-                  : null
-              }
-            />
+            <li key={property.name}>
+              <SchemaPropertyEditor
+                readOnly={readOnly}
+                name={property.name}
+                schema={property.schema}
+                required={property.required}
+                validationNode={validationNode?.children[property.name]}
+                onDelete={() => handleDeleteProperty(property.name)}
+                onNameChange={(newName) =>
+                  handlePropertyNameChange(property.name, newName)
+                }
+                onRequiredChange={(required) =>
+                  handlePropertyRequiredChange(property.name, required)
+                }
+                onSchemaChange={(schema) =>
+                  handlePropertySchemaChange(property.name, schema)
+                }
+                depth={depth}
+                parentPath={path}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onDragEnd={handleDragEnd}
+                onFieldDrop={onFieldDrop}
+                isDragging={draggedItem?.id === property.name && draggedItem.sourceContainerId === containerId}
+                isDragOver={dragOverItem === property.name}
+                dropPosition={
+                  dragOverItem === property.name &&
+                  (dropPosition === "top" || dropPosition === "bottom")
+                    ? dropPosition
+                    : null
+                }
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       ) : (
         <div className="text-sm text-muted-foreground italic p-2 text-center border rounded-md">
           {t.objectPropertiesNone}

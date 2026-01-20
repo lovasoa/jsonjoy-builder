@@ -1,16 +1,35 @@
-import { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
+import { createContext, useContext, useState } from "react";
+import type { JSONSchema } from "../../types/jsonSchema.ts";
 
 export interface DraggedItem {
-  id: string;
-  sourceContainerId: string;
-  propertySchema: any;
-  required: boolean;
   /**
-   * Optional callback that removes this property from its source container.
-   * Used to implement true "move" semantics when dragging between containers.
+   * The property name being dragged.
    */
-  removeFromSource?: () => void;
+  id: string;
+  /**
+   * Path (from the root schema of the visual editor) to the object schema
+   * that currently owns this property. This is the container whose
+   * `properties` collection includes `id`.
+   *
+   * For example, the root object has path [], and a nested object field
+   * `address` would live at ["properties", "address"].
+   */
+  parentPath: string[];
+  /**
+   * Original container identifier, still used for quick equality checks in
+   * the UI (e.g. highlighting the dragged row). This is purely a view-level
+   * identifier and not used for schema updates anymore.
+   */
+  sourceContainerId: string;
+  /**
+   * The JSON Schema for the dragged property.
+   */
+  propertySchema: JSONSchema;
+  /**
+   * Whether the dragged property is required in its source container.
+   */
+  required: boolean;
 }
 
 interface DragContextType {
@@ -40,7 +59,9 @@ interface DragProviderProps {
 export const DragProvider: React.FC<DragProviderProps> = ({ children }) => {
   const [draggedItem, setDraggedItem] = useState<DraggedItem | null>(null);
   const [dragOverItem, setDragOverItem] = useState<string | null>(null);
-  const [dropPosition, setDropPosition] = useState<"top" | "bottom" | null>(null);
+  const [dropPosition, setDropPosition] = useState<"top" | "bottom" | null>(
+    null,
+  );
 
   const clearDragState = () => {
     setDraggedItem(null);

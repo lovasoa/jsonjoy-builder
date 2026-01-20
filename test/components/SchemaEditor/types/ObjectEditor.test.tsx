@@ -15,6 +15,8 @@ describe("ObjectEditor", () => {
         onChange: () => {},
         depth: 0,
         validationNode: undefined,
+        // Root path for the visual editor schema node
+        path: [],
         schema: {
           type: "object",
           properties: {
@@ -36,6 +38,8 @@ describe("ObjectEditor", () => {
         onChange: () => {},
         depth: 0,
         validationNode: undefined,
+        // Root path for the visual editor schema node
+        path: [],
         schema: {
           type: "object",
           properties: {

@@ -5,6 +5,9 @@ import {
   updateObjectProperty,
   updatePropertyRequired,
   renameObjectProperty,
+  moveFieldInSchema,
+  type FieldDropTarget,
+  type FieldMoveLocation,
 } from "../../lib/schemaEditor.ts";
 import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
@@ -46,7 +49,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     onChange(newSchema);
   };
 
-  // Handle editing a top-level field
+// Handle editing a top-level field
   const handleEditField = (name: string, updatedField: NewField) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
@@ -103,6 +106,15 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     schema.properties &&
     Object.keys(schema.properties).length > 0;
 
+  const handleFieldDrop = (
+    source: FieldMoveLocation,
+    target: FieldDropTarget,
+  ) => {
+    if (!onChange) return;
+    const updated = moveFieldInSchema(schema, source, target);
+    onChange(updated);
+  };
+
   return (
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
       {!readOnly && (
@@ -125,6 +137,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
             onSchemaChange={onChange}
+            parentPath={[]}
+            onFieldDrop={handleFieldDrop}
           />
         )}
       </div>

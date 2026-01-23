@@ -2,9 +2,9 @@ import type { FC } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   createFieldSchema,
+  renameObjectProperty,
   updateObjectProperty,
   updatePropertyRequired,
-  renameObjectProperty,
 } from "../../lib/schemaEditor.ts";
 import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
@@ -57,7 +57,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     if (name !== updatedField.name) {
       newSchema = renameObjectProperty(newSchema, name, updatedField.name);
       // Update the field schema after rename
-      newSchema = updateObjectProperty(newSchema, updatedField.name, fieldSchema);
+      newSchema = updateObjectProperty(
+        newSchema,
+        updatedField.name,
+        fieldSchema,
+      );
     } else {
       // Name didn't change, just update the schema
       newSchema = updateObjectProperty(newSchema, name, fieldSchema);

@@ -10,7 +10,8 @@ export const uk: Translation = {
   fieldDescriptionTooltip: "Додайте контекст про те, що представляє це поле",
   fieldNameLabel: "Назва поля",
   fieldNamePlaceholder: "наприклад, ім'я, вік, активне",
-  fieldNameTooltip: "Використовуйте camelCase для кращої читабельності (наприклад, firstName)",
+  fieldNameTooltip:
+    "Використовуйте camelCase для кращої читабельності (наприклад, firstName)",
   fieldRequiredLabel: "Обов'язкове поле",
   fieldType: "Тип поля",
   fieldTypeExample: "Приклад:",
@@ -132,7 +133,8 @@ export const uk: Translation = {
     "Вставте свій JSON-документ нижче, щоб згенерувати з нього схему.",
   inferrerCancel: "Скасувати",
   inferrerGenerate: "Згенерувати схему",
-  inferrerErrorInvalidJson: "Неправильний формат JSON. Перевірте, будь ласка, введені дані.",
+  inferrerErrorInvalidJson:
+    "Неправильний формат JSON. Перевірте, будь ласка, введені дані.",
 
   validatorTitle: "Перевірити JSON",
   validatorDescription:
@@ -154,7 +156,8 @@ export const uk: Translation = {
   visualEditorNoFieldsHint1: "Поки що не визначено жодне поле",
   visualEditorNoFieldsHint2: "Додайте перше поле, щоб почати",
 
-  typeValidationErrorNegativeLength: "Значення довжини не можуть бути від'ємними.",
+  typeValidationErrorNegativeLength:
+    "Значення довжини не можуть бути від'ємними.",
   typeValidationErrorIntValue: "Значення має бути цілим числом.",
   typeValidationErrorPositive: "Значення має бути додатнім.",
 };

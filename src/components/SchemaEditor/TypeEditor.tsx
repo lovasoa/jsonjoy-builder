@@ -1,4 +1,5 @@
 import { lazy, Suspense } from "react";
+import { useTranslation } from "../../hooks/use-translation.ts";
 import type {
   JSONSchema,
   ObjectJSONSchema,
@@ -6,7 +7,6 @@ import type {
 } from "../../types/jsonSchema.ts";
 import { withObjectSchema } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
-import { useTranslation } from "../../hooks/use-translation.ts";
 
 // Lazy load specific type editors to avoid circular dependencies
 const StringEditor = lazy(() => import("./types/StringEditor.tsx"));

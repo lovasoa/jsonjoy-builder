@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Run Unit Tests
+    name: Run Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -13,7 +13,12 @@ jobs:
         with:
           node-version: '24.x'
       - run: npm install
-      - run: npm test
+      - name: Check formatting and linting
+        run: npm run check
+      - name: Type check
+        run: npm run typecheck
+      - name: Run unit tests
+        run: npm test
   codeql-scan:
     name: CodeQL Security Scan
     runs-on: ubuntu-latest

@@ -96,6 +96,21 @@ export const ru: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' не может быть больше 'maxProperties'.",
 
+  patternPropertiesTitle: "Свойства по шаблону",
+  patternPropertiesNone: "Нет свойств по шаблону",
+  patternPropertiesAddButton: "Добавить свойство по шаблону",
+  patternPropertyNameLabel: "Шаблон (regex)",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+  patternPropertyNameTooltip:
+    "Регулярное выражение, которому должны соответствовать имена свойств",
+  patternPropertiesAddNewLabel: "Добавить свойство по шаблону",
+  patternPropertiesAddNewDescription:
+    "Создать свойство по шаблону для динамических имен свойств",
+  patternPropertiesAddNewConfirm: "Добавить свойство по шаблону",
+  patternPropertiesAddNewCancel: "Отмена",
+  patternPropertyDelete: "Удалить свойство по шаблону",
+  patternPropertyInvalidRegex: "Неверное регулярное выражение",
+
   stringNoConstraint: "Без ограничений",
   stringMinimumLengthLabel: "Минимальная длина",
   stringMinimumLengthPlaceholder: "Нет минимума",

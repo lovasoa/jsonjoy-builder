@@ -96,6 +96,21 @@ export const de: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' darf nicht größer als 'maxProperties' sein.",
 
+  patternPropertiesTitle: "Mustereigenschaften",
+  patternPropertiesNone: "Keine Mustereigenschaften definiert",
+  patternPropertiesAddButton: "Mustereigenschaft hinzufügen",
+  patternPropertyNameLabel: "Muster (Regex)",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+  patternPropertyNameTooltip:
+    "Ein regulärer Ausdruck, dem Eigenschaftsnamen entsprechen müssen",
+  patternPropertiesAddNewLabel: "Mustereigenschaft hinzufügen",
+  patternPropertiesAddNewDescription:
+    "Erstellen Sie eine Mustereigenschaft für dynamische Eigenschaftsnamen",
+  patternPropertiesAddNewConfirm: "Mustereigenschaft hinzufügen",
+  patternPropertiesAddNewCancel: "Abbrechen",
+  patternPropertyDelete: "Mustereigenschaft löschen",
+  patternPropertyInvalidRegex: "Ungültiger regulärer Ausdruck",
+
   stringNoConstraint: "Keine Einschränkung",
   stringMinimumLengthLabel: "Minimale Länge",
   stringMinimumLengthPlaceholder: "Kein Minimum",

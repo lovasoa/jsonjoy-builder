@@ -11,6 +11,11 @@ export type Property = {
   required: boolean;
 };
 
+export type PatternProperty = {
+  pattern: string;
+  schema: JSONSchema;
+};
+
 export function copySchema<T extends JSONSchema>(schema: T): T {
   if (typeof structuredClone === "function") return structuredClone(schema);
   return JSON.parse(JSON.stringify(schema));
@@ -206,4 +211,99 @@ export function hasChildren(schema: JSONSchema): boolean {
   }
 
   return false;
+}
+
+/**
+ * Gets pattern properties from an object schema
+ */
+export function getSchemaPatternProperties(schema: JSONSchema): PatternProperty[] {
+  if (!isObjectSchema(schema) || !schema.patternProperties) return [];
+
+  return Object.entries(schema.patternProperties).map(([pattern, propSchema]) => ({
+    pattern,
+    schema: propSchema,
+  }));
+}
+
+/**
+ * Updates a pattern property in an object schema
+ */
+export function updatePatternProperty(
+  schema: ObjectJSONSchema,
+  pattern: string,
+  propertySchema: JSONSchema,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema)) return schema;
+
+  const newSchema = copySchema(schema);
+  if (!newSchema.patternProperties) {
+    newSchema.patternProperties = {};
+  }
+
+  newSchema.patternProperties[pattern] = propertySchema;
+  return newSchema;
+}
+
+/**
+ * Removes a pattern property from an object schema
+ */
+export function removePatternProperty(
+  schema: ObjectJSONSchema,
+  pattern: string,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema) || !schema.patternProperties) return schema;
+
+  const newSchema = copySchema(schema);
+  const { [pattern]: _, ...remainingProps } = newSchema.patternProperties;
+  newSchema.patternProperties = remainingProps;
+
+  // Remove patternProperties if empty
+  if (Object.keys(newSchema.patternProperties).length === 0) {
+    delete newSchema.patternProperties;
+  }
+
+  return newSchema;
+}
+
+/**
+ * Renames a pattern property while preserving order in the object schema
+ */
+export function renamePatternProperty(
+  schema: ObjectJSONSchema,
+  oldPattern: string,
+  newPattern: string,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema) || !schema.patternProperties) return schema;
+
+  const newSchema = copySchema(schema);
+  const newPatternProperties: Record<string, JSONSchema> = {};
+
+  // Iterate through patternProperties in order, replacing old key with new key
+  for (const [key, value] of Object.entries(newSchema.patternProperties)) {
+    if (key === oldPattern) {
+      newPatternProperties[newPattern] = value;
+    } else {
+      newPatternProperties[key] = value;
+    }
+  }
+
+  newSchema.patternProperties = newPatternProperties;
+
+  return newSchema;
+}
+
+/**
+ * Validates a regex pattern
+ */
+export function validateRegexPattern(pattern: string): { valid: boolean; error?: string } {
+  if (!pattern || pattern.trim() === "") {
+    return { valid: false, error: "Pattern cannot be empty" };
+  }
+
+  try {
+    new RegExp(pattern);
+    return { valid: true };
+  } catch (e) {
+    return { valid: false, error: `Invalid regex: ${(e as Error).message}` };
+  }
 }

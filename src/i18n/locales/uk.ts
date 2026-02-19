@@ -95,6 +95,21 @@ export const uk: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' не може бути більше за 'maxProperties'.",
 
+  patternPropertiesTitle: "Властивості за шаблоном",
+  patternPropertiesNone: "Властивості за шаблоном не визначені",
+  patternPropertiesAddButton: "Додати властивість за шаблоном",
+  patternPropertyNameLabel: "Шаблон (regex)",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+  patternPropertyNameTooltip:
+    "Регулярний вираз, якому повинні відповідати імена властивостей",
+  patternPropertiesAddNewLabel: "Додати властивість за шаблоном",
+  patternPropertiesAddNewDescription:
+    "Створити властивість за шаблоном для динамічних імен властивостей",
+  patternPropertiesAddNewConfirm: "Додати властивість за шаблоном",
+  patternPropertiesAddNewCancel: "Скасувати",
+  patternPropertyDelete: "Видалити властивість за шаблоном",
+  patternPropertyInvalidRegex: "Неправильний регулярний вираз",
+
   stringNoConstraint: "Без обмежень",
   stringMinimumLengthLabel: "Мінімальна довжина",
   stringMinimumLengthPlaceholder: "Немає мінімуму",

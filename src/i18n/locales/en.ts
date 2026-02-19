@@ -93,6 +93,21 @@ export const en: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' cannot be greater than 'maxProperties'.",
 
+  patternPropertiesTitle: "Pattern Properties",
+  patternPropertiesNone: "No pattern properties defined",
+  patternPropertiesAddButton: "Add Pattern Property",
+  patternPropertyNameLabel: "Pattern (regex)",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+  patternPropertyNameTooltip:
+    "A regular expression that property names must match",
+  patternPropertiesAddNewLabel: "Add Pattern Property",
+  patternPropertiesAddNewDescription:
+    "Create a pattern property for dynamic property names",
+  patternPropertiesAddNewConfirm: "Add Pattern Property",
+  patternPropertiesAddNewCancel: "Cancel",
+  patternPropertyDelete: "Delete pattern property",
+  patternPropertyInvalidRegex: "Invalid regular expression",
+
   stringNoConstraint: "No constraint",
   stringMinimumLengthLabel: "Minimum Length",
   stringMinimumLengthPlaceholder: "No minimum",

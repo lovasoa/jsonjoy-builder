@@ -551,6 +551,13 @@ export interface Translation {
   readonly additionalPropertiesTooltip: string;
 
   /**
+   * The translation for the key `additionalPropertiesTooltip`. English default is:
+   *
+   * > Regular Property
+   */
+  readonly regularPropertiesTitle: string;
+
+  /**
    * The translation for the key `stringMinimumLengthLabel`. English default is:
    *
    * > Minimum Length

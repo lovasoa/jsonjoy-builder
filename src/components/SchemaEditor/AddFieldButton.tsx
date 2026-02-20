@@ -20,6 +20,7 @@ import {
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
+import { ButtonToggle } from "../ui/button-toggle.tsx";
 
 interface AddFieldButtonProps {
   onAddField: (field: NewField) => void;
@@ -35,6 +36,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const [fieldType, setFieldType] = useState<SchemaType>("string");
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
+  const [isPatternProperty, setPatternProperty] = useState(false);
   const fieldNameId = useId();
   const fieldDescId = useId();
   const fieldRequiredId = useId();
@@ -111,12 +113,23 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    {/* PatternProperties toggle */}
+                    <ButtonToggle
+                      onClick={() => { setPatternProperty(!isPatternProperty) }}
+                      className={
+                        isPatternProperty
+                          ? "bg-green-50 text-green-600"
+                          : "bg-secondary text-muted-foreground"
+                      }
+                    >
+                      {isPatternProperty ? t.patternPropertiesTitle : t.regularPropertiesTitle}
+                    </ButtonToggle>
                   </div>
                   <Input
                     id={fieldNameId}
                     value={fieldName}
-                    onChange={(e) => setFieldName(e.target.value)}
-                    placeholder={t.fieldNamePlaceholder}
+                    onChange={(e) => setFieldName(e.target.value)} // todo:
+                    placeholder={t.fieldNamePlaceholder} // todo: change placeholder
                     className="font-mono text-sm w-full"
                     required
                   />

@@ -28,15 +28,28 @@ export function updateObjectProperty(
   schema: ObjectJSONSchema,
   propertyName: string,
   propertySchema: JSONSchema,
+  isPatternProperty = false,
 ): ObjectJSONSchema {
   if (!isObjectSchema(schema)) return schema;
 
   const newSchema = copySchema(schema);
+
   if (!newSchema.properties) {
     newSchema.properties = {};
   }
 
+  if (isPatternProperty) {
+    if (!newSchema.patternProperties) {
+      newSchema.patternProperties = {};
+    }
+
+    newSchema.patternProperties[propertyName] = propertySchema;
+
+    return newSchema;
+  }
+
   newSchema.properties[propertyName] = propertySchema;
+
   return newSchema;
 }
 

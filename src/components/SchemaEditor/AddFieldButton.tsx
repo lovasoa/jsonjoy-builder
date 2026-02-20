@@ -23,7 +23,7 @@ import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 import { ButtonToggle } from "../ui/button-toggle.tsx";
 
 interface AddFieldButtonProps {
-  onAddField: (field: NewField) => void;
+  onAddField: (field: NewField, isPatternProperty: boolean) => void;
   variant?: "primary" | "secondary";
 }
 
@@ -46,6 +46,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     if (!fieldName.trim()) return;
 
     onAddField({
@@ -53,13 +54,14 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
       type: fieldType,
       description: fieldDesc,
       required: fieldRequired,
-    });
+    }, isPatternProperty);
 
     setFieldName("");
     setFieldType("string");
     setFieldDesc("");
     setFieldRequired(false);
     setDialogOpen(false);
+    setPatternProperty(false);
   };
 
   return (
@@ -136,7 +138,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                   <Input
                     id={fieldNameId}
                     value={fieldName}
-                    onChange={(e) => setFieldName(e.target.value)} // todo:
+                    onChange={(e) => setFieldName(e.target.value)} // todo: set properly, validate - validateRegexPattern?
                     placeholder={isPatternProperty ? t.patternPropertyNamePlaceholder : t.fieldNamePlaceholder} // todo: change placeholder
                     className="font-mono text-sm w-full"
                     required

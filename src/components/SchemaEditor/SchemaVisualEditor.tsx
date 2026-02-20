@@ -26,7 +26,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
-  const handleAddField = (newField: NewField) => {
+  const handleAddField = (newField: NewField, isPatternProperty = false) => {
     // Create a field schema based on the new field data
     const fieldSchema = createFieldSchema(newField);
 
@@ -35,6 +35,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
       asObjectSchema(schema),
       newField.name,
       fieldSchema,
+      isPatternProperty,
     );
 
     // Update required status if needed

@@ -30,6 +30,7 @@ export interface SchemaPropertyEditorProps {
   onRequiredChange: (required: boolean) => void;
   onSchemaChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
+  isPatternProperty?: boolean;
 }
 
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
@@ -43,6 +44,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onRequiredChange,
   onSchemaChange,
   depth = 0,
+  isPatternProperty = false,
 }) => {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -170,8 +172,17 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               )}
             </div>
 
-            {/* Type display */}
             <div className="flex items-center gap-2 justify-end shrink-0">
+              {/* Regular/Pattern toggle */}
+              <label className={cn(
+                "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap",
+                isPatternProperty
+                  ? "bg-emerald-50 text-emerald-600"
+                  : "bg-secondary text-muted-foreground",
+              )}>
+                {isPatternProperty ? t.patternPropertiesTitleShort : t.regularPropertiesTitleShort}
+              </label>
+              {/* Type display */}
               <TypeDropdown
                 value={type}
                 readOnly={readOnly}
@@ -183,16 +194,26 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                 }}
               />
               {/* Required toggle */}
-              <ButtonToggle
-                onClick={() => !readOnly && onRequiredChange(!required)}
-                className={
-                  required
-                    ? "bg-red-50 text-red-500"
-                    : "bg-secondary text-muted-foreground"
-                }
-              >
-                {required ? t.propertyRequired : t.propertyOptional}
-              </ButtonToggle>
+              {
+                isPatternProperty
+                  ? <label className={cn(
+                    "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap",
+                    "bg-secondary text-muted-foreground",
+                  )}>
+                    {t.propertyOptional}
+                  </label>
+                  : <ButtonToggle
+                    onClick={() => !readOnly && onRequiredChange(!required)}
+                    className={
+                      required
+                        ? "bg-red-50 text-red-500"
+                        : "bg-secondary text-muted-foreground"
+                    }
+                  >
+                    {required ? t.propertyRequired : t.propertyOptional}
+                  </ButtonToggle>
+              }
+
             </div>
           </div>
         </div>
@@ -223,18 +244,20 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
       </div>
 
       {/* Type-specific editor */}
-      {expanded && (
-        <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
-          {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
-          <TypeEditor
-            schema={schema}
-            readOnly={readOnly}
-            validationNode={validationNode}
-            onChange={handleSchemaUpdate}
-            depth={depth + 1}
-          />
-        </div>
-      )}
+      {
+        expanded && (
+          <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
+            {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
+            <TypeEditor
+              schema={schema}
+              readOnly={readOnly}
+              validationNode={validationNode}
+              onChange={handleSchemaUpdate}
+              depth={depth + 1}
+            />
+          </div>
+        )
+      }
     </div>
   );
 };

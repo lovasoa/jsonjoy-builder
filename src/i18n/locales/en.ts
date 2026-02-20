@@ -94,6 +94,7 @@ export const en: Translation = {
     "'minProperties' cannot be greater than 'maxProperties'.",
 
   patternPropertiesTitle: "Pattern Properties",
+  patternPropertiesTitleShort: "Pattern",
   patternPropertiesNone: "No pattern properties defined",
   patternPropertiesAddButton: "Add Pattern Property",
   patternPropertyNameLabel: "Pattern (regex)",
@@ -109,6 +110,7 @@ export const en: Translation = {
   patternPropertyInvalidRegex: "Invalid regular expression",
 
   regularPropertiesTitle: "Regular Properties", // todo: other translations
+  regularPropertiesTitleShort: "Regular", // todo: other translations
 
   additionalPropertiesTitle: "Additional Properties",
   additionalPropertiesAllow: "Allow additional properties",

@@ -157,6 +157,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 onRequiredChange={(required) => handlePropertyRequiredChange(property.name, required)}
                 onSchemaChange={(schema) => handlePropertySchemaChange(property.name, schema, true)}
                 depth={depth}
+                isPatternProperty
               />
             ))}
           </div>

@@ -132,7 +132,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                       }}
                       className={
                         isPatternProperty
-                          ? "bg-green-50 text-green-600"
+                          ? "bg-emerald-50 text-emerald-600"
                           : "bg-secondary text-muted-foreground"
                       }
                     >

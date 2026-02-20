@@ -453,6 +453,12 @@ export interface Translation {
    */
   readonly patternPropertiesTitle: string;
   /**
+   * The translation for the key `patternPropertiesTitleShort`. English default is:
+   *
+   * > Pattern
+   */
+  readonly patternPropertiesTitleShort: string;
+  /**
    * The translation for the key `patternPropertiesNone`. English default is:
    *
    * > No pattern properties defined
@@ -551,12 +557,17 @@ export interface Translation {
   readonly additionalPropertiesTooltip: string;
 
   /**
-   * The translation for the key `additionalPropertiesTooltip`. English default is:
+   * The translation for the key `regularPropertiesTitle`. English default is:
    *
    * > Regular Property
    */
   readonly regularPropertiesTitle: string;
-
+  /**
+   * The translation for the key `regularPropertiesTitleShort`. English default is:
+   *
+   * > Regular
+   */
+  readonly regularPropertiesTitleShort: string;
   /**
    * The translation for the key `stringMinimumLengthLabel`. English default is:
    *

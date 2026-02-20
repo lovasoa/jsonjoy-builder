@@ -148,6 +148,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           onRequiredChange={(required) => handleRequiredChange(property.name, required)}
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema, true)}
           readOnly={readOnly}
+          isPatternProperty
         />
       ))}
     </div>

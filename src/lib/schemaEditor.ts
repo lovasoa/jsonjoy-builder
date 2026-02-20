@@ -59,12 +59,15 @@ export function updateObjectProperty(
 export function removeObjectProperty(
   schema: ObjectJSONSchema,
   propertyName: string,
+  isPatternProperty = false,
 ): ObjectJSONSchema {
-  if (!isObjectSchema(schema) || !schema.properties) return schema;
+  const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
-  const { [propertyName]: _, ...remainingProps } = newSchema.properties;
-  newSchema.properties = remainingProps;
+  const { [propertyName]: _, ...remainingProps } = newSchema[schemaProperty];
+  newSchema[schemaProperty] = remainingProps;
 
   // Also remove from required array if present
   if (newSchema.required) {

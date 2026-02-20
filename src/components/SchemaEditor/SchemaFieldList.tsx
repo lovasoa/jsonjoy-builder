@@ -14,8 +14,8 @@ interface SchemaFieldListProps {
   schema: JSONSchemaType;
   readOnly: boolean;
   onAddField: (newField: NewField) => void;
-  onEditField: (name: string, updatedField: NewField) => void;
-  onDeleteField: (name: string) => void;
+  onEditField: (name: string, updatedField: NewField, isPatternProperty?: boolean) => void;
+  onDeleteField: (name: string, isPatternProperty?: boolean) => void;
 }
 
 const SchemaFieldList: FC<SchemaFieldListProps> = ({
@@ -28,6 +28,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
   // Get the properties from the schema
   const properties = getSchemaProperties(schema);
+  const patternProperties = getSchemaProperties(schema, true);
 
   // Get schema type as a valid SchemaType
   const getValidSchemaType = (propSchema: JSONSchemaType): SchemaType => {
@@ -43,8 +44,14 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   };
 
   // Handle field name change (generates an edit event)
-  const handleNameChange = (oldName: string, newName: string) => {
-    const property = properties.find((prop) => prop.name === oldName);
+  const handleNameChange = (
+    oldName: string,
+    newName: string,
+    isPatternProperty = false,
+  ) => {
+    const schemaProperties = isPatternProperty ? patternProperties : properties;
+    const property = schemaProperties.find((prop) => prop.name === oldName);
+
     if (!property) return;
 
     onEditField(oldName, {
@@ -59,7 +66,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
         typeof property.schema === "boolean"
           ? { type: "object" }
           : property.schema,
-    });
+    }, isPatternProperty);
   };
 
   // Handle required status change
@@ -86,8 +93,11 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   const handleSchemaChange = (
     name: string,
     updatedSchema: ObjectJSONSchema,
+    isPatternProperty = false,
   ) => {
-    const property = properties.find((prop) => prop.name === name);
+    const schemaProperties = isPatternProperty ? patternProperties : properties;
+    const property = schemaProperties.find((prop) => prop.name === name);
+
     if (!property) return;
 
     const type = updatedSchema.type || "object";
@@ -100,7 +110,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
       description: updatedSchema.description || "",
       required: property.required,
       validation: updatedSchema,
-    });
+    }, isPatternProperty);
   };
 
   const validationTree = useMemo(
@@ -123,6 +133,20 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
             handleRequiredChange(property.name, required)
           }
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema)}
+          readOnly={readOnly}
+        />
+      ))}
+      {patternProperties.map((property) => (
+        <SchemaPropertyEditor
+          key={property.name}
+          name={property.name}
+          schema={property.schema}
+          required={property.required}
+          validationNode={validationTree.children[property.name] ?? undefined}
+          onDelete={() => onDeleteField(property.name, true)}
+          onNameChange={(newName) => handleNameChange(property.name, newName, true)}
+          onRequiredChange={(required) => handleRequiredChange(property.name, required)}
+          onSchemaChange={(schema) => handleSchemaChange(property.name, schema, true)}
           readOnly={readOnly}
         />
       ))}

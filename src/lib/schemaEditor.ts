@@ -153,12 +153,14 @@ export function validateFieldName(name: string): boolean {
 /**
  * Gets properties from an object schema
  */
-export function getSchemaProperties(schema: JSONSchema): Property[] {
-  if (!isObjectSchema(schema) || !schema.properties) return [];
+export function getSchemaProperties(schema: JSONSchema, isPatternProperty = false): Property[] {
+  const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return [];
 
   const required = schema.required || [];
 
-  return Object.entries(schema.properties).map(([name, propSchema]) => ({
+  return Object.entries(schema[schemaProperty]).map(([name, propSchema]) => ({
     name,
     schema: propSchema,
     required: required.includes(name),
@@ -182,14 +184,17 @@ export function renameObjectProperty(
   schema: ObjectJSONSchema,
   oldName: string,
   newName: string,
+  isPatternProperty = false,
 ): ObjectJSONSchema {
-  if (!isObjectSchema(schema) || !schema.properties) return schema;
+  const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
   const newProperties: Record<string, JSONSchema> = {};
 
   // Iterate through properties in order, replacing old key with new key
-  for (const [key, value] of Object.entries(newSchema.properties)) {
+  for (const [key, value] of Object.entries(newSchema[schemaProperty])) {
     if (key === oldName) {
       newProperties[newName] = value;
     } else {
@@ -197,7 +202,7 @@ export function renameObjectProperty(
     }
   }
 
-  newSchema.properties = newProperties;
+  newSchema[schemaProperty] = newProperties;
 
   // Update required array if the field name changed
   if (newSchema.required) {

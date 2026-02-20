@@ -1,5 +1,5 @@
 import { CirclePlus, HelpCircle, Info } from "lucide-react";
-import { type FC, type FormEvent, useId, useState } from "react";
+import { type FC, type FormEvent, useId, useRef, useState } from "react";
 import { Badge } from "../../components/ui/badge.tsx";
 import { Button } from "../../components/ui/button.tsx";
 import {
@@ -21,6 +21,7 @@ import { useTranslation } from "../../hooks/use-translation.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 import { ButtonToggle } from "../ui/button-toggle.tsx";
+import { validateRegexPattern } from "../../lib/schemaEditor.ts";
 
 interface AddFieldButtonProps {
   onAddField: (field: NewField, isPatternProperty: boolean) => void;
@@ -41,6 +42,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const fieldDescId = useId();
   const fieldRequiredId = useId();
   const fieldTypeId = useId();
+  const fieldInputRef = useRef<HTMLInputElement>(null);
 
   const t = useTranslation();
 
@@ -141,7 +143,15 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     onChange={(e) => setFieldName(e.target.value)} // todo: set properly, validate - validateRegexPattern?
                     placeholder={isPatternProperty ? t.patternPropertyNamePlaceholder : t.fieldNamePlaceholder} // todo: change placeholder
                     className="font-mono text-sm w-full"
+                    validate={isPatternProperty
+                      ? (value) => {
+                        const { valid, error } = validateRegexPattern(value);
+
+                        return valid ? null : error;
+                      }
+                      : undefined}
                     required
+                    ref={fieldInputRef}
                   />
                 </div>
 

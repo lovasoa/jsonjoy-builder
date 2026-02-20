@@ -111,6 +111,13 @@ export const de: Translation = {
   patternPropertyDelete: "Mustereigenschaft löschen",
   patternPropertyInvalidRegex: "Ungültiger regulärer Ausdruck",
 
+  additionalPropertiesTitle: "Zusätzliche Eigenschaften",
+  additionalPropertiesAllow: "Zusätzliche Eigenschaften erlauben",
+  additionalPropertiesForbid: "Zusätzliche Eigenschaften verbieten",
+  additionalPropertiesSchema: "Schema für zusätzliche Eigenschaften definieren",
+  additionalPropertiesTooltip:
+    "Steuert, ob Eigenschaften, die nicht in 'properties' oder 'patternProperties' definiert sind, erlaubt sind",
+
   stringNoConstraint: "Keine Einschränkung",
   stringMinimumLengthLabel: "Minimale Länge",
   stringMinimumLengthPlaceholder: "Kein Minimum",

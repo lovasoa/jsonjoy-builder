@@ -1,13 +1,22 @@
+import { Info } from "lucide-react";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import {
+  getAdditionalProperties,
   getSchemaPatternProperties,
   getSchemaProperties,
   removePatternProperty,
   removeObjectProperty,
+  updateAdditionalProperties,
   updateObjectProperty,
   updatePatternProperty,
   updatePropertyRequired,
 } from "../../../lib/schemaEditor.ts";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../../../components/ui/tooltip.tsx";
 import type { JSONSchema, NewField, ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
 import AddFieldButton from "../AddFieldButton.tsx";
@@ -31,6 +40,14 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   // Get pattern properties
   const patternProperties = getSchemaPatternProperties(schema);
+
+  // Get additionalProperties setting
+  const additionalPropsValue = getAdditionalProperties(schema);
+
+  // Determine the current additionalProperties state
+  // Can be: true (allowed), false (forbidden), undefined (default - allowed), or a schema object
+  const isAdditionalPropsAllowed = additionalPropsValue !== false;
+  const hasAdditionalPropsSchema = typeof additionalPropsValue === "object" && additionalPropsValue !== null;
 
   // Create a normalized schema object
   const normalizedSchema: ObjectJSONSchema = isBooleanSchema(schema)
@@ -176,6 +193,12 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     onChange(newSchema);
   };
 
+  // Handle additionalProperties change
+  const handleAdditionalPropertiesChange = (allowed: boolean) => {
+    const newSchema = updateAdditionalProperties(normalizedSchema, allowed);
+    onChange(newSchema);
+  };
+
   return (
     <div className="space-y-6">
       {/* Regular Properties Section */}
@@ -256,6 +279,51 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
             />
           </div>
         )}
+      </div>
+
+      {/* Additional Properties Section */}
+      <div className="space-y-2">
+        <div className="flex items-center gap-2">
+          <h4 className="text-sm font-medium text-muted-foreground">
+            {t.additionalPropertiesTitle}
+          </h4>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+              </TooltipTrigger>
+              <TooltipContent className="max-w-[300px]">
+                <p>{t.additionalPropertiesTooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+        <div className="flex items-center gap-2 p-3 rounded-lg border bg-muted/30">
+          <button
+            type="button"
+            onClick={() => !readOnly && handleAdditionalPropertiesChange(true)}
+            disabled={readOnly}
+            className={`text-xs px-3 py-1.5 rounded-md font-medium text-center cursor-pointer hover:shadow-xs hover:ring-1 hover:ring-ring/30 active:scale-95 transition-all whitespace-nowrap ${
+              isAdditionalPropsAllowed && !hasAdditionalPropsSchema
+                ? "bg-green-50 text-green-600 ring-1 ring-green-200"
+                : "bg-secondary text-muted-foreground"
+            } ${readOnly ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {t.additionalPropertiesAllow}
+          </button>
+          <button
+            type="button"
+            onClick={() => !readOnly && handleAdditionalPropertiesChange(false)}
+            disabled={readOnly}
+            className={`text-xs px-3 py-1.5 rounded-md font-medium text-center cursor-pointer hover:shadow-xs hover:ring-1 hover:ring-ring/30 active:scale-95 transition-all whitespace-nowrap ${
+              !isAdditionalPropsAllowed
+                ? "bg-red-50 text-red-500 ring-1 ring-red-200"
+                : "bg-secondary text-muted-foreground"
+            } ${readOnly ? "opacity-50 cursor-not-allowed" : ""}`}
+          >
+            {t.additionalPropertiesForbid}
+          </button>
+        </div>
       </div>
     </div>
   );

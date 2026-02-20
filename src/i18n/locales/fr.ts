@@ -112,6 +112,13 @@ export const fr: Translation = {
   patternPropertyDelete: "Supprimer la propriété de motif",
   patternPropertyInvalidRegex: "Expression régulière invalide",
 
+  additionalPropertiesTitle: "Propriétés Additionnelles",
+  additionalPropertiesAllow: "Autoriser les propriétés additionnelles",
+  additionalPropertiesForbid: "Interdire les propriétés additionnelles",
+  additionalPropertiesSchema: "Définir un schéma pour les propriétés additionnelles",
+  additionalPropertiesTooltip:
+    "Contrôle si les propriétés non définies dans 'properties' ou 'patternProperties' sont autorisées",
+
   stringNoConstraint: "Pas de constrainte",
   stringMinimumLengthLabel: "Longueur minimale",
   stringMinimumLengthPlaceholder: "Pas de minimum",

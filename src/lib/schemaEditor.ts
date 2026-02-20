@@ -307,3 +307,32 @@ export function validateRegexPattern(pattern: string): { valid: boolean; error?:
     return { valid: false, error: `Invalid regex: ${(e as Error).message}` };
   }
 }
+
+/**
+ * Gets the additionalProperties setting from an object schema
+ * Returns: true | false | JSONSchema | undefined
+ */
+export function getAdditionalProperties(schema: JSONSchema): boolean | JSONSchema | undefined {
+  if (!isObjectSchema(schema)) return undefined;
+  return schema.additionalProperties;
+}
+
+/**
+ * Updates the additionalProperties setting in an object schema
+ */
+export function updateAdditionalProperties(
+  schema: ObjectJSONSchema,
+  value: boolean | JSONSchema | undefined,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema)) return schema;
+
+  const newSchema = copySchema(schema);
+
+  if (value === undefined) {
+    delete newSchema.additionalProperties;
+  } else {
+    newSchema.additionalProperties = value;
+  }
+
+  return newSchema;
+}

@@ -111,6 +111,13 @@ export const ru: Translation = {
   patternPropertyDelete: "Удалить свойство по шаблону",
   patternPropertyInvalidRegex: "Неверное регулярное выражение",
 
+  additionalPropertiesTitle: "Дополнительные свойства",
+  additionalPropertiesAllow: "Разрешить дополнительные свойства",
+  additionalPropertiesForbid: "Запретить дополнительные свойства",
+  additionalPropertiesSchema: "Определить схему для дополнительных свойств",
+  additionalPropertiesTooltip:
+    "Определяет, разрешены ли свойства, не указанные в 'properties' или 'patternProperties'",
+
   stringNoConstraint: "Без ограничений",
   stringMinimumLengthLabel: "Минимальная длина",
   stringMinimumLengthPlaceholder: "Нет минимума",

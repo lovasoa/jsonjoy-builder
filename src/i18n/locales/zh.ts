@@ -104,6 +104,13 @@ export const zh: Translation = {
   patternPropertyDelete: "删除模式属性",
   patternPropertyInvalidRegex: "无效的正则表达式",
 
+  additionalPropertiesTitle: "附加属性",
+  additionalPropertiesAllow: "允许附加属性",
+  additionalPropertiesForbid: "禁止附加属性",
+  additionalPropertiesSchema: "为附加属性定义模式",
+  additionalPropertiesTooltip:
+    "控制是否允许未在 'properties' 或 'patternProperties' 中定义的属性",
+
   stringNoConstraint: "无约束",
   stringMinimumLengthLabel: "最小长度",
   stringMinimumLengthPlaceholder: "无最小长度",

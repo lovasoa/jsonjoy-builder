@@ -110,6 +110,13 @@ export const uk: Translation = {
   patternPropertyDelete: "Видалити властивість за шаблоном",
   patternPropertyInvalidRegex: "Неправильний регулярний вираз",
 
+  additionalPropertiesTitle: "Додаткові властивості",
+  additionalPropertiesAllow: "Дозволити додаткові властивості",
+  additionalPropertiesForbid: "Заборонити додаткові властивості",
+  additionalPropertiesSchema: "Визначити схему для додаткових властивостей",
+  additionalPropertiesTooltip:
+    "Контролює, чи дозволені властивості, не визначені в 'properties' або 'patternProperties'",
+
   stringNoConstraint: "Без обмежень",
   stringMinimumLengthLabel: "Мінімальна довжина",
   stringMinimumLengthPlaceholder: "Немає мінімуму",

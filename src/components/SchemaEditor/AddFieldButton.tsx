@@ -115,7 +115,15 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     </TooltipProvider>
                     {/* PatternProperties toggle */}
                     <ButtonToggle
-                      onClick={() => { setPatternProperty(!isPatternProperty) }}
+                      onClick={() => {
+                        setPatternProperty(!isPatternProperty);
+
+                        // Reset required for pattern properties, as they cannot be required
+                        if (fieldRequired && !isPatternProperty) {
+                          setFieldRequired(false);
+                        }
+
+                      }}
                       className={
                         isPatternProperty
                           ? "bg-green-50 text-green-600"
@@ -129,7 +137,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     id={fieldNameId}
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)} // todo:
-                    placeholder={t.fieldNamePlaceholder} // todo: change placeholder
+                    placeholder={isPatternProperty ? t.patternPropertyNamePlaceholder : t.fieldNamePlaceholder} // todo: change placeholder
                     className="font-mono text-sm w-full"
                     required
                   />
@@ -162,19 +170,22 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     className="text-sm w-full"
                   />
                 </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                  <input
-                    type="checkbox"
-                    id={fieldRequiredId}
-                    checked={fieldRequired}
-                    onChange={(e) => setFieldRequired(e.target.checked)}
-                    className="rounded border-gray-300 shrink-0"
-                  />
-                  <label htmlFor={fieldRequiredId} className="text-sm">
-                    {t.fieldRequiredLabel}
-                  </label>
-                </div>
+                {
+                  isPatternProperty
+                    ? null
+                    : <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
+                      <input
+                        type="checkbox"
+                        id={fieldRequiredId}
+                        checked={fieldRequired}
+                        onChange={(e) => setFieldRequired(e.target.checked)}
+                        className="rounded border-gray-300 shrink-0"
+                      />
+                      <label htmlFor={fieldRequiredId} className="text-sm">
+                        {t.fieldRequiredLabel}
+                      </label>
+                    </div>
+                }
               </div>
 
               <div className="space-y-4 min-w-[280px]">

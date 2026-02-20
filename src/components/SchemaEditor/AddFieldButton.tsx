@@ -127,6 +127,8 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                           setFieldRequired(false);
                         }
 
+                        // reset field name
+                        setFieldName("");
                       }}
                       className={
                         isPatternProperty

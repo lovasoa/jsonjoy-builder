@@ -1,11 +1,11 @@
 import { type FC, useMemo } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { getSchemaProperties } from "../../lib/schemaEditor.ts";
-import type {
-  JSONSchema as JSONSchemaType,
-  NewField,
-  ObjectJSONSchema,
-  SchemaType,
+import {
+  type JSONSchema as JSONSchemaType,
+  type NewField,
+  type ObjectJSONSchema,
+  type SchemaType,
 } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
@@ -13,15 +13,17 @@ import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 interface SchemaFieldListProps {
   schema: JSONSchemaType;
   readOnly: boolean;
-  onAddField: (newField: NewField) => void;
+  onAddField: (newField: NewField, isPatternProperty?: boolean) => void;
   onEditField: (name: string, updatedField: NewField, isPatternProperty?: boolean) => void;
   onDeleteField: (name: string, isPatternProperty?: boolean) => void;
+  onPropertyToggle: (name: string, isPatternProperty?: boolean) => void;
 }
 
 const SchemaFieldList: FC<SchemaFieldListProps> = ({
   schema,
   onEditField,
   onDeleteField,
+  onPropertyToggle,
   readOnly = false,
 }) => {
   const t = useTranslation();
@@ -134,6 +136,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           }
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema)}
           readOnly={readOnly}
+          onPropertyToggle={onPropertyToggle}
         />
       ))}
       {patternProperties.map((property) => (
@@ -148,6 +151,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           onRequiredChange={(required) => handleRequiredChange(property.name, required)}
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema, true)}
           readOnly={readOnly}
+          onPropertyToggle={onPropertyToggle}
           isPatternProperty
         />
       ))}

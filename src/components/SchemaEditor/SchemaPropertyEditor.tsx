@@ -31,6 +31,7 @@ export interface SchemaPropertyEditorProps {
   onSchemaChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
   isPatternProperty?: boolean;
+  onPropertyToggle: (name: string, isPatternProperty?: boolean) => void;
 }
 
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
@@ -43,6 +44,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onNameChange,
   onRequiredChange,
   onSchemaChange,
+  onPropertyToggle,
   depth = 0,
   isPatternProperty = false,
 }) => {
@@ -174,14 +176,18 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
 
             <div className="flex items-center gap-2 justify-end shrink-0">
               {/* Regular/Pattern toggle */}
-              <label className={cn(
-                "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap",
-                isPatternProperty
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "bg-secondary text-muted-foreground",
-              )}>
+              <ButtonToggle
+                onClick={() => {
+                  onPropertyToggle(name, isPatternProperty)
+                }}
+                className={
+                  isPatternProperty
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "bg-secondary text-muted-foreground"
+                }
+              >
                 {isPatternProperty ? t.patternPropertiesTitleShort : t.regularPropertiesTitleShort}
-              </label>
+              </ButtonToggle>
               {/* Type display */}
               <TypeDropdown
                 value={type}

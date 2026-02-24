@@ -122,6 +122,11 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
   return (
     <div className="space-y-2 animate-in">
+      {
+        properties.length > 0
+          ? <h3>Properties:</h3>
+          : null
+      }
       {properties.map((property) => (
         <SchemaPropertyEditor
           key={property.name}
@@ -139,22 +144,29 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           onPropertyToggle={onPropertyToggle}
         />
       ))}
-      {patternProperties.map((property) => (
-        <SchemaPropertyEditor
-          key={property.name}
-          name={property.name}
-          schema={property.schema}
-          required={property.required}
-          validationNode={validationTree.children[property.name] ?? undefined}
-          onDelete={() => onDeleteField(property.name, true)}
-          onNameChange={(newName) => handleNameChange(property.name, newName, true)}
-          onRequiredChange={(required) => handleRequiredChange(property.name, required)}
-          onSchemaChange={(schema) => handleSchemaChange(property.name, schema, true)}
-          readOnly={readOnly}
-          onPropertyToggle={onPropertyToggle}
-          isPatternProperty
-        />
-      ))}
+      {
+        patternProperties.length > 0
+          ? <h3>Pattern properties:</h3>
+          : null
+      }
+      {
+        patternProperties.map((property) => (
+          <SchemaPropertyEditor
+            key={property.name}
+            name={property.name}
+            schema={property.schema}
+            required={property.required}
+            validationNode={validationTree.children[property.name] ?? undefined}
+            onDelete={() => onDeleteField(property.name, true)}
+            onNameChange={(newName) => handleNameChange(property.name, newName, true)}
+            onRequiredChange={(required) => handleRequiredChange(property.name, required)}
+            onSchemaChange={(schema) => handleSchemaChange(property.name, schema, true)}
+            readOnly={readOnly}
+            onPropertyToggle={onPropertyToggle}
+            isPatternProperty
+          />
+        ))
+      }
     </div>
   );
 };

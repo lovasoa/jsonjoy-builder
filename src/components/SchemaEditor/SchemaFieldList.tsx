@@ -120,6 +120,8 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     [schema, t],
   );
 
+  // todo: translation
+
   return (
     <div className="space-y-2 animate-in">
       {

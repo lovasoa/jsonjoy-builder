@@ -122,7 +122,13 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       {/* Regular Properties Section */}
       <div className="space-y-2">
         {hasProperties ? (
+          // todo: translations
           <div className="space-y-2">
+            {
+              properties.length > 0
+                ? <h3 className="ml-5">Properties:</h3>
+                : null
+            }
             {properties.map((property) => (
               <SchemaPropertyEditor
                 readOnly={readOnly}
@@ -144,6 +150,11 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 depth={depth}
               />
             ))}
+            {
+              patternProperties.length > 0
+                ? <h3 className="ml-5">Pattern properties:</h3>
+                : null
+            }
             {patternProperties.map((property) => (
               <SchemaPropertyEditor
                 readOnly={readOnly}

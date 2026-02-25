@@ -111,6 +111,9 @@ export const ru: Translation = {
   patternPropertyDelete: "Удалить свойство по шаблону",
   patternPropertyInvalidRegex: "Неверное регулярное выражение",
 
+  regularPropertiesTitle: "Обычные свойства",
+  regularPropertiesTitleShort: "Обычные",
+
   additionalPropertiesTitle: "Дополнительные свойства",
   additionalPropertiesAllow: "Разрешить дополнительные свойства",
   additionalPropertiesForbid: "Запретить дополнительные свойства",

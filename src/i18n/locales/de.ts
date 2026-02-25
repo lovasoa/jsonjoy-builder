@@ -111,6 +111,9 @@ export const de: Translation = {
   patternPropertyDelete: "Mustereigenschaft löschen",
   patternPropertyInvalidRegex: "Ungültiger regulärer Ausdruck",
 
+  regularPropertiesTitle: "Reguläre Eigenschaften",
+  regularPropertiesTitleShort: "Regulär",
+
   additionalPropertiesTitle: "Zusätzliche Eigenschaften",
   additionalPropertiesAllow: "Zusätzliche Eigenschaften erlauben",
   additionalPropertiesForbid: "Zusätzliche Eigenschaften verbieten",

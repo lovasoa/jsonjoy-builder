@@ -112,6 +112,9 @@ export const fr: Translation = {
   patternPropertyDelete: "Supprimer la propriété de motif",
   patternPropertyInvalidRegex: "Expression régulière invalide",
 
+  regularPropertiesTitle: "Propriétés Régulières",
+  regularPropertiesTitleShort: "Régulières",
+
   additionalPropertiesTitle: "Propriétés Additionnelles",
   additionalPropertiesAllow: "Autoriser les propriétés additionnelles",
   additionalPropertiesForbid: "Interdire les propriétés additionnelles",

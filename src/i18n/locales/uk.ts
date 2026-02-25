@@ -110,6 +110,9 @@ export const uk: Translation = {
   patternPropertyDelete: "Видалити властивість за шаблоном",
   patternPropertyInvalidRegex: "Неправильний регулярний вираз",
 
+  regularPropertiesTitle: "Звичайні властивості",
+  regularPropertiesTitleShort: "Звичайні",
+
   additionalPropertiesTitle: "Додаткові властивості",
   additionalPropertiesAllow: "Дозволити додаткові властивості",
   additionalPropertiesForbid: "Заборонити додаткові властивості",

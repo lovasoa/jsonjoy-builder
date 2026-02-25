@@ -104,6 +104,9 @@ export const zh: Translation = {
   patternPropertyDelete: "删除模式属性",
   patternPropertyInvalidRegex: "无效的正则表达式",
 
+  regularPropertiesTitle: "常规属性",
+  regularPropertiesTitleShort: "常规",
+
   additionalPropertiesTitle: "附加属性",
   additionalPropertiesAllow: "允许附加属性",
   additionalPropertiesForbid: "禁止附加属性",

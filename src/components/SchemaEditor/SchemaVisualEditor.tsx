@@ -49,7 +49,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   };
 
   // Handle editing a top-level field
-  const handleEditField = (name: string, updatedField: NewField, isPatternProperty = false) => {
+  const handleEditField = (
+    name: string,
+    updatedField: NewField,
+    isPatternProperty = false,
+  ) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
 
@@ -57,17 +61,27 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
     // If name changed, rename the property while preserving order
     if (name !== updatedField.name) {
-      newSchema = renameObjectProperty(newSchema, name, updatedField.name, isPatternProperty);
+      newSchema = renameObjectProperty(
+        newSchema,
+        name,
+        updatedField.name,
+        isPatternProperty,
+      );
       // Update the field schema after rename
       newSchema = updateObjectProperty(
         newSchema,
         updatedField.name,
         fieldSchema,
-        isPatternProperty
+        isPatternProperty,
       );
     } else {
       // Name didn't change, just update the schema
-      newSchema = updateObjectProperty(newSchema, name, fieldSchema, isPatternProperty);
+      newSchema = updateObjectProperty(
+        newSchema,
+        name,
+        fieldSchema,
+        isPatternProperty,
+      );
     }
 
     // Update required status
@@ -83,7 +97,9 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
   // Handle deleting a top-level field
   const handleDeleteField = (name: string, isPatternProperty = false) => {
-    const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+    const schemaProperty = isPatternProperty
+      ? "patternProperties"
+      : "properties";
 
     // Check if the schema is valid first
     if (isBooleanSchema(schema) || !schema[schemaProperty]) {
@@ -109,11 +125,13 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
   const hasObjectSchema = !isBooleanSchema(schema);
 
-  const hasProperties = hasObjectSchema &&
+  const hasProperties =
+    hasObjectSchema &&
     schema.properties &&
     Object.keys(schema.properties).length > 0;
 
-  const hasPatternPropertiesFields = hasObjectSchema &&
+  const hasPatternPropertiesFields =
+    hasObjectSchema &&
     schema.patternProperties &&
     Object.keys(schema.patternProperties).length > 0;
 
@@ -140,7 +158,9 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
-            onPropertyToggle={(name, isPatternProperty) => handlePropertyToggle(onChange, schema, name, isPatternProperty)}
+            onPropertyToggle={(name, isPatternProperty) =>
+              handlePropertyToggle(onChange, schema, name, isPatternProperty)
+            }
           />
         )}
       </div>

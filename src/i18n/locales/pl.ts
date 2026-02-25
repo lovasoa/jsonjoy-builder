@@ -64,7 +64,8 @@ export const pl: Translation = {
   booleanAllowedValuesLabel: "Dozwolone wartości",
   booleanAllowFalseLabel: "Zezwalaj na wartość fałsz",
   booleanAllowTrueLabel: "Zezwalaj na wartość prawda",
-  booleanNeitherWarning: "Ostrzeżenie: Musisz zezwolić na przynajmniej jedną wartość.",
+  booleanNeitherWarning:
+    "Ostrzeżenie: Musisz zezwolić na przynajmniej jedną wartość.",
 
   numberNoConstraint: "Bez ograniczeń",
   numberMinimumLabel: "Minimalna wartość",
@@ -81,7 +82,8 @@ export const pl: Translation = {
   numberAllowedValuesEnumNone: "Nie ustawiono ograniczonych wartości",
   numberAllowedValuesEnumAddLabel: "Dodaj",
   numberAllowedValuesEnumAddPlaceholder: "Dodaj dozwoloną wartość...",
-  numberValidationErrorMinMax: "Wartości minimalna i maksymalna muszą być spójne.",
+  numberValidationErrorMinMax:
+    "Wartości minimalna i maksymalna muszą być spójne.",
   numberValidationErrorBothExclusiveAndInclusiveMin:
     "Nie można jednocześnie ustawić 'exclusiveMinimum' i 'minimum'.",
   numberValidationErrorBothExclusiveAndInclusiveMax:
@@ -143,7 +145,8 @@ export const pl: Translation = {
     "Wklej swój dokument JSON poniżej, aby wygenerować z niego schemat.",
   inferrerCancel: "Anuluj",
   inferrerGenerate: "Generuj schemat",
-  inferrerErrorInvalidJson: "Nieprawidłowy format JSON. Sprawdź swoje dane wejściowe.",
+  inferrerErrorInvalidJson:
+    "Nieprawidłowy format JSON. Sprawdź swoje dane wejściowe.",
 
   validatorTitle: "Waliduj JSON",
   validatorDescription:

@@ -61,7 +61,7 @@ export function removeObjectProperty(
   propertyName: string,
   isPatternProperty = false,
 ): ObjectJSONSchema {
-  const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
 
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
@@ -138,7 +138,7 @@ export function createFieldSchema(field: NewField): JSONSchema {
       ...validation,
       ...(additionalProperties === false ? { additionalProperties } : {}),
     };
-  };
+  }
 
   return validation;
 }
@@ -159,8 +159,11 @@ export function validateFieldName(name: string): boolean {
 /**
  * Gets properties from an object schema
  */
-export function getSchemaProperties(schema: JSONSchema, isPatternProperty = false): Property[] {
-  const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+export function getSchemaProperties(
+  schema: JSONSchema,
+  isPatternProperty = false,
+): Property[] {
+  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
 
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return [];
 
@@ -192,7 +195,7 @@ export function renameObjectProperty(
   newName: string,
   isPatternProperty = false,
 ): ObjectJSONSchema {
-  const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
+  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
 
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
@@ -240,19 +243,26 @@ export function hasChildren(schema: JSONSchema): boolean {
 /**
  * Gets pattern properties from an object schema
  */
-export function getSchemaPatternProperties(schema: JSONSchema): PatternProperty[] {
+export function getSchemaPatternProperties(
+  schema: JSONSchema,
+): PatternProperty[] {
   if (!isObjectSchema(schema) || !schema.patternProperties) return [];
 
-  return Object.entries(schema.patternProperties).map(([pattern, propSchema]) => ({
-    pattern,
-    schema: propSchema,
-  }));
+  return Object.entries(schema.patternProperties).map(
+    ([pattern, propSchema]) => ({
+      pattern,
+      schema: propSchema,
+    }),
+  );
 }
 
 /**
  * Validates a regex pattern
  */
-export function validateRegexPattern(pattern: string): { valid: boolean; error?: string } {
+export function validateRegexPattern(pattern: string): {
+  valid: boolean;
+  error?: string;
+} {
   if (!pattern || pattern.trim() === "") {
     return { valid: false, error: "Pattern cannot be empty" };
   }

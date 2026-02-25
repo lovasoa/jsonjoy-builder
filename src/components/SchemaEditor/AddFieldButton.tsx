@@ -18,10 +18,10 @@ import {
   TooltipTrigger,
 } from "../../components/ui/tooltip.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
-import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
-import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
-import { ButtonToggle } from "../ui/button-toggle.tsx";
 import { validateRegexPattern } from "../../lib/schemaEditor.ts";
+import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
+import { ButtonToggle } from "../ui/button-toggle.tsx";
+import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
   onAddField: (field: NewField, isPatternProperty: boolean) => void;
@@ -53,15 +53,17 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
 
     if (!fieldName.trim()) return;
 
-    onAddField({
-      name: fieldName,
-      type: fieldType,
-      description: fieldDesc,
-      required: fieldRequired,
-      additionalProperties: fieldType === "object"
-        ? additionalProperties
-        : undefined,
-    }, isPatternProperty);
+    onAddField(
+      {
+        name: fieldName,
+        type: fieldType,
+        description: fieldDesc,
+        required: fieldRequired,
+        additionalProperties:
+          fieldType === "object" ? additionalProperties : undefined,
+      },
+      isPatternProperty,
+    );
 
     setFieldName("");
     setFieldType("string");
@@ -142,22 +144,31 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                           : "bg-secondary text-muted-foreground"
                       }
                     >
-                      {isPatternProperty ? t.patternPropertiesTitle : t.regularPropertiesTitle}
+                      {isPatternProperty
+                        ? t.patternPropertiesTitle
+                        : t.regularPropertiesTitle}
                     </ButtonToggle>
                   </div>
                   <Input
                     id={fieldNameId}
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)}
-                    placeholder={isPatternProperty ? t.patternPropertyNamePlaceholder : t.fieldNamePlaceholder}
+                    placeholder={
+                      isPatternProperty
+                        ? t.patternPropertyNamePlaceholder
+                        : t.fieldNamePlaceholder
+                    }
                     className="font-mono text-sm w-full"
-                    validate={isPatternProperty
-                      ? (value) => {
-                        const { valid, error } = validateRegexPattern(value);
+                    validate={
+                      isPatternProperty
+                        ? (value) => {
+                            const { valid, error } =
+                              validateRegexPattern(value);
 
-                        return valid ? null : error;
-                      }
-                      : undefined}
+                            return valid ? null : error;
+                          }
+                        : undefined
+                    }
                     required
                     ref={fieldInputRef}
                   />
@@ -190,48 +201,46 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     className="text-sm w-full"
                   />
                 </div>
-                {
-                  isPatternProperty
-                    ? null
-                    : <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                      <input
-                        type="checkbox"
-                        id={fieldRequiredId}
-                        checked={fieldRequired}
-                        onChange={(e) => setFieldRequired(e.target.checked)}
-                        className="rounded border-gray-300 shrink-0"
-                      />
-                      <label htmlFor={fieldRequiredId} className="text-sm">
-                        {t.fieldRequiredLabel}
-                      </label>
-                    </div>
-                }
-                {
-                  fieldType === 'object'
-                    ? <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                      <input
-                        type="checkbox"
-                        id={additionalPropertiesId}
-                        checked={additionalProperties}
-                        onChange={(e) => setAdditionalProperties(e.target.checked)}
-                        className="rounded border-gray-300 shrink-0"
-                      />
-                      <label htmlFor={additionalPropertiesId} className="text-sm">
-                        {t.additionalPropertiesAllow}
-                      </label>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                          </TooltipTrigger>
-                          <TooltipContent className="max-w-[90vw]">
-                            <p>{t.additionalPropertiesTooltip}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-                    : null
-                }
+                {isPatternProperty ? null : (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
+                    <input
+                      type="checkbox"
+                      id={fieldRequiredId}
+                      checked={fieldRequired}
+                      onChange={(e) => setFieldRequired(e.target.checked)}
+                      className="rounded border-gray-300 shrink-0"
+                    />
+                    <label htmlFor={fieldRequiredId} className="text-sm">
+                      {t.fieldRequiredLabel}
+                    </label>
+                  </div>
+                )}
+                {fieldType === "object" ? (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
+                    <input
+                      type="checkbox"
+                      id={additionalPropertiesId}
+                      checked={additionalProperties}
+                      onChange={(e) =>
+                        setAdditionalProperties(e.target.checked)
+                      }
+                      className="rounded border-gray-300 shrink-0"
+                    />
+                    <label htmlFor={additionalPropertiesId} className="text-sm">
+                      {t.additionalPropertiesAllow}
+                    </label>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-[90vw]">
+                          <p>{t.additionalPropertiesTooltip}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </div>
+                ) : null}
               </div>
 
               <div className="space-y-4 min-w-[280px]">

@@ -50,7 +50,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       normalizedSchema,
       newField.name,
       fieldSchema,
-      isPatternProperty
+      isPatternProperty,
     );
 
     // Update required status if needed
@@ -63,13 +63,24 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   };
 
   // Handle deleting a property
-  const handleDeleteProperty = (propertyName: string, isPatternProperty = false) => {
-    const newSchema = removeObjectProperty(normalizedSchema, propertyName, isPatternProperty);
+  const handleDeleteProperty = (
+    propertyName: string,
+    isPatternProperty = false,
+  ) => {
+    const newSchema = removeObjectProperty(
+      normalizedSchema,
+      propertyName,
+      isPatternProperty,
+    );
     onChange(newSchema);
   };
 
   // Handle property name change
-  const handlePropertyNameChange = (oldName: string, newName: string, isPatternProperty = false) => {
+  const handlePropertyNameChange = (
+    oldName: string,
+    newName: string,
+    isPatternProperty = false,
+  ) => {
     if (oldName === newName) return;
 
     const property = properties.find((p) => p.name === oldName);
@@ -124,7 +135,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   const handleAdditionalPropertiesToggle = () => {
     const { additionalProperties, ...restOfSchema } = normalizedSchema;
 
-    const updatedSchema = asObjectSchema(restOfSchema)
+    const updatedSchema = asObjectSchema(restOfSchema);
 
     if (additionalProperties !== false) {
       updatedSchema.additionalProperties = false;
@@ -133,8 +144,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     onChange(updatedSchema);
   };
 
-  const hasProperties = properties.length > 0
-    || patternProperties.length > 0;
+  const hasProperties = properties.length > 0 || patternProperties.length > 0;
 
   return (
     <div className="space-y-6">
@@ -142,11 +152,9 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       <div className="space-y-2">
         {hasProperties ? (
           <div className="space-y-2">
-            {
-              properties.length > 0
-                ? <h3 className="ml-5">{t.regularPropertiesTitle}:</h3>
-                : null
-            }
+            {properties.length > 0 ? (
+              <h3 className="ml-5">{t.regularPropertiesTitle}:</h3>
+            ) : null}
             {properties.map((property) => (
               <SchemaPropertyEditor
                 readOnly={readOnly}
@@ -166,14 +174,19 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                   handlePropertySchemaChange(property.name, schema)
                 }
                 depth={depth}
-                onPropertyToggle={(name, isPatternProperty) => handlePropertyToggle(onChange, normalizedSchema, name, isPatternProperty)}
+                onPropertyToggle={(name, isPatternProperty) =>
+                  handlePropertyToggle(
+                    onChange,
+                    normalizedSchema,
+                    name,
+                    isPatternProperty,
+                  )
+                }
               />
             ))}
-            {
-              patternProperties.length > 0
-                ? <h3 className="ml-5">{t.patternPropertiesTitle}:</h3>
-                : null
-            }
+            {patternProperties.length > 0 ? (
+              <h3 className="ml-5">{t.patternPropertiesTitle}:</h3>
+            ) : null}
             {patternProperties.map((property) => (
               <SchemaPropertyEditor
                 readOnly={readOnly}
@@ -183,11 +196,24 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 required={property.required}
                 validationNode={validationNode?.children[property.name]}
                 onDelete={() => handleDeleteProperty(property.name, true)}
-                onNameChange={(newName) => handlePropertyNameChange(property.name, newName, true)}
-                onRequiredChange={(required) => handlePropertyRequiredChange(property.name, required)}
-                onSchemaChange={(schema) => handlePropertySchemaChange(property.name, schema, true)}
+                onNameChange={(newName) =>
+                  handlePropertyNameChange(property.name, newName, true)
+                }
+                onRequiredChange={(required) =>
+                  handlePropertyRequiredChange(property.name, required)
+                }
+                onSchemaChange={(schema) =>
+                  handlePropertySchemaChange(property.name, schema, true)
+                }
                 depth={depth}
-                onPropertyToggle={(name, isPatternProperty) => handlePropertyToggle(onChange, normalizedSchema, name, isPatternProperty)}
+                onPropertyToggle={(name, isPatternProperty) =>
+                  handlePropertyToggle(
+                    onChange,
+                    normalizedSchema,
+                    name,
+                    isPatternProperty,
+                  )
+                }
                 isPatternProperty
               />
             ))}
@@ -200,7 +226,10 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
         {!readOnly && (
           <div className="mt-4 flex flex-row gap-x-4">
-            <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
+            <AddFieldButton
+              onAddField={handleAddProperty}
+              variant="secondary"
+            />
             {/* Additional properties */}
             <ButtonToggle
               onClick={handleAdditionalPropertiesToggle}
@@ -210,7 +239,9 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                   : "bg-lime-50 text-lime-600"
               }
             >
-              {additionalProperties === false ? t.additionalPropertiesForbid : t.additionalPropertiesAllow}
+              {additionalProperties === false
+                ? t.additionalPropertiesForbid
+                : t.additionalPropertiesAllow}
             </ButtonToggle>
           </div>
         )}

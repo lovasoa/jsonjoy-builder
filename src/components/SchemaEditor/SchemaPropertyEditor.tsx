@@ -15,9 +15,9 @@ import {
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
+import { ButtonToggle } from "../ui/button-toggle.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
-import { ButtonToggle } from "../ui/button-toggle.tsx";
 
 export interface SchemaPropertyEditorProps {
   name: string;
@@ -178,7 +178,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               {/* Regular/Pattern toggle */}
               <ButtonToggle
                 onClick={() => {
-                  onPropertyToggle(name, isPatternProperty)
+                  onPropertyToggle(name, isPatternProperty);
                 }}
                 className={
                   isPatternProperty
@@ -186,7 +186,9 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                     : "bg-secondary text-muted-foreground"
                 }
               >
-                {isPatternProperty ? t.patternPropertiesTitleShort : t.regularPropertiesTitleShort}
+                {isPatternProperty
+                  ? t.patternPropertiesTitleShort
+                  : t.regularPropertiesTitleShort}
               </ButtonToggle>
               {/* Type display */}
               <TypeDropdown
@@ -200,26 +202,27 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                 }}
               />
               {/* Required toggle */}
-              {
-                isPatternProperty
-                  ? <label className={cn(
+              {isPatternProperty ? (
+                <label
+                  className={cn(
                     "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap",
                     "bg-secondary text-muted-foreground",
-                  )}>
-                    {t.propertyOptional}
-                  </label>
-                  : <ButtonToggle
-                    onClick={() => !readOnly && onRequiredChange(!required)}
-                    className={
-                      required
-                        ? "bg-red-50 text-red-500"
-                        : "bg-secondary text-muted-foreground"
-                    }
-                  >
-                    {required ? t.propertyRequired : t.propertyOptional}
-                  </ButtonToggle>
-              }
-
+                  )}
+                >
+                  {t.propertyOptional}
+                </label>
+              ) : (
+                <ButtonToggle
+                  onClick={() => !readOnly && onRequiredChange(!required)}
+                  className={
+                    required
+                      ? "bg-red-50 text-red-500"
+                      : "bg-secondary text-muted-foreground"
+                  }
+                >
+                  {required ? t.propertyRequired : t.propertyOptional}
+                </ButtonToggle>
+              )}
             </div>
           </div>
         </div>
@@ -250,20 +253,18 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
       </div>
 
       {/* Type-specific editor */}
-      {
-        expanded && (
-          <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
-            {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
-            <TypeEditor
-              schema={schema}
-              readOnly={readOnly}
-              validationNode={validationNode}
-              onChange={handleSchemaUpdate}
-              depth={depth + 1}
-            />
-          </div>
-        )
-      }
+      {expanded && (
+        <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
+          {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
+          <TypeEditor
+            schema={schema}
+            readOnly={readOnly}
+            validationNode={validationNode}
+            onChange={handleSchemaUpdate}
+            depth={depth + 1}
+          />
+        </div>
+      )}
     </div>
   );
 };

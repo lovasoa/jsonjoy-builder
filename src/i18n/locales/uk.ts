@@ -99,7 +99,6 @@ export const uk: Translation = {
   patternPropertiesTitleShort: "Шаблон",
   patternPropertyNamePlaceholder: "^[a-z]+$",
 
-
   regularPropertiesTitle: "Звичайні властивості",
   regularPropertiesTitleShort: "Звичайні",
 

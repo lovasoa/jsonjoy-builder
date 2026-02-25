@@ -103,10 +103,8 @@ export const ru: Translation = {
   regularPropertiesTitle: "Обычные свойства",
   regularPropertiesTitleShort: "Обычные",
 
-  additionalPropertiesTitle: "Дополнительные свойства",
   additionalPropertiesAllow: "Разрешить дополнительные свойства",
   additionalPropertiesForbid: "Запретить дополнительные свойства",
-  additionalPropertiesSchema: "Определить схему для дополнительных свойств",
   additionalPropertiesTooltip:
     "Определяет, разрешены ли свойства, не указанные в 'properties' или 'patternProperties'",
 

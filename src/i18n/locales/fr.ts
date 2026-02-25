@@ -104,10 +104,8 @@ export const fr: Translation = {
   regularPropertiesTitle: "Propriétés Régulières",
   regularPropertiesTitleShort: "Régulières",
 
-  additionalPropertiesTitle: "Propriétés Additionnelles",
   additionalPropertiesAllow: "Autoriser les propriétés additionnelles",
   additionalPropertiesForbid: "Interdire les propriétés additionnelles",
-  additionalPropertiesSchema: "Définir un schéma pour les propriétés additionnelles",
   additionalPropertiesTooltip:
     "Contrôle si les propriétés non définies dans 'properties' ou 'patternProperties' sont autorisées",
 

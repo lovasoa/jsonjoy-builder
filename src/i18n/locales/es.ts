@@ -102,10 +102,8 @@ export const es: Translation = {
   regularPropertiesTitle: "Propiedades Regulares",
   regularPropertiesTitleShort: "Regulares",
 
-  additionalPropertiesTitle: "Propiedades Adicionales",
   additionalPropertiesAllow: "Permitir propiedades adicionales",
   additionalPropertiesForbid: "Prohibir propiedades adicionales",
-  additionalPropertiesSchema: "Definir esquema para propiedades adicionales",
   additionalPropertiesTooltip:
     "Controla si se permiten propiedades no definidas en 'properties' o 'patternProperties'",
 

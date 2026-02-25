@@ -100,10 +100,8 @@ export const en: Translation = {
   regularPropertiesTitle: "Regular Properties",
   regularPropertiesTitleShort: "Regular",
 
-  additionalPropertiesTitle: "Additional Properties",
   additionalPropertiesAllow: "Allow additional properties",
   additionalPropertiesForbid: "Forbid additional properties",
-  additionalPropertiesSchema: "Define schema for additional properties",
   additionalPropertiesTooltip:
     "Controls whether properties not defined in 'properties' or 'patternProperties' are allowed",
 

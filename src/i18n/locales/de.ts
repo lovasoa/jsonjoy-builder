@@ -103,10 +103,8 @@ export const de: Translation = {
   regularPropertiesTitle: "Reguläre Eigenschaften",
   regularPropertiesTitleShort: "Regulär",
 
-  additionalPropertiesTitle: "Zusätzliche Eigenschaften",
   additionalPropertiesAllow: "Zusätzliche Eigenschaften erlauben",
   additionalPropertiesForbid: "Zusätzliche Eigenschaften verbieten",
-  additionalPropertiesSchema: "Schema für zusätzliche Eigenschaften definieren",
   additionalPropertiesTooltip:
     "Steuert, ob Eigenschaften, die nicht in 'properties' oder 'patternProperties' definiert sind, erlaubt sind",
 

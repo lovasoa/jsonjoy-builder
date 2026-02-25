@@ -103,10 +103,8 @@ export const uk: Translation = {
   regularPropertiesTitle: "Звичайні властивості",
   regularPropertiesTitleShort: "Звичайні",
 
-  additionalPropertiesTitle: "Додаткові властивості",
   additionalPropertiesAllow: "Дозволити додаткові властивості",
   additionalPropertiesForbid: "Заборонити додаткові властивості",
-  additionalPropertiesSchema: "Визначити схему для додаткових властивостей",
   additionalPropertiesTooltip:
     "Контролює, чи дозволені властивості, не визначені в 'properties' або 'patternProperties'",
 

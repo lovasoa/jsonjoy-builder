@@ -465,12 +465,6 @@ export interface Translation {
    */
   readonly patternPropertyNamePlaceholder: string;
   /**
-   * The translation for the key `additionalPropertiesTitle`. English default is:
-   *
-   * > Additional Properties
-   */
-  readonly additionalPropertiesTitle: string;
-  /**
    * The translation for the key `additionalPropertiesAllow`. English default is:
    *
    * > Allow additional properties
@@ -483,18 +477,11 @@ export interface Translation {
    */
   readonly additionalPropertiesForbid: string;
   /**
-   * The translation for the key `additionalPropertiesSchema`. English default is:
-   *
-   * > Define schema for additional properties
-   */
-  readonly additionalPropertiesSchema: string;
-  /**
    * The translation for the key `additionalPropertiesTooltip`. English default is:
    *
    * > Controls whether properties not defined in 'properties' or 'patternProperties' are allowed
    */
   readonly additionalPropertiesTooltip: string;
-
   /**
    * The translation for the key `regularPropertiesTitle`. English default is:
    *

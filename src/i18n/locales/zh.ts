@@ -98,10 +98,8 @@ export const zh: Translation = {
   regularPropertiesTitle: "常规属性",
   regularPropertiesTitleShort: "常规",
 
-  additionalPropertiesTitle: "附加属性",
   additionalPropertiesAllow: "允许附加属性",
   additionalPropertiesForbid: "禁止附加属性",
-  additionalPropertiesSchema: "为附加属性定义模式",
   additionalPropertiesTooltip:
     "控制是否允许未在 'properties' 或 'patternProperties' 中定义的属性",
 

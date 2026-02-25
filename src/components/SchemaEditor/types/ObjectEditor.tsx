@@ -33,10 +33,13 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   // Handle adding a new property
   const handleAddProperty = (newField: NewField, isPatternProperty = false) => {
     // Create field schema from the new field data
+    const { type, description, validation, additionalProperties } = newField;
+
     const fieldSchema = {
-      type: newField.type,
-      description: newField.description || undefined,
-      ...(newField.validation || {}),
+      type,
+      description: description || undefined,
+      ...(validation || {}),
+      ...(additionalProperties === false ? { additionalProperties } : {}),
     } as ObjectJSONSchema;
 
     // Add the property to the schema

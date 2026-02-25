@@ -38,10 +38,12 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
   const [isPatternProperty, setPatternProperty] = useState(false);
+  const [additionalProperties, setAdditionalProperties] = useState(true);
   const fieldNameId = useId();
   const fieldDescId = useId();
   const fieldRequiredId = useId();
   const fieldTypeId = useId();
+  const additionalPropertiesId = useId();
   const fieldInputRef = useRef<HTMLInputElement>(null);
 
   const t = useTranslation();
@@ -56,6 +58,9 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
       type: fieldType,
       description: fieldDesc,
       required: fieldRequired,
+      additionalProperties: fieldType === "object"
+        ? additionalProperties
+        : undefined,
     }, isPatternProperty);
 
     setFieldName("");
@@ -64,6 +69,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
     setFieldRequired(false);
     setDialogOpen(false);
     setPatternProperty(false);
+    setAdditionalProperties(true);
   };
 
   return (
@@ -199,6 +205,32 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         {t.fieldRequiredLabel}
                       </label>
                     </div>
+                }
+                {
+                  fieldType === 'object'
+                    ? <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
+                      <input
+                        type="checkbox"
+                        id={additionalPropertiesId}
+                        checked={additionalProperties}
+                        onChange={(e) => setAdditionalProperties(e.target.checked)}
+                        className="rounded border-gray-300 shrink-0"
+                      />
+                      <label htmlFor={additionalPropertiesId} className="text-sm">
+                        {t.additionalPropertiesAllow}
+                      </label>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="h-4 w-4 text-muted-foreground shrink-0" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-[90vw]">
+                            <p>{t.additionalPropertiesTooltip}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    : null
                 }
               </div>
 

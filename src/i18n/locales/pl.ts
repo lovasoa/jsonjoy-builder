@@ -117,7 +117,7 @@ export const pl: Translation = {
   additionalPropertiesForbid: "Zabroń dodatkowych właściwości",
   additionalPropertiesSchema: "Zdefiniuj schemat dla dodatkowych właściwości",
   additionalPropertiesTooltip:
-    "Kontroluje czy właściwości nie zdefiniowane w 'properties' lub 'patternProperties' są dozwolone",
+    "Kontroluje czy właściwości niezdefiniowane w 'properties' lub 'patternProperties' są dozwolone",
 
   stringNoConstraint: "Bez ograniczeń",
   stringMinimumLengthLabel: "Minimalna długość",

@@ -42,6 +42,8 @@ export const fr: Translation = {
   propertyDescriptionPlaceholder: "Ajouter une description...",
   propertyDescriptionButton: "Ajouter une description...",
   propertyRequired: "Obligatoire",
+  propertyRequiredToggleDisabledTooltip:
+    "Obligatoire ne peut être activé que pour les propriétés définies dans la section 'Propriétés régulières'",
   propertyOptional: "Facultatif",
   propertyDelete: "Supprimer le champ",
 

@@ -40,6 +40,8 @@ export const zh: Translation = {
   propertyDescriptionPlaceholder: "添加描述...",
   propertyDescriptionButton: "添加描述...",
   propertyRequired: "必填",
+  propertyRequiredToggleDisabledTooltip:
+    "必填只能针对在 '常规属性' 部分定义的属性启用",
   propertyOptional: "可选",
   propertyDelete: "删除字段",
 

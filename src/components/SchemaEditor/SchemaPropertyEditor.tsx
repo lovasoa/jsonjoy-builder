@@ -16,6 +16,12 @@ import {
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
 import { ButtonToggle } from "../ui/button-toggle.tsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
 
@@ -203,14 +209,23 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               />
               {/* Required toggle */}
               {isPatternProperty ? (
-                <label
-                  className={cn(
-                    "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap",
-                    "bg-secondary text-muted-foreground",
-                  )}
-                >
-                  {t.propertyOptional}
-                </label>
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap cursor-default",
+                          "bg-secondary text-muted-foreground",
+                        )}
+                      >
+                        {t.propertyOptional}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-[90vw]">
+                      {t.propertyRequiredToggleDisabledTooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               ) : (
                 <ButtonToggle
                   onClick={() => !readOnly && onRequiredChange(!required)}

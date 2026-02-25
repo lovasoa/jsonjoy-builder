@@ -40,6 +40,8 @@ export const pl: Translation = {
   propertyDescriptionPlaceholder: "Dodaj opis...",
   propertyDescriptionButton: "Dodaj opis...",
   propertyRequired: "Wymagane",
+  propertyRequiredToggleDisabledTooltip:
+    "Wymagane można włączyć tylko dla właściwości zdefiniowanych w sekcji 'Właściwości zwyczajne'",
   propertyOptional: "Opcjonalne",
   propertyDelete: "Usuń pole",
 

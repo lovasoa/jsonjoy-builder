@@ -42,6 +42,8 @@ export const ru: Translation = {
   propertyDescriptionPlaceholder: "Добавить описание...",
   propertyDescriptionButton: "Добавить описание...",
   propertyRequired: "Обязательное",
+  propertyRequiredToggleDisabledTooltip:
+    "Обязательное может быть включено только для свойств, определенных в разделе 'Регулярные свойства'",
   propertyOptional: "Необязательное",
   propertyDelete: "Удалить поле",
 

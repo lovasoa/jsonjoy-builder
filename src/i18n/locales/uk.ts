@@ -41,6 +41,8 @@ export const uk: Translation = {
   propertyDescriptionPlaceholder: "Додати опис...",
   propertyDescriptionButton: "Додати опис...",
   propertyRequired: "Обов'язкове",
+  propertyRequiredToggleDisabledTooltip:
+    "Обов'язкове може бути включено тільки для властивостей, визначених у розділі 'Звичайні властивості'",
   propertyOptional: "Необов'язкове",
   propertyDelete: "Видалити поле",
 

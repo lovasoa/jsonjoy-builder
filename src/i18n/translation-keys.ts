@@ -220,6 +220,12 @@ export interface Translation {
    */
   readonly propertyRequired: string;
   /**
+   * The translation for the key `propertyRequiredToggleDisabledTooltip`. English default is:
+   *
+   * > Require can be toggled only for properties defined in the 'properties' section
+   */
+  readonly propertyRequiredToggleDisabledTooltip: string;
+  /**
    * The translation for the key `propertyOptional`. English default is:
    *
    * > Optional

@@ -250,73 +250,6 @@ export function getSchemaPatternProperties(schema: JSONSchema): PatternProperty[
 }
 
 /**
- * Updates a pattern property in an object schema
- */
-export function updatePatternProperty(
-  schema: ObjectJSONSchema,
-  pattern: string,
-  propertySchema: JSONSchema,
-): ObjectJSONSchema {
-  if (!isObjectSchema(schema)) return schema;
-
-  const newSchema = copySchema(schema);
-  if (!newSchema.patternProperties) {
-    newSchema.patternProperties = {};
-  }
-
-  newSchema.patternProperties[pattern] = propertySchema;
-  return newSchema;
-}
-
-/**
- * Removes a pattern property from an object schema
- */
-export function removePatternProperty(
-  schema: ObjectJSONSchema,
-  pattern: string,
-): ObjectJSONSchema {
-  if (!isObjectSchema(schema) || !schema.patternProperties) return schema;
-
-  const newSchema = copySchema(schema);
-  const { [pattern]: _, ...remainingProps } = newSchema.patternProperties;
-  newSchema.patternProperties = remainingProps;
-
-  // Remove patternProperties if empty
-  if (Object.keys(newSchema.patternProperties).length === 0) {
-    delete newSchema.patternProperties;
-  }
-
-  return newSchema;
-}
-
-/**
- * Renames a pattern property while preserving order in the object schema
- */
-export function renamePatternProperty(
-  schema: ObjectJSONSchema,
-  oldPattern: string,
-  newPattern: string,
-): ObjectJSONSchema {
-  if (!isObjectSchema(schema) || !schema.patternProperties) return schema;
-
-  const newSchema = copySchema(schema);
-  const newPatternProperties: Record<string, JSONSchema> = {};
-
-  // Iterate through patternProperties in order, replacing old key with new key
-  for (const [key, value] of Object.entries(newSchema.patternProperties)) {
-    if (key === oldPattern) {
-      newPatternProperties[newPattern] = value;
-    } else {
-      newPatternProperties[key] = value;
-    }
-  }
-
-  newSchema.patternProperties = newPatternProperties;
-
-  return newSchema;
-}
-
-/**
  * Validates a regex pattern
  */
 export function validateRegexPattern(pattern: string): { valid: boolean; error?: string } {
@@ -330,33 +263,4 @@ export function validateRegexPattern(pattern: string): { valid: boolean; error?:
   } catch (e) {
     return { valid: false, error: `Invalid regex: ${(e as Error).message}` };
   }
-}
-
-/**
- * Gets the additionalProperties setting from an object schema
- * Returns: true | false | JSONSchema | undefined
- */
-export function getAdditionalProperties(schema: JSONSchema): boolean | JSONSchema | undefined {
-  if (!isObjectSchema(schema)) return undefined;
-  return schema.additionalProperties;
-}
-
-/**
- * Updates the additionalProperties setting in an object schema
- */
-export function updateAdditionalProperties(
-  schema: ObjectJSONSchema,
-  value: boolean | JSONSchema | undefined,
-): ObjectJSONSchema {
-  if (!isObjectSchema(schema)) return schema;
-
-  const newSchema = copySchema(schema);
-
-  if (value === undefined) {
-    delete newSchema.additionalProperties;
-  } else {
-    newSchema.additionalProperties = value;
-  }
-
-  return newSchema;
 }

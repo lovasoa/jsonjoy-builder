@@ -95,19 +95,7 @@ export const en: Translation = {
 
   patternPropertiesTitle: "Pattern Properties",
   patternPropertiesTitleShort: "Pattern",
-  patternPropertiesNone: "No pattern properties defined",
-  patternPropertiesAddButton: "Add Pattern Property",
-  patternPropertyNameLabel: "Pattern (regex)",
   patternPropertyNamePlaceholder: "^[a-z]+$",
-  patternPropertyNameTooltip:
-    "A regular expression that property names must match",
-  patternPropertiesAddNewLabel: "Add Pattern Property",
-  patternPropertiesAddNewDescription:
-    "Create a pattern property for dynamic property names",
-  patternPropertiesAddNewConfirm: "Add Pattern Property",
-  patternPropertiesAddNewCancel: "Cancel",
-  patternPropertyDelete: "Delete pattern property",
-  patternPropertyInvalidRegex: "Invalid regular expression",
 
   regularPropertiesTitle: "Regular Properties",
   regularPropertiesTitleShort: "Regular",

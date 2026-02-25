@@ -95,19 +95,7 @@ export const pl: Translation = {
 
   patternPropertiesTitle: "Właściwości wzorca",
   patternPropertiesTitleShort: "Wzorzec",
-  patternPropertiesNone: "Nie zdefiniowano właściwości wzorca",
-  patternPropertiesAddButton: "Dodaj właściwość wzorca",
-  patternPropertyNameLabel: "Wzorzec (regex)",
   patternPropertyNamePlaceholder: "^[a-z]+$",
-  patternPropertyNameTooltip:
-    "Wyrażenie regularne, któremu muszą odpowiadać nazwy właściwości",
-  patternPropertiesAddNewLabel: "Dodaj właściwość wzorca",
-  patternPropertiesAddNewDescription:
-    "Utwórz właściwość wzorca dla dynamicznych nazw właściwości",
-  patternPropertiesAddNewConfirm: "Dodaj właściwość wzorca",
-  patternPropertiesAddNewCancel: "Anuluj",
-  patternPropertyDelete: "Usuń właściwość wzorca",
-  patternPropertyInvalidRegex: "Nieprawidłowe wyrażenie regularne",
 
   regularPropertiesTitle: "Właściwości zwykłe",
   regularPropertiesTitleShort: "Zwykłe",

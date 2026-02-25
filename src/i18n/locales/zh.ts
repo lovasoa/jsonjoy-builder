@@ -92,17 +92,8 @@ export const zh: Translation = {
   objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」.",
 
   patternPropertiesTitle: "模式属性",
-  patternPropertiesNone: "没有定义模式属性",
-  patternPropertiesAddButton: "添加模式属性",
-  patternPropertyNameLabel: "模式 (正则表达式)",
+  patternPropertiesTitleShort: "模式",
   patternPropertyNamePlaceholder: "^[a-z]+$",
-  patternPropertyNameTooltip: "属性名必须匹配的正则表达式",
-  patternPropertiesAddNewLabel: "添加模式属性",
-  patternPropertiesAddNewDescription: "为动态属性名创建模式属性",
-  patternPropertiesAddNewConfirm: "添加模式属性",
-  patternPropertiesAddNewCancel: "取消",
-  patternPropertyDelete: "删除模式属性",
-  patternPropertyInvalidRegex: "无效的正则表达式",
 
   regularPropertiesTitle: "常规属性",
   regularPropertiesTitleShort: "常规",

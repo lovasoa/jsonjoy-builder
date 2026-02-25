@@ -96,19 +96,8 @@ export const es: Translation = {
     "'minProperties' no puede ser mayor que 'maxProperties'.",
 
   patternPropertiesTitle: "Propiedades de Patrón",
-  patternPropertiesNone: "No hay propiedades de patrón definidas",
-  patternPropertiesAddButton: "Agregar Propiedad de Patrón",
-  patternPropertyNameLabel: "Patrón (regex)",
+  patternPropertiesTitleShort: "Patrón",
   patternPropertyNamePlaceholder: "^[a-z]+$",
-  patternPropertyNameTooltip:
-    "Una expresión regular que los nombres de propiedades deben coincidir",
-  patternPropertiesAddNewLabel: "Agregar Propiedad de Patrón",
-  patternPropertiesAddNewDescription:
-    "Crear una propiedad de patrón para nombres de propiedades dinámicos",
-  patternPropertiesAddNewConfirm: "Agregar Propiedad de Patrón",
-  patternPropertiesAddNewCancel: "Cancelar",
-  patternPropertyDelete: "Eliminar propiedad de patrón",
-  patternPropertyInvalidRegex: "Expresión regular inválida",
 
   regularPropertiesTitle: "Propiedades Regulares",
   regularPropertiesTitleShort: "Regulares",

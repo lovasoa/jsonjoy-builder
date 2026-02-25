@@ -459,72 +459,11 @@ export interface Translation {
    */
   readonly patternPropertiesTitleShort: string;
   /**
-   * The translation for the key `patternPropertiesNone`. English default is:
-   *
-   * > No pattern properties defined
-   */
-  readonly patternPropertiesNone: string;
-  /**
-   * The translation for the key `patternPropertiesAddButton`. English default is:
-   *
-   * > Add Pattern Property
-   */
-  readonly patternPropertiesAddButton: string;
-  /**
-   * The translation for the key `patternPropertyNameLabel`. English default is:
-   *
-   * > Pattern (regex)
-   */
-  readonly patternPropertyNameLabel: string;
-  /**
    * The translation for the key `patternPropertyNamePlaceholder`. English default is:
    *
    * > ^[a-z]+$
    */
   readonly patternPropertyNamePlaceholder: string;
-  /**
-   * The translation for the key `patternPropertyNameTooltip`. English default is:
-   *
-   * > A regular expression that property names must match
-   */
-  readonly patternPropertyNameTooltip: string;
-  /**
-   * The translation for the key `patternPropertiesAddNewLabel`. English default is:
-   *
-   * > Add Pattern Property
-   */
-  readonly patternPropertiesAddNewLabel: string;
-  /**
-   * The translation for the key `patternPropertiesAddNewDescription`. English default is:
-   *
-   * > Create a pattern property for dynamic property names
-   */
-  readonly patternPropertiesAddNewDescription: string;
-  /**
-   * The translation for the key `patternPropertiesAddNewConfirm`. English default is:
-   *
-   * > Add Pattern Property
-   */
-  readonly patternPropertiesAddNewConfirm: string;
-  /**
-   * The translation for the key `patternPropertiesAddNewCancel`. English default is:
-   *
-   * > Cancel
-   */
-  readonly patternPropertiesAddNewCancel: string;
-  /**
-   * The translation for the key `patternPropertyDelete`. English default is:
-   *
-   * > Delete pattern property
-   */
-  readonly patternPropertyDelete: string;
-  /**
-   * The translation for the key `patternPropertyInvalidRegex`. English default is:
-   *
-   * > Invalid regular expression
-   */
-  readonly patternPropertyInvalidRegex: string;
-
   /**
    * The translation for the key `additionalPropertiesTitle`. English default is:
    *

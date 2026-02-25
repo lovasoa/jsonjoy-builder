@@ -98,19 +98,8 @@ export const fr: Translation = {
     "'minProperties' ne peut pas être supérieur à 'maxProperties'.",
 
   patternPropertiesTitle: "Propriétés de Motif",
-  patternPropertiesNone: "Aucune propriété de motif définie",
-  patternPropertiesAddButton: "Ajouter une Propriété de Motif",
-  patternPropertyNameLabel: "Motif (regex)",
+  patternPropertiesTitleShort: "Motif",
   patternPropertyNamePlaceholder: "^[a-z]+$",
-  patternPropertyNameTooltip:
-    "Une expression régulière que les noms de propriétés doivent correspondre",
-  patternPropertiesAddNewLabel: "Ajouter une Propriété de Motif",
-  patternPropertiesAddNewDescription:
-    "Créer une propriété de motif pour des noms de propriétés dynamiques",
-  patternPropertiesAddNewConfirm: "Ajouter une Propriété de Motif",
-  patternPropertiesAddNewCancel: "Annuler",
-  patternPropertyDelete: "Supprimer la propriété de motif",
-  patternPropertyInvalidRegex: "Expression régulière invalide",
 
   regularPropertiesTitle: "Propriétés Régulières",
   regularPropertiesTitleShort: "Régulières",

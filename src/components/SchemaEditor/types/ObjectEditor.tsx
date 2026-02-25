@@ -10,6 +10,7 @@ import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
 import AddFieldButton from "../AddFieldButton.tsx";
 import SchemaPropertyEditor from "../SchemaPropertyEditor.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
+import handlePropertyToggle from "../utils/handlePropertyToggle.tsx";
 
 const ObjectEditor: React.FC<TypeEditorProps> = ({
   schema,
@@ -148,6 +149,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                   handlePropertySchemaChange(property.name, schema)
                 }
                 depth={depth}
+                onPropertyToggle={(name, isPatternProperty) => handlePropertyToggle(onChange, normalizedSchema, name, isPatternProperty)}
               />
             ))}
             {
@@ -168,6 +170,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 onRequiredChange={(required) => handlePropertyRequiredChange(property.name, required)}
                 onSchemaChange={(schema) => handlePropertySchemaChange(property.name, schema, true)}
                 depth={depth}
+                onPropertyToggle={(name, isPatternProperty) => handlePropertyToggle(onChange, normalizedSchema, name, isPatternProperty)}
                 isPatternProperty
               />
             ))}

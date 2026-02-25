@@ -2,7 +2,6 @@ import type { FC } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   createFieldSchema,
-  removeObjectProperty,
   renameObjectProperty,
   updateObjectProperty,
   updatePropertyRequired,
@@ -11,6 +10,7 @@ import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
+import handlePropertyToggle from "./utils/handlePropertyToggle.tsx";
 
 /** @public */
 export interface SchemaVisualEditorProps {
@@ -107,23 +107,6 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     onChange(newSchema);
   };
 
-  // Handle toggling between properties and patternProperties
-  const handlePropertyToggle = (name: string, isPatternProperty = false) => {
-    const schemaProperty = isPatternProperty ? 'patternProperties' : 'properties';
-
-    if (isBooleanSchema(schema) || !schema[schemaProperty]) {
-      return;
-    }
-
-    const fieldSchema = schema[schemaProperty][name];
-
-    const schemaAfterRemove = removeObjectProperty(schema, name, isPatternProperty);
-    const newSchema = updateObjectProperty(schemaAfterRemove, name, fieldSchema, !isPatternProperty);
-
-    onChange(newSchema);
-  }
-
-
   const hasObjectSchema = !isBooleanSchema(schema);
 
   const hasProperties = hasObjectSchema &&
@@ -157,7 +140,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
-            onPropertyToggle={handlePropertyToggle}
+            onPropertyToggle={(name, isPatternProperty) => handlePropertyToggle(onChange, schema, name, isPatternProperty)}
           />
         )}
       </div>

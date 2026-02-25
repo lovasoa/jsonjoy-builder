@@ -109,8 +109,8 @@ export const en: Translation = {
   patternPropertyDelete: "Delete pattern property",
   patternPropertyInvalidRegex: "Invalid regular expression",
 
-  regularPropertiesTitle: "Regular Properties", // todo: other translations
-  regularPropertiesTitleShort: "Regular", // todo: other translations
+  regularPropertiesTitle: "Regular Properties",
+  regularPropertiesTitleShort: "Regular",
 
   additionalPropertiesTitle: "Additional Properties",
   additionalPropertiesAllow: "Allow additional properties",

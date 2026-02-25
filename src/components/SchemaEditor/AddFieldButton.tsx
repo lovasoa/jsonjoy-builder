@@ -142,7 +142,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                   <Input
                     id={fieldNameId}
                     value={fieldName}
-                    onChange={(e) => setFieldName(e.target.value)} // todo: set properly
+                    onChange={(e) => setFieldName(e.target.value)}
                     placeholder={isPatternProperty ? t.patternPropertyNamePlaceholder : t.fieldNamePlaceholder}
                     className="font-mono text-sm w-full"
                     validate={isPatternProperty

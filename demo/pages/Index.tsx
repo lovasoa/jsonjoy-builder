@@ -157,6 +157,7 @@ const Index = () => {
                       <SelectItem value="uk">Ukrainian</SelectItem>
                       <SelectItem value="es">Spanish</SelectItem>
                       <SelectItem value="zh">Chinese</SelectItem>
+                      <SelectItem value="pl">Polish</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

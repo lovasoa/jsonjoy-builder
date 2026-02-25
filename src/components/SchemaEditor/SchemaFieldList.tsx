@@ -120,13 +120,11 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     [schema, t],
   );
 
-  // todo: translation
-
   return (
     <div className="space-y-2 animate-in">
       {
         properties.length > 0
-          ? <h3>Properties:</h3>
+          ? <h3>{t.regularPropertiesTitle}:</h3>
           : null
       }
       {properties.map((property) => (
@@ -148,7 +146,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
       ))}
       {
         patternProperties.length > 0
-          ? <h3>Pattern properties:</h3>
+          ? <h3>{t.patternPropertiesTitle}:</h3>
           : null
       }
       {

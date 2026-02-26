@@ -41,6 +41,8 @@ export const uk: Translation = {
   propertyDescriptionPlaceholder: "Додати опис...",
   propertyDescriptionButton: "Додати опис...",
   propertyRequired: "Обов'язкове",
+  propertyRequiredToggleDisabledTooltip:
+    "Обов'язкове може бути включено тільки для властивостей, визначених у розділі 'Звичайні властивості'",
   propertyOptional: "Необов'язкове",
   propertyDelete: "Видалити поле",
 
@@ -94,6 +96,13 @@ export const uk: Translation = {
   objectPropertiesNone: "Властивості не визначені",
   objectValidationErrorMinMax:
     "'minProperties' не може бути більше за 'maxProperties'.",
+
+  patternPropertiesTitle: "Властивості за шаблоном",
+  patternPropertiesTitleShort: "Шаблон",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+
+  regularPropertiesTitle: "Звичайні властивості",
+  regularPropertiesTitleShort: "Звичайні",
 
   additionalPropertiesAllow: "Дозволити додаткові властивості",
   additionalPropertiesForbid: "Заборонити додаткові властивості",

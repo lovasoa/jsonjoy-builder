@@ -40,6 +40,8 @@ export const en: Translation = {
   propertyDescriptionPlaceholder: "Add description...",
   propertyDescriptionButton: "Add description...",
   propertyRequired: "Required",
+  propertyRequiredToggleDisabledTooltip:
+    "Require can be toggled only for properties defined in the 'Regular Properties' section",
   propertyOptional: "Optional",
   propertyDelete: "Delete field",
 
@@ -93,6 +95,12 @@ export const en: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' cannot be greater than 'maxProperties'.",
 
+  patternPropertiesTitle: "Pattern Properties",
+  patternPropertiesTitleShort: "Pattern",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+
+  regularPropertiesTitle: "Regular Properties",
+  regularPropertiesTitleShort: "Regular",
 
   additionalPropertiesAllow: "Allow additional properties",
   additionalPropertiesForbid: "Forbid additional properties",

@@ -40,6 +40,8 @@ export const zh: Translation = {
   propertyDescriptionPlaceholder: "添加描述...",
   propertyDescriptionButton: "添加描述...",
   propertyRequired: "必填",
+  propertyRequiredToggleDisabledTooltip:
+    "必填只能针对在 '常规属性' 部分定义的属性启用",
   propertyOptional: "可选",
   propertyDelete: "删除字段",
 
@@ -90,6 +92,13 @@ export const zh: Translation = {
 
   objectPropertiesNone: "没有定义属性",
   objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」.",
+
+  patternPropertiesTitle: "模式属性",
+  patternPropertiesTitleShort: "模式",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+
+  regularPropertiesTitle: "常规属性",
+  regularPropertiesTitleShort: "常规",
 
   additionalPropertiesAllow: "允许附加属性",
   additionalPropertiesForbid: "禁止附加属性",

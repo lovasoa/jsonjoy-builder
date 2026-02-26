@@ -15,9 +15,9 @@ import {
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
+import { ButtonToggle } from "../ui/button-toggle.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
-import { ButtonToggle } from "../ui/button-toggle.tsx";
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;

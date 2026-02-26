@@ -447,10 +447,10 @@ export interface Translation {
   readonly objectValidationErrorMinMax: string;
 
   /**
-  * The translation for the key `additionalPropertiesAllow`. English default is:
-  *
-  * > Allow additional properties
-  */
+   * The translation for the key `additionalPropertiesAllow`. English default is:
+   *
+   * > Allow additional properties
+   */
   readonly additionalPropertiesAllow: string;
   /**
    * The translation for the key `additionalPropertiesForbid`. English default is:

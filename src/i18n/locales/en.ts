@@ -93,7 +93,6 @@ export const en: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' cannot be greater than 'maxProperties'.",
 
-
   additionalPropertiesAllow: "Allow additional properties",
   additionalPropertiesForbid: "Forbid additional properties",
   additionalPropertiesTooltip:

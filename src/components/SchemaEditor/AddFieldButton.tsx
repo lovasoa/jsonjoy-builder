@@ -1,5 +1,5 @@
 import { CirclePlus, HelpCircle, Info } from "lucide-react";
-import { type FC, type FormEvent, useId, useState } from "react";
+import { type FC, type FormEvent, useId, useRef, useState } from "react";
 import { Badge } from "../../components/ui/badge.tsx";
 import { Button } from "../../components/ui/button.tsx";
 import {
@@ -18,11 +18,13 @@ import {
   TooltipTrigger,
 } from "../../components/ui/tooltip.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { validateRegexPattern } from "../../lib/schemaEditor.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
+import { ButtonToggle } from "../ui/button-toggle.tsx";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
-  onAddField: (field: NewField) => void;
+  onAddField: (field: NewField, isProperty: boolean) => void;
   variant?: "primary" | "secondary";
 }
 
@@ -35,33 +37,40 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const [fieldType, setFieldType] = useState<SchemaType>("string");
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
+  const [isProperty, setProperty] = useState(false);
   const [additionalProperties, setAdditionalProperties] = useState(true);
   const fieldNameId = useId();
   const fieldDescId = useId();
   const fieldRequiredId = useId();
   const fieldTypeId = useId();
   const additionalPropertiesId = useId();
+  const fieldInputRef = useRef<HTMLInputElement>(null);
 
   const t = useTranslation();
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+
     if (!fieldName.trim()) return;
 
-    onAddField({
-      name: fieldName,
-      type: fieldType,
-      description: fieldDesc,
-      required: fieldRequired,
-      additionalProperties:
-        fieldType === "object" ? additionalProperties : undefined,
-    });
+    onAddField(
+      {
+        name: fieldName,
+        type: fieldType,
+        description: fieldDesc,
+        required: fieldRequired,
+        additionalProperties:
+          fieldType === "object" ? additionalProperties : undefined,
+      },
+      isProperty,
+    );
 
     setFieldName("");
     setFieldType("string");
     setFieldDesc("");
     setFieldRequired(false);
     setDialogOpen(false);
+    setProperty(false);
     setAdditionalProperties(true);
   };
 
@@ -116,14 +125,52 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    {/* Properties toggle */}
+                    <ButtonToggle
+                      onClick={() => {
+                        setProperty(!isProperty);
+
+                        // Reset required for  properties, as they cannot be required
+                        if (fieldRequired && !isProperty) {
+                          setFieldRequired(false);
+                        }
+
+                        // reset field name
+                        setFieldName("");
+                      }}
+                      className={
+                        isProperty
+                          ? "bg-emerald-50 text-emerald-600"
+                          : "bg-secondary text-muted-foreground"
+                      }
+                    >
+                      {isProperty
+                        ? t.patternPropertiesTitle
+                        : t.regularPropertiesTitle}
+                    </ButtonToggle>
                   </div>
                   <Input
                     id={fieldNameId}
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)}
-                    placeholder={t.fieldNamePlaceholder}
+                    placeholder={
+                      isProperty
+                        ? t.patternPropertyNamePlaceholder
+                        : t.fieldNamePlaceholder
+                    }
                     className="font-mono text-sm w-full"
+                    validate={
+                      isProperty
+                        ? (value) => {
+                          const { valid, error } =
+                            validateRegexPattern(value);
+
+                          return valid ? null : error;
+                        }
+                        : undefined
+                    }
                     required
+                    ref={fieldInputRef}
                   />
                 </div>
 
@@ -154,19 +201,20 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     className="text-sm w-full"
                   />
                 </div>
-
-                <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                  <input
-                    type="checkbox"
-                    id={fieldRequiredId}
-                    checked={fieldRequired}
-                    onChange={(e) => setFieldRequired(e.target.checked)}
-                    className="rounded border-gray-300 shrink-0"
-                  />
-                  <label htmlFor={fieldRequiredId} className="text-sm">
-                    {t.fieldRequiredLabel}
-                  </label>
-                </div>
+                {isProperty ? null : (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
+                    <input
+                      type="checkbox"
+                      id={fieldRequiredId}
+                      checked={fieldRequired}
+                      onChange={(e) => setFieldRequired(e.target.checked)}
+                      className="rounded border-gray-300 shrink-0"
+                    />
+                    <label htmlFor={fieldRequiredId} className="text-sm">
+                      {t.fieldRequiredLabel}
+                    </label>
+                  </div>
+                )}
                 {fieldType === "object" ? (
                   <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
                     <input

@@ -37,7 +37,7 @@ export interface SchemaPropertyEditorProps {
   onSchemaChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
   isPatternProperty?: boolean;
-  onPropertyToggle: (name: string, isPatternProperty?: boolean) => void;
+  onPropertyToggle?: (name: string, isPatternProperty?: boolean) => void;
 }
 
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
@@ -184,7 +184,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               {/* Regular/Pattern toggle */}
               <ButtonToggle
                 onClick={() => {
-                  onPropertyToggle(name, isPatternProperty);
+                  onPropertyToggle?.(name, isPatternProperty);
                 }}
                 className={
                   isPatternProperty

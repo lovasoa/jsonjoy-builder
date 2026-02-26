@@ -132,8 +132,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
   const hasPropertiesFields =
     hasObjectSchema &&
-    schema.Properties &&
-    Object.keys(schema.Properties).length > 0;
+    schema.properties &&
+    Object.keys(schema.properties).length > 0;
 
   const hasFields = hasProperties || hasPropertiesFields;
 

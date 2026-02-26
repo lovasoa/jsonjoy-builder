@@ -96,6 +96,7 @@ export const fr: Translation = {
   objectPropertiesNone: "Aucune propriété définie",
   objectValidationErrorMinMax:
     "'minProperties' ne peut pas être supérieur à 'maxProperties'.",
+
   additionalPropertiesAllow: "Autoriser les propriétés additionnelles",
   additionalPropertiesForbid: "Interdire les propriétés additionnelles",
   additionalPropertiesTooltip:

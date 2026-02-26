@@ -94,6 +94,7 @@ export const uk: Translation = {
   objectPropertiesNone: "Властивості не визначені",
   objectValidationErrorMinMax:
     "'minProperties' не може бути більше за 'maxProperties'.",
+
   additionalPropertiesAllow: "Дозволити додаткові властивості",
   additionalPropertiesForbid: "Заборонити додаткові властивості",
   additionalPropertiesTooltip:

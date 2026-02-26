@@ -95,6 +95,7 @@ export const ru: Translation = {
   objectPropertiesNone: "Нет определенных свойств",
   objectValidationErrorMinMax:
     "'minProperties' не может быть больше 'maxProperties'.",
+
   additionalPropertiesAllow: "Разрешить дополнительные свойства",
   additionalPropertiesForbid: "Запретить дополнительные свойства",
   additionalPropertiesTooltip:

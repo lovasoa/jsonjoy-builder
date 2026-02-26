@@ -3,13 +3,12 @@ import { cn } from "../../lib/utils.ts";
 
 interface InputProps extends ComponentProps<"input"> {
   validate?: (value: string) => string | null;
-  showError?: boolean;
   errorMessage?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
   (
-    { className, type, validate, showError = true, errorMessage, ...props },
+    { className, type, validate, errorMessage, ...props },
     ref,
   ) => {
     const [error, setError] = useState<string | null>(null);
@@ -42,7 +41,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           {...props}
           onChange={handleChange}
         />
-        {showError && hasError && (
+        {hasError && (
           <span className="text-red-500 text-sm mt-1 block">
             {errorMessage || error}
           </span>

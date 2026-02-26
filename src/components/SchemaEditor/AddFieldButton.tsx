@@ -162,11 +162,11 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     validate={
                       isProperty
                         ? (value) => {
-                          const { valid, error } =
-                            validateRegexPattern(value);
+                            const { valid, error } =
+                              validateRegexPattern(value);
 
-                          return valid ? null : error;
-                        }
+                            return valid ? null : error;
+                          }
                         : undefined
                     }
                     required

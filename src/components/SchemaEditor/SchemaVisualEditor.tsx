@@ -97,9 +97,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
   // Handle deleting a top-level field
   const handleDeleteField = (name: string, isProperty = false) => {
-    const schemaProperty = isProperty
-      ? "Properties"
-      : "properties";
+    const schemaProperty = isProperty ? "Properties" : "properties";
 
     // Check if the schema is valid first
     if (isBooleanSchema(schema) || !schema[schemaProperty]) {

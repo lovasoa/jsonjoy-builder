@@ -98,7 +98,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   // Handle deleting a top-level field
   const handleDeleteField = (name: string, isPatternProperty = false) => {
     const schemaProperty = isPatternProperty
-      ? "Properties"
+      ? "patternProperties"
       : "properties";
 
     // Check if the schema is valid first

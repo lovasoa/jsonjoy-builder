@@ -24,7 +24,7 @@ import { ButtonToggle } from "../ui/button-toggle.tsx";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
-  onAddField: (field: NewField, isProperty: boolean) => void;
+  onAddField: (field: NewField, isPatternProperty: boolean) => void;
   variant?: "primary" | "secondary";
 }
 
@@ -37,7 +37,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const [fieldType, setFieldType] = useState<SchemaType>("string");
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
-  const [isProperty, setProperty] = useState(false);
+  const [isPatternProperty, setPatternProperty] = useState(false);
   const [additionalProperties, setAdditionalProperties] = useState(true);
   const fieldNameId = useId();
   const fieldDescId = useId();
@@ -62,7 +62,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
         additionalProperties:
           fieldType === "object" ? additionalProperties : undefined,
       },
-      isProperty,
+      isPatternProperty,
     );
 
     setFieldName("");
@@ -70,7 +70,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
     setFieldDesc("");
     setFieldRequired(false);
     setDialogOpen(false);
-    setProperty(false);
+    setPatternProperty(false);
     setAdditionalProperties(true);
   };
 
@@ -128,10 +128,10 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     {/* Properties toggle */}
                     <ButtonToggle
                       onClick={() => {
-                        setProperty(!isProperty);
+                        setPatternProperty(!isPatternProperty);
 
                         // Reset required for  properties, as they cannot be required
-                        if (fieldRequired && !isProperty) {
+                        if (fieldRequired && !isPatternProperty) {
                           setFieldRequired(false);
                         }
 
@@ -139,12 +139,12 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         setFieldName("");
                       }}
                       className={
-                        isProperty
+                        isPatternProperty
                           ? "bg-emerald-50 text-emerald-600"
                           : "bg-secondary text-muted-foreground"
                       }
                     >
-                      {isProperty
+                      {isPatternProperty
                         ? t.patternPropertiesTitle
                         : t.regularPropertiesTitle}
                     </ButtonToggle>
@@ -154,13 +154,13 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)}
                     placeholder={
-                      isProperty
+                      isPatternProperty
                         ? t.patternPropertyNamePlaceholder
                         : t.fieldNamePlaceholder
                     }
                     className="font-mono text-sm w-full"
                     validate={
-                      isProperty
+                      isPatternProperty
                         ? (value) => {
                           const { valid, error } =
                             validateRegexPattern(value);
@@ -201,7 +201,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     className="text-sm w-full"
                   />
                 </div>
-                {isProperty ? null : (
+                {isPatternProperty ? null : (
                   <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
                     <input
                       type="checkbox"

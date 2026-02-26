@@ -27,7 +27,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
-  const handleAddField = (newField: NewField, isProperty = false) => {
+  const handleAddField = (newField: NewField, isPatternProperty = false) => {
     // Create a field schema based on the new field data
     const fieldSchema = createFieldSchema(newField);
 
@@ -36,7 +36,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
       asObjectSchema(schema),
       newField.name,
       fieldSchema,
-      isProperty,
+      isPatternProperty,
     );
 
     // Update required status if needed
@@ -52,7 +52,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   const handleEditField = (
     name: string,
     updatedField: NewField,
-    isProperty = false,
+    isPatternProperty = false,
   ) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
@@ -65,14 +65,14 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         newSchema,
         name,
         updatedField.name,
-        isProperty,
+        isPatternProperty,
       );
       // Update the field schema after rename
       newSchema = updateObjectProperty(
         newSchema,
         updatedField.name,
         fieldSchema,
-        isProperty,
+        isPatternProperty,
       );
     } else {
       // Name didn't change, just update the schema
@@ -80,7 +80,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         newSchema,
         name,
         fieldSchema,
-        isProperty,
+        isPatternProperty,
       );
     }
 
@@ -96,8 +96,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   };
 
   // Handle deleting a top-level field
-  const handleDeleteField = (name: string, isProperty = false) => {
-    const schemaProperty = isProperty
+  const handleDeleteField = (name: string, isPatternProperty = false) => {
+    const schemaProperty = isPatternProperty
       ? "Properties"
       : "properties";
 
@@ -158,8 +158,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
-            onPropertyToggle={(name, isProperty) =>
-              handlePropertyToggle(onChange, schema, name, isProperty)
+            onPropertyToggle={(name, isPatternProperty) =>
+              handlePropertyToggle(onChange, schema, name, isPatternProperty)
             }
           />
         )}

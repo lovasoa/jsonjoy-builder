@@ -445,6 +445,7 @@ export interface Translation {
    * > 'minProperties' cannot be greater than 'maxProperties'.
    */
   readonly objectValidationErrorMinMax: string;
+
   /**
    * The translation for the key `stringMinimumLengthLabel`. English default is:
    *

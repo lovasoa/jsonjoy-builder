@@ -42,6 +42,8 @@ export const fr: Translation = {
   propertyDescriptionPlaceholder: "Ajouter une description...",
   propertyDescriptionButton: "Ajouter une description...",
   propertyRequired: "Obligatoire",
+  propertyRequiredToggleDisabledTooltip:
+    "Obligatoire ne peut être activé que pour les propriétés définies dans la section 'Propriétés régulières'",
   propertyOptional: "Facultatif",
   propertyDelete: "Supprimer le champ",
 
@@ -96,6 +98,18 @@ export const fr: Translation = {
   objectPropertiesNone: "Aucune propriété définie",
   objectValidationErrorMinMax:
     "'minProperties' ne peut pas être supérieur à 'maxProperties'.",
+
+  patternPropertiesTitle: "Propriétés de Motif",
+  patternPropertiesTitleShort: "Motif",
+  patternPropertyNamePlaceholder: "^[a-z]+$",
+
+  regularPropertiesTitle: "Propriétés Régulières",
+  regularPropertiesTitleShort: "Régulières",
+
+  additionalPropertiesAllow: "Autoriser les propriétés additionnelles",
+  additionalPropertiesForbid: "Interdire les propriétés additionnelles",
+  additionalPropertiesTooltip:
+    "Contrôle si les propriétés non définies dans 'properties' ou 'patternProperties' sont autorisées",
 
   stringNoConstraint: "Pas de constrainte",
   stringMinimumLengthLabel: "Longueur minimale",

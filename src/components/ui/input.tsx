@@ -7,10 +7,7 @@ export interface InputProps extends ComponentProps<"input"> {
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
-  (
-    { className, type, validate, errorMessage, ...props },
-    ref,
-  ) => {
+  ({ className, type, validate, errorMessage, ...props }, ref) => {
     const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -1,7 +1,7 @@
 import { type ComponentProps, forwardRef, useEffect, useState } from "react";
 import { cn } from "../../lib/utils.ts";
 
-interface InputProps extends ComponentProps<"input"> {
+export interface InputProps extends ComponentProps<"input"> {
   validate?: (value: string) => string | null;
   errorMessage?: string;
 }

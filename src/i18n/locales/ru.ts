@@ -42,8 +42,6 @@ export const ru: Translation = {
   propertyDescriptionPlaceholder: "Добавить описание...",
   propertyDescriptionButton: "Добавить описание...",
   propertyRequired: "Обязательное",
-  propertyRequiredToggleDisabledTooltip:
-    "Обязательное может быть включено только для свойств, определенных в разделе 'Регулярные свойства'",
   propertyOptional: "Необязательное",
   propertyDelete: "Удалить поле",
 
@@ -97,14 +95,6 @@ export const ru: Translation = {
   objectPropertiesNone: "Нет определенных свойств",
   objectValidationErrorMinMax:
     "'minProperties' не может быть больше 'maxProperties'.",
-
-  patternPropertiesTitle: "Свойства по шаблону",
-  patternPropertiesTitleShort: "Шаблон",
-  patternPropertyNamePlaceholder: "^[a-z]+$",
-
-  regularPropertiesTitle: "Обычные свойства",
-  regularPropertiesTitleShort: "Обычные",
-
   additionalPropertiesAllow: "Разрешить дополнительные свойства",
   additionalPropertiesForbid: "Запретить дополнительные свойства",
   additionalPropertiesTooltip:

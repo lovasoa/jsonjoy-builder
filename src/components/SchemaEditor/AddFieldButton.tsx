@@ -24,7 +24,7 @@ import { ButtonToggle } from "../ui/button-toggle.tsx";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
-  onAddField: (field: NewField, isPatternProperty: boolean) => void;
+  onAddField: (field: NewField, isProperty: boolean) => void;
   variant?: "primary" | "secondary";
 }
 
@@ -37,7 +37,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const [fieldType, setFieldType] = useState<SchemaType>("string");
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
-  const [isPatternProperty, setPatternProperty] = useState(false);
+  const [isProperty, setProperty] = useState(false);
   const [additionalProperties, setAdditionalProperties] = useState(true);
   const fieldNameId = useId();
   const fieldDescId = useId();
@@ -62,7 +62,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
         additionalProperties:
           fieldType === "object" ? additionalProperties : undefined,
       },
-      isPatternProperty,
+      isProperty,
     );
 
     setFieldName("");
@@ -70,7 +70,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
     setFieldDesc("");
     setFieldRequired(false);
     setDialogOpen(false);
-    setPatternProperty(false);
+    setProperty(false);
     setAdditionalProperties(true);
   };
 
@@ -125,13 +125,13 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    {/* PatternProperties toggle */}
+                    {/* Properties toggle */}
                     <ButtonToggle
                       onClick={() => {
-                        setPatternProperty(!isPatternProperty);
+                        setProperty(!isProperty);
 
-                        // Reset required for pattern properties, as they cannot be required
-                        if (fieldRequired && !isPatternProperty) {
+                        // Reset required for  properties, as they cannot be required
+                        if (fieldRequired && !isProperty) {
                           setFieldRequired(false);
                         }
 
@@ -139,12 +139,12 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         setFieldName("");
                       }}
                       className={
-                        isPatternProperty
+                        isProperty
                           ? "bg-emerald-50 text-emerald-600"
                           : "bg-secondary text-muted-foreground"
                       }
                     >
-                      {isPatternProperty
+                      {isProperty
                         ? t.patternPropertiesTitle
                         : t.regularPropertiesTitle}
                     </ButtonToggle>
@@ -154,19 +154,19 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)}
                     placeholder={
-                      isPatternProperty
+                      isProperty
                         ? t.patternPropertyNamePlaceholder
                         : t.fieldNamePlaceholder
                     }
                     className="font-mono text-sm w-full"
                     validate={
-                      isPatternProperty
+                      isProperty
                         ? (value) => {
-                            const { valid, error } =
-                              validateRegexPattern(value);
+                          const { valid, error } =
+                            validateRegexPattern(value);
 
-                            return valid ? null : error;
-                          }
+                          return valid ? null : error;
+                        }
                         : undefined
                     }
                     required
@@ -201,7 +201,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     className="text-sm w-full"
                   />
                 </div>
-                {isPatternProperty ? null : (
+                {isProperty ? null : (
                   <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
                     <input
                       type="checkbox"

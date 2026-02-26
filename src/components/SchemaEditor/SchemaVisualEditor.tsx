@@ -27,7 +27,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
-  const handleAddField = (newField: NewField, isPatternProperty = false) => {
+  const handleAddField = (newField: NewField, isProperty = false) => {
     // Create a field schema based on the new field data
     const fieldSchema = createFieldSchema(newField);
 
@@ -36,7 +36,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
       asObjectSchema(schema),
       newField.name,
       fieldSchema,
-      isPatternProperty,
+      isProperty,
     );
 
     // Update required status if needed
@@ -52,7 +52,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   const handleEditField = (
     name: string,
     updatedField: NewField,
-    isPatternProperty = false,
+    isProperty = false,
   ) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
@@ -65,14 +65,14 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         newSchema,
         name,
         updatedField.name,
-        isPatternProperty,
+        isProperty,
       );
       // Update the field schema after rename
       newSchema = updateObjectProperty(
         newSchema,
         updatedField.name,
         fieldSchema,
-        isPatternProperty,
+        isProperty,
       );
     } else {
       // Name didn't change, just update the schema
@@ -80,7 +80,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         newSchema,
         name,
         fieldSchema,
-        isPatternProperty,
+        isProperty,
       );
     }
 
@@ -96,9 +96,9 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   };
 
   // Handle deleting a top-level field
-  const handleDeleteField = (name: string, isPatternProperty = false) => {
-    const schemaProperty = isPatternProperty
-      ? "patternProperties"
+  const handleDeleteField = (name: string, isProperty = false) => {
+    const schemaProperty = isProperty
+      ? "Properties"
       : "properties";
 
     // Check if the schema is valid first
@@ -130,12 +130,12 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     schema.properties &&
     Object.keys(schema.properties).length > 0;
 
-  const hasPatternPropertiesFields =
+  const hasPropertiesFields =
     hasObjectSchema &&
-    schema.patternProperties &&
-    Object.keys(schema.patternProperties).length > 0;
+    schema.Properties &&
+    Object.keys(schema.Properties).length > 0;
 
-  const hasFields = hasProperties || hasPatternPropertiesFields;
+  const hasFields = hasProperties || hasPropertiesFields;
 
   return (
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
@@ -158,8 +158,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
-            onPropertyToggle={(name, isPatternProperty) =>
-              handlePropertyToggle(onChange, schema, name, isPatternProperty)
+            onPropertyToggle={(name, isProperty) =>
+              handlePropertyToggle(onChange, schema, name, isProperty)
             }
           />
         )}

@@ -15,7 +15,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     const [error, setError] = useState<string | null>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("handle change");
       const value = e.target.value;
       const validationError = validate?.(value) || null;
       setError(validationError);

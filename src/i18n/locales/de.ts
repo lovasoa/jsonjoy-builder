@@ -41,8 +41,6 @@ export const de: Translation = {
   propertyDescriptionPlaceholder: "Beschreibung hinzufügen...",
   propertyDescriptionButton: "Beschreibung hinzufügen...",
   propertyRequired: "Erforderlich",
-  propertyRequiredToggleDisabledTooltip:
-    "Erforderlich kann nur für Eigenschaften aktiviert werden, die im Abschnitt 'Reguläre Eigenschaften' definiert sind",
   propertyOptional: "Optional",
   propertyDelete: "Feld löschen",
 
@@ -97,18 +95,6 @@ export const de: Translation = {
   objectPropertiesNone: "Keine Eigenschaften definiert",
   objectValidationErrorMinMax:
     "'minProperties' darf nicht größer als 'maxProperties' sein.",
-
-  patternPropertiesTitle: "Mustereigenschaften",
-  patternPropertiesTitleShort: "Muster",
-  patternPropertyNamePlaceholder: "^[a-z]+$",
-
-  regularPropertiesTitle: "Reguläre Eigenschaften",
-  regularPropertiesTitleShort: "Regulär",
-
-  additionalPropertiesAllow: "Zusätzliche Eigenschaften erlauben",
-  additionalPropertiesForbid: "Zusätzliche Eigenschaften verbieten",
-  additionalPropertiesTooltip:
-    "Steuert, ob Eigenschaften, die nicht in 'properties' oder 'patternProperties' definiert sind, erlaubt sind",
 
   stringNoConstraint: "Keine Einschränkung",
   stringMinimumLengthLabel: "Minimale Länge",

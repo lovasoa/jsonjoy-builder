@@ -220,12 +220,6 @@ export interface Translation {
    */
   readonly propertyRequired: string;
   /**
-   * The translation for the key `propertyRequiredToggleDisabledTooltip`. English default is:
-   *
-   * > Require can be toggled only for properties defined in the 'properties' section
-   */
-  readonly propertyRequiredToggleDisabledTooltip: string;
-  /**
    * The translation for the key `propertyOptional`. English default is:
    *
    * > Optional
@@ -451,55 +445,6 @@ export interface Translation {
    * > 'minProperties' cannot be greater than 'maxProperties'.
    */
   readonly objectValidationErrorMinMax: string;
-
-  /**
-   * The translation for the key `patternPropertiesTitle`. English default is:
-   *
-   * > Pattern Properties
-   */
-  readonly patternPropertiesTitle: string;
-  /**
-   * The translation for the key `patternPropertiesTitleShort`. English default is:
-   *
-   * > Pattern
-   */
-  readonly patternPropertiesTitleShort: string;
-  /**
-   * The translation for the key `patternPropertyNamePlaceholder`. English default is:
-   *
-   * > ^[a-z]+$
-   */
-  readonly patternPropertyNamePlaceholder: string;
-  /**
-   * The translation for the key `additionalPropertiesAllow`. English default is:
-   *
-   * > Allow additional properties
-   */
-  readonly additionalPropertiesAllow: string;
-  /**
-   * The translation for the key `additionalPropertiesForbid`. English default is:
-   *
-   * > Forbid additional properties
-   */
-  readonly additionalPropertiesForbid: string;
-  /**
-   * The translation for the key `additionalPropertiesTooltip`. English default is:
-   *
-   * > Controls whether properties not defined in 'properties' or 'patternProperties' are allowed
-   */
-  readonly additionalPropertiesTooltip: string;
-  /**
-   * The translation for the key `regularPropertiesTitle`. English default is:
-   *
-   * > Regular Property
-   */
-  readonly regularPropertiesTitle: string;
-  /**
-   * The translation for the key `regularPropertiesTitleShort`. English default is:
-   *
-   * > Regular
-   */
-  readonly regularPropertiesTitleShort: string;
   /**
    * The translation for the key `stringMinimumLengthLabel`. English default is:
    *

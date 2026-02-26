@@ -40,8 +40,6 @@ export const pl: Translation = {
   propertyDescriptionPlaceholder: "Dodaj opis...",
   propertyDescriptionButton: "Dodaj opis...",
   propertyRequired: "Wymagane",
-  propertyRequiredToggleDisabledTooltip:
-    "Wymagane można włączyć tylko dla właściwości zdefiniowanych w sekcji 'Właściwości zwyczajne'",
   propertyOptional: "Opcjonalne",
   propertyDelete: "Usuń pole",
 
@@ -96,18 +94,6 @@ export const pl: Translation = {
   objectPropertiesNone: "Nie zdefiniowano właściwości",
   objectValidationErrorMinMax:
     "'minProperties' nie może być większe niż 'maxProperties'.",
-
-  patternPropertiesTitle: "Właściwości wzorca",
-  patternPropertiesTitleShort: "Wzorzec",
-  patternPropertyNamePlaceholder: "^[a-z]+$",
-
-  regularPropertiesTitle: "Właściwości zwykłe",
-  regularPropertiesTitleShort: "Zwykłe",
-
-  additionalPropertiesAllow: "Zezwalaj na dodatkowe właściwości",
-  additionalPropertiesForbid: "Zabroń dodatkowych właściwości",
-  additionalPropertiesTooltip:
-    "Kontroluje czy właściwości niezdefiniowane w 'properties' lub 'patternProperties' są dozwolone",
 
   stringNoConstraint: "Bez ograniczeń",
   stringMinimumLengthLabel: "Minimalna długość",

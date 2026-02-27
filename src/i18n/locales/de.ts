@@ -96,6 +96,11 @@ export const de: Translation = {
   objectValidationErrorMinMax:
     "'minProperties' darf nicht größer als 'maxProperties' sein.",
 
+  additionalPropertiesAllow: "Zusätzliche Eigenschaften erlauben",
+  additionalPropertiesForbid: "Zusätzliche Eigenschaften verbieten",
+  additionalPropertiesTooltip:
+    "Steuert, ob Eigenschaften, die nicht in 'properties' oder 'patternProperties' definiert sind, erlaubt sind",
+
   stringNoConstraint: "Keine Einschränkung",
   stringMinimumLengthLabel: "Minimale Länge",
   stringMinimumLengthPlaceholder: "Kein Minimum",

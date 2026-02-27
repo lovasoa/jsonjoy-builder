@@ -15,9 +15,9 @@ import {
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
+import { ButtonToggle } from "../ui/button-toggle.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
-
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;
@@ -183,18 +183,16 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               />
 
               {/* Required toggle */}
-              <button
-                type="button"
+              <ButtonToggle
                 onClick={() => !readOnly && onRequiredChange(!required)}
-                className={cn(
-                  "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center cursor-pointer hover:shadow-xs hover:ring-2 hover:ring-ring/30 active:scale-95 transition-all whitespace-nowrap",
+                className={
                   required
                     ? "bg-red-50 text-red-500"
-                    : "bg-secondary text-muted-foreground",
-                )}
+                    : "bg-secondary text-muted-foreground"
+                }
               >
                 {required ? t.propertyRequired : t.propertyOptional}
-              </button>
+              </ButtonToggle>
             </div>
           </div>
         </div>

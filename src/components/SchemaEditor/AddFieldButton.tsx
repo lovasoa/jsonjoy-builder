@@ -90,7 +90,11 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
             </DialogDescription>
           </DialogHeader>
 
-          <form onSubmit={handleSubmit} className="space-y-6" id="add-field-form">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6"
+            id="add-field-form"
+          >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4 min-w-[280px]">
                 <div>

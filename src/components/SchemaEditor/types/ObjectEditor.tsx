@@ -223,28 +223,29 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
             {t.objectPropertiesNone}
           </div>
         )}
-
-        {!readOnly && (
-          <div className="mt-4 flex flex-row gap-x-4">
+        <div className="mt-4 flex flex-row gap-x-4">
+          {readOnly ? null : (
             <AddFieldButton
               onAddField={handleAddProperty}
               variant="secondary"
             />
-            {/* Additional properties */}
-            <ButtonToggle
-              onClick={handleAdditionalPropertiesToggle}
-              className={
-                additionalProperties === false
-                  ? "bg-amber-50 text-amber-600"
-                  : "bg-lime-50 text-lime-600"
-              }
-            >
-              {additionalProperties === false
-                ? t.additionalPropertiesForbid
-                : t.additionalPropertiesAllow}
-            </ButtonToggle>
-          </div>
-        )}
+          )}
+
+          {/* Additional properties */}
+          <ButtonToggle
+            onClick={handleAdditionalPropertiesToggle}
+            readOnly={readOnly}
+            className={
+              additionalProperties === false
+                ? "bg-amber-50 text-amber-600"
+                : "bg-lime-50 text-lime-600"
+            }
+          >
+            {additionalProperties === false
+              ? t.additionalPropertiesForbid
+              : t.additionalPropertiesAllow}
+          </ButtonToggle>
+        </div>
       </div>
     </div>
   );

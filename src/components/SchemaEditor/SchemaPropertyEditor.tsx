@@ -186,6 +186,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                 onClick={() => {
                   onPropertyToggle?.(name, isPatternProperty);
                 }}
+                readOnly={readOnly}
                 className={
                   isPatternProperty
                     ? "bg-emerald-50 text-emerald-600"
@@ -228,7 +229,8 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                 </TooltipProvider>
               ) : (
                 <ButtonToggle
-                  onClick={() => !readOnly && onRequiredChange(!required)}
+                  onClick={() => onRequiredChange(!required)}
+                  readOnly={readOnly}
                   className={
                     required
                       ? "bg-red-50 text-red-500"

@@ -10,6 +10,7 @@ import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
+import handlePropertyToggle from "./utils/handlePropertyToggle.tsx";
 
 /** @public */
 export interface SchemaVisualEditorProps {
@@ -26,7 +27,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
-  const handleAddField = (newField: NewField) => {
+  const handleAddField = (newField: NewField, isPatternProperty = false) => {
     // Create a field schema based on the new field data
     const fieldSchema = createFieldSchema(newField);
 
@@ -35,6 +36,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
       asObjectSchema(schema),
       newField.name,
       fieldSchema,
+      isPatternProperty,
     );
 
     // Update required status if needed
@@ -47,7 +49,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   };
 
   // Handle editing a top-level field
-  const handleEditField = (name: string, updatedField: NewField) => {
+  const handleEditField = (
+    name: string,
+    updatedField: NewField,
+    isPatternProperty = false,
+  ) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
 
@@ -55,16 +61,27 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
     // If name changed, rename the property while preserving order
     if (name !== updatedField.name) {
-      newSchema = renameObjectProperty(newSchema, name, updatedField.name);
+      newSchema = renameObjectProperty(
+        newSchema,
+        name,
+        updatedField.name,
+        isPatternProperty,
+      );
       // Update the field schema after rename
       newSchema = updateObjectProperty(
         newSchema,
         updatedField.name,
         fieldSchema,
+        isPatternProperty,
       );
     } else {
       // Name didn't change, just update the schema
-      newSchema = updateObjectProperty(newSchema, name, fieldSchema);
+      newSchema = updateObjectProperty(
+        newSchema,
+        name,
+        fieldSchema,
+        isPatternProperty,
+      );
     }
 
     // Update required status
@@ -79,18 +96,22 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   };
 
   // Handle deleting a top-level field
-  const handleDeleteField = (name: string) => {
+  const handleDeleteField = (name: string, isPatternProperty = false) => {
+    const schemaProperty = isPatternProperty
+      ? "patternProperties"
+      : "properties";
+
     // Check if the schema is valid first
-    if (isBooleanSchema(schema) || !schema.properties) {
+    if (isBooleanSchema(schema) || !schema[schemaProperty]) {
       return;
     }
 
     // Create a new schema without the field
-    const { [name]: _, ...remainingProps } = schema.properties;
+    const { [name]: _, ...remainingProps } = schema[schemaProperty];
 
     const newSchema = {
       ...schema,
-      properties: remainingProps,
+      [schemaProperty]: remainingProps,
     };
 
     // Remove from required array if present
@@ -102,10 +123,19 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     onChange(newSchema);
   };
 
-  const hasFields =
-    !isBooleanSchema(schema) &&
+  const hasObjectSchema = !isBooleanSchema(schema);
+
+  const hasProperties =
+    hasObjectSchema &&
     schema.properties &&
     Object.keys(schema.properties).length > 0;
+
+  const hasPropertiesFields =
+    hasObjectSchema &&
+    schema.patternProperties &&
+    Object.keys(schema.patternProperties).length > 0;
+
+  const hasFields = hasProperties || hasPropertiesFields;
 
   return (
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
@@ -128,6 +158,9 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
+            onPropertyToggle={(name, isPatternProperty) =>
+              handlePropertyToggle(onChange, schema, name, isPatternProperty)
+            }
           />
         )}
       </div>

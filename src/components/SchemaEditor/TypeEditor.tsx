@@ -54,6 +54,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
     <Suspense fallback={<div>{t.schemaEditorLoading}</div>}>
       {type === "string" && (
         <StringEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -63,6 +64,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "number" && (
         <NumberEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -72,6 +74,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "integer" && (
         <NumberEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -82,6 +85,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "boolean" && (
         <BooleanEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}

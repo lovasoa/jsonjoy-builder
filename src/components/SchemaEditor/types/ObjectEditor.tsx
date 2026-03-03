@@ -10,6 +10,7 @@ import {
 } from "../../../lib/schemaEditor.ts";
 import type { NewField, ObjectJSONSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
+import { ButtonToggle } from "../../ui/button-toggle.tsx";
 import AddFieldButton from "../AddFieldButton.tsx";
 import { useDragContext } from "../DragContext.tsx";
 import SchemaPropertyEditor from "../SchemaPropertyEditor.tsx";
@@ -48,13 +49,18 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     ? { type: "object", properties: {} }
     : { ...schema, type: "object", properties: schema.properties || {} };
 
+  const { additionalProperties } = normalizedSchema;
+
   // Handle adding a new property
   const handleAddProperty = (newField: NewField) => {
     // Create field schema from the new field data
+    const { type, description, validation, additionalProperties } = newField;
+
     const fieldSchema = {
-      type: newField.type,
-      description: newField.description || undefined,
-      ...(newField.validation || {}),
+      type,
+      description: description || undefined,
+      ...(validation || {}),
+      ...(additionalProperties === false ? { additionalProperties } : {}),
     } as ObjectJSONSchema;
 
     // Add the property to the schema
@@ -217,6 +223,18 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     handleDrop(e, dragOverItem);
   };
 
+  const handleAdditionalPropertiesToggle = () => {
+    const { additionalProperties, ...restOfSchema } = normalizedSchema;
+
+    const updatedSchema = asObjectSchema(restOfSchema);
+
+    if (additionalProperties !== false) {
+      updatedSchema.additionalProperties = false;
+    }
+
+    onChange(updatedSchema);
+  };
+
   return (
     <div className="space-y-4">
       {properties.length > 0 ? (
@@ -273,8 +291,21 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       )}
 
       {!readOnly && (
-        <div className="mt-4">
+        <div className="mt-4 flex flex-row gap-x-4">
           <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
+          {/* Additional properties */}
+          <ButtonToggle
+            onClick={handleAdditionalPropertiesToggle}
+            className={
+              additionalProperties === false
+                ? "bg-amber-50 text-amber-600"
+                : "bg-lime-50 text-lime-600"
+            }
+          >
+            {additionalProperties === false
+              ? t.additionalPropertiesForbid
+              : t.additionalPropertiesAllow}
+          </ButtonToggle>
         </div>
       )}
     </div>

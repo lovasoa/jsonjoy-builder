@@ -91,6 +91,11 @@ export const zh: Translation = {
   objectPropertiesNone: "没有定义属性",
   objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」.",
 
+  additionalPropertiesAllow: "允许附加属性",
+  additionalPropertiesForbid: "禁止附加属性",
+  additionalPropertiesTooltip:
+    "控制是否允许未在 'properties' 或 'patternProperties' 中定义的属性",
+
   stringNoConstraint: "无约束",
   stringMinimumLengthLabel: "最小长度",
   stringMinimumLengthPlaceholder: "无最小长度",

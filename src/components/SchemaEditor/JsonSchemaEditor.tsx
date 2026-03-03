@@ -44,6 +44,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
   const resizeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const isDraggingRef = useRef(false);
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);

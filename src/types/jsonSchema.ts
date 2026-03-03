@@ -130,6 +130,7 @@ export interface NewField {
   description: string;
   required: boolean;
   validation?: ObjectJSONSchema;
+  additionalProperties?: boolean;
 }
 
 export interface SchemaEditorState {

@@ -112,6 +112,7 @@ const SchemaField: React.FC<SchemaFieldProps> = (props) => {
       onRequiredChange={handleRequiredChange}
       onSchemaChange={handleSchemaChange}
       depth={depth}
+      parentPath={[]}
     />
   );
 };

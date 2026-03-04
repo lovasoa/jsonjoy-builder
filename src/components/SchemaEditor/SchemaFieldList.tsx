@@ -1,7 +1,6 @@
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { type FC, useEffect, useMemo } from "react";
-import { useDragContext } from "./DragContext.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   type FieldDropTarget,
@@ -15,6 +14,7 @@ import type {
   SchemaType,
 } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
+import { useDragContext } from "./DragContext.tsx";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 
 interface SchemaFieldListProps {
@@ -117,9 +117,11 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           prefix.every((s, i) => s === sourceData.parentPath[i])
         );
       };
-      return dropTargets.find(
-        (t) => !isAncestor(t.data as { parentPath: string[]; name: string }),
-      ) ?? null;
+      return (
+        dropTargets.find(
+          (t) => !isAncestor(t.data as { parentPath: string[]; name: string }),
+        ) ?? null
+      );
     };
 
     return monitorForElements({
@@ -130,7 +132,10 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
       onDrag: ({ source, location }) => {
         const src = source.data as { parentPath: string[]; name: string };
         const target = resolveTarget(src, location.current.dropTargets);
-        if (!target) { setOver(null, null); return; }
+        if (!target) {
+          setOver(null, null);
+          return;
+        }
         const td = target.data as { parentPath: string[]; name: string };
         const overId = [...td.parentPath, td.name].join("/") || td.name;
         const edge = extractClosestEdge(target.data) as "top" | "bottom" | null;

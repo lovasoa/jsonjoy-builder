@@ -36,7 +36,9 @@ export const DragProvider: React.FC<DragProviderProps> = ({ children }) => {
   };
 
   return (
-    <DragContext.Provider value={{ draggingId, overId, overEdge, setDragging, setOver }}>
+    <DragContext.Provider
+      value={{ draggingId, overId, overEdge, setDragging, setOver }}
+    >
       {children}
     </DragContext.Provider>
   );

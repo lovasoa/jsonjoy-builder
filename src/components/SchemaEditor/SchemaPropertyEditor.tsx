@@ -101,6 +101,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   // Wire up Pragmatic DnD — only re-run when the element identity or readOnly changes.
   // All callbacks read from propsRef so they always have fresh parentPath/name.
   // Visual state (overId, draggingId) is driven by the global monitor in SchemaFieldList.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: sortableId is intentionally listed to re-run DnD setup when field identity changes
   useEffect(() => {
     if (readOnly || !handleRef.current || !fieldsetRef.current) return;
     return combine(
@@ -118,22 +119,32 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
           const src = source.data as { parentPath: string[]; name: string };
           const { parentPath: tp, name: tn } = propsRef.current;
           // Prevent dropping onto self
-          if (src.name === tn && src.parentPath.length === tp.length &&
-              src.parentPath.every((s, i) => s === tp[i])) return false;
+          if (
+            src.name === tn &&
+            src.parentPath.length === tp.length &&
+            src.parentPath.every((s, i) => s === tp[i])
+          )
+            return false;
           // Prevent dropping onto a descendant of the source
           const srcSubtreePrefix = [...src.parentPath, "properties", src.name];
-          if (tp.length >= srcSubtreePrefix.length &&
-              srcSubtreePrefix.every((s, i) => s === tp[i])) return false;
+          if (
+            tp.length >= srcSubtreePrefix.length &&
+            srcSubtreePrefix.every((s, i) => s === tp[i])
+          )
+            return false;
           return true;
         },
         getData: ({ input, element }) =>
           attachClosestEdge(
-            { parentPath: propsRef.current.parentPath, name: propsRef.current.name },
+            {
+              parentPath: propsRef.current.parentPath,
+              name: propsRef.current.name,
+            },
             { element, input, allowedEdges: ["top", "bottom"] },
           ),
       }),
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [readOnly, sortableId]);
 
   const handleNameSubmit = () => {

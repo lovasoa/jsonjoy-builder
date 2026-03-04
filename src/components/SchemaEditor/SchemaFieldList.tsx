@@ -1,4 +1,7 @@
-import { type FC, useMemo } from "react";
+import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { type FC, useEffect, useMemo } from "react";
+import { useDragContext } from "./DragContext.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   type FieldDropTarget,
@@ -12,7 +15,6 @@ import type {
   SchemaType,
 } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
-import { useDragContext } from "./DragContext.tsx";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 
 interface SchemaFieldListProps {
@@ -33,38 +35,17 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   onFieldDrop,
 }) => {
   const t = useTranslation();
-  const containerId = useMemo(() => {
-    const uniqueId = crypto.randomUUID();
-    return `schema-field-list-${uniqueId}`;
-  }, []);
+  const { setDragging, setOver } = useDragContext();
 
-  const {
-    draggedItem,
-    setDraggedItem,
-    dragOverItem,
-    setDragOverItem,
-    dropPosition,
-    setDropPosition,
-    clearDragState,
-  } = useDragContext();
-
-  // Get the properties from the schema
   const properties = getSchemaProperties(schema);
 
-  // Get schema type as a valid SchemaType
   const getValidSchemaType = (propSchema: JSONSchemaType): SchemaType => {
     if (typeof propSchema === "boolean") return "object";
-
-    // Handle array of types by picking the first one
     const type = propSchema.type;
-    if (Array.isArray(type)) {
-      return type[0] || "object";
-    }
-
+    if (Array.isArray(type)) return type[0] || "object";
     return type || "object";
   };
 
-  // Handle field name change (generates an edit event)
   const handleNameChange = (oldName: string, newName: string) => {
     const property = properties.find((prop) => prop.name === oldName);
     if (!property) return;
@@ -84,7 +65,6 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     });
   };
 
-  // Handle required status change
   const handleRequiredChange = (name: string, required: boolean) => {
     const property = properties.find((prop) => prop.name === name);
     if (!property) return;
@@ -104,7 +84,6 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     });
   };
 
-  // Handle schema change
   const handleSchemaChange = (
     name: string,
     updatedSchema: ObjectJSONSchema,
@@ -113,7 +92,6 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     if (!property) return;
 
     const type = updatedSchema.type || "object";
-    // Ensure we're using a single type, not an array of types
     const validType = Array.isArray(type) ? type[0] || "object" : type;
 
     onEditField(name, {
@@ -125,110 +103,59 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     });
   };
 
-  // Handle drag start
-  const handleDragStart = (_e: React.DragEvent, name: string) => {
-    const property = properties.find((prop) => prop.name === name);
-    if (!property) return;
+  // Global monitor — drives both the drop indicator and the actual field move.
+  useEffect(() => {
+    // Returns the innermost drop target that is not an ancestor of the source.
+    const resolveTarget = (
+      sourceData: { parentPath: string[]; name: string },
+      dropTargets: Array<{ data: Record<string | symbol, unknown> }>,
+    ) => {
+      const isAncestor = (td: { parentPath: string[]; name: string }) => {
+        const prefix = [...td.parentPath, "properties", td.name];
+        return (
+          sourceData.parentPath.length >= prefix.length &&
+          prefix.every((s, i) => s === sourceData.parentPath[i])
+        );
+      };
+      return dropTargets.find(
+        (t) => !isAncestor(t.data as { parentPath: string[]; name: string }),
+      ) ?? null;
+    };
 
-    setDraggedItem({
-      id: name,
-      parentPath,
-      sourceContainerId: containerId,
-      propertySchema: property.schema,
-      required: property.required,
+    return monitorForElements({
+      onDragStart: ({ source }) => {
+        const src = source.data as { parentPath: string[]; name: string };
+        setDragging([...src.parentPath, src.name].join("/") || src.name);
+      },
+      onDrag: ({ source, location }) => {
+        const src = source.data as { parentPath: string[]; name: string };
+        const target = resolveTarget(src, location.current.dropTargets);
+        if (!target) { setOver(null, null); return; }
+        const td = target.data as { parentPath: string[]; name: string };
+        const overId = [...td.parentPath, td.name].join("/") || td.name;
+        const edge = extractClosestEdge(target.data) as "top" | "bottom" | null;
+        setOver(overId, edge);
+      },
+      onDrop: ({ source, location }) => {
+        setDragging(null);
+        setOver(null, null);
+        if (!onFieldDrop) return;
+        const src = source.data as { parentPath: string[]; name: string };
+        const target = resolveTarget(src, location.current.dropTargets);
+        if (!target) return;
+        const td = target.data as { parentPath: string[]; name: string };
+        const edge = extractClosestEdge(target.data);
+        onFieldDrop(
+          { parentPath: src.parentPath, name: src.name },
+          {
+            parentPath: td.parentPath,
+            anchorName: td.name,
+            position: (edge as "top" | "bottom") ?? "bottom",
+          },
+        );
+      },
     });
-  };
-
-  // Handle drag over for items
-  const handleDragOver = (e: React.DragEvent, name: string) => {
-    e.preventDefault();
-    if (
-      !draggedItem ||
-      (draggedItem.sourceContainerId === containerId && draggedItem.id === name)
-    ) {
-      setDropPosition(null);
-      return;
-    }
-
-    setDragOverItem(name);
-
-    // Calculate drop position based on mouse Y position relative to element
-    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
-    const relativeY = e.clientY - rect.top;
-    const threshold = rect.height / 2;
-
-    if (relativeY < threshold) {
-      setDropPosition("top");
-    } else {
-      setDropPosition("bottom");
-    }
-  };
-
-  // Handle drop – delegate to the centralized handler in the visual editor
-  const handleDrop = (e: React.DragEvent, targetName: string | null = null) => {
-    e.preventDefault();
-    if (!draggedItem || !onFieldDrop) {
-      clearDragState();
-      return;
-    }
-
-    const source: FieldMoveLocation = {
-      parentPath: draggedItem.parentPath,
-      name: draggedItem.id,
-    };
-
-    const target: FieldDropTarget = {
-      parentPath,
-      anchorName: targetName ?? dragOverItem,
-      position: dropPosition,
-    };
-
-    onFieldDrop(source, target);
-    clearDragState();
-  };
-
-  // Handle drag end
-  const handleDragEnd = () => {
-    clearDragState();
-  };
-
-  // Handle drag over on the container to allow drops anywhere in the list
-  const handleContainerDragOver = (e: React.DragEvent) => {
-    // Only handle drag events that are directly on this container, not
-    // those bubbled from child elements (like nested object editors).
-    if (e.target !== e.currentTarget) return;
-
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-  };
-
-  // Handle keyboard events for accessibility
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    // Escape key cancels any active drag operation
-    if (e.key === "Escape" && draggedItem) {
-      clearDragState();
-      e.preventDefault();
-    }
-  };
-
-  // Handle focus events for accessibility
-  const handleFocus = () => {
-    // When container receives focus, announce its purpose
-    if (draggedItem) {
-      // Container is a valid drop target
-    }
-  };
-
-  // Handle drop on the container using the existing dragOverItem and dropPosition state
-  const handleContainerDrop = (e: React.DragEvent) => {
-    // Ignore drops that originated from child elements; those components
-    // handle their own drag-and-drop behavior.
-    if (e.target !== e.currentTarget) return;
-
-    // Use the existing dragOverItem and dropPosition state
-    // This allows dropping in dead zones while respecting the UI state
-    handleDrop(e, dragOverItem);
-  };
+  }, [onFieldDrop, setDragging, setOver]);
 
   const validationTree = useMemo(
     () => buildValidationTree(schema, t),
@@ -236,15 +163,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   );
 
   return (
-    <section
-      className="space-y-2 animate-in pt-2"
-      aria-label="Field list drop zone"
-      tabIndex={readOnly ? -1 : 0}
-      onKeyDown={handleKeyDown}
-      onFocus={handleFocus}
-      onDragOver={handleContainerDragOver}
-      onDrop={handleContainerDrop}
-    >
+    <section className="space-y-2 animate-in pt-2" aria-label="Field list">
       {properties.map((property) => (
         <SchemaPropertyEditor
           key={property.name}
@@ -260,22 +179,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema)}
           readOnly={readOnly}
           parentPath={parentPath}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-          onDragEnd={handleDragEnd}
           onFieldDrop={onFieldDrop}
-          isDragging={
-            draggedItem?.id === property.name &&
-            draggedItem.sourceContainerId === containerId
-          }
-          isDragOver={dragOverItem === property.name}
-          dropPosition={
-            dragOverItem === property.name &&
-            (dropPosition === "top" || dropPosition === "bottom")
-              ? dropPosition
-              : null
-          }
         />
       ))}
     </section>

@@ -1,5 +1,11 @@
+import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
+import {
+  draggable,
+  dropTargetForElements,
+} from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { attachClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { ChevronDown, ChevronRight, GripVertical, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type {
@@ -20,31 +26,9 @@ import {
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
 import { ButtonToggle } from "../ui/button-toggle.tsx";
+import { useDragContext } from "./DragContext.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import TypeEditor from "./TypeEditor.tsx";
-
-interface DropIndicatorProps {
-  onDrop: (e: React.DragEvent) => void;
-  position: "top" | "bottom";
-}
-
-const DropIndicator: React.FC<DropIndicatorProps> = ({ onDrop, position }) => (
-  <div
-    role="presentation"
-    aria-hidden="true"
-    className={cn(
-      "pointer-events-auto absolute left-0 right-0 h-3 flex items-center justify-center",
-      position === "top" ? "-top-2.5" : "-bottom-2.5",
-    )}
-    onDragOver={(e) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = "move";
-    }}
-    onDrop={onDrop}
-  >
-    <div className="w-full h-0 border-t-2 border-primary rounded-none" />
-  </div>
-);
 
 export interface SchemaPropertyEditorProps {
   name: string;
@@ -61,13 +45,6 @@ export interface SchemaPropertyEditorProps {
    */
   parentPath: string[];
   depth?: number;
-  onDragStart?: (e: React.DragEvent, name: string) => void;
-  onDragOver?: (e: React.DragEvent, name: string) => void;
-  onDrop?: (e: React.DragEvent, targetName: string) => void;
-  onDragEnd?: () => void;
-  isDragging?: boolean;
-  isDragOver?: boolean;
-  dropPosition?: "top" | "bottom" | null;
   /**
    * Centralized field drop handler, forwarded down to nested editors so
    * they can report drag-and-drop operations back to the visual editor.
@@ -87,13 +64,6 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onSchemaChange,
   parentPath,
   depth = 0,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  onDragEnd,
-  isDragging = false,
-  isDragOver = false,
-  dropPosition = null,
   onFieldDrop,
 }) => {
   const t = useTranslation();
@@ -108,44 +78,63 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
     "object" as SchemaType,
   );
 
+  const fieldsetRef = useRef<HTMLFieldSetElement>(null);
+  const handleRef = useRef<HTMLButtonElement>(null);
+  // Keep a ref to the latest parentPath/name so callbacks inside the effect
+  // always read fresh values without needing to re-run the effect.
+  const propsRef = useRef({ parentPath, name });
+  propsRef.current = { parentPath, name };
+
+  const { draggingId, overId, overEdge } = useDragContext();
+  const sortableId = [...parentPath, name].join("/") || name;
+
+  const isDragging = draggingId === sortableId;
+  const isDragOver = overId === sortableId;
+  const dropPosition = isDragOver ? overEdge : null;
+
   // Update temp values when props change
   useEffect(() => {
     setTempName(name);
     setTempDesc(getSchemaDescription(schema));
   }, [name, schema]);
 
-  // Handle drag start
-  const handleDragStart = (e: React.DragEvent) => {
-    e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", name);
-    onDragStart?.(e, name);
-  };
-
-  // Handle drag over
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    // Prevent parent containers or ancestor field editors from also handling
-    // this drag-over event. Only the innermost field under the cursor should
-    // control drag state (drop indicators, dragOverItem, etc.).
-    e.stopPropagation();
-    e.dataTransfer.dropEffect = "move";
-    onDragOver?.(e, name);
-  };
-
-  // Handle drop
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    // Ensure only the intended container/field processes this drop.
-    // Without this, ancestor field editors (e.g. top-level fields) would
-    // also run their drop logic, causing duplicates at higher levels.
-    e.stopPropagation();
-    onDrop?.(e, name);
-  };
-
-  // Handle drag end
-  const handleDragEnd = () => {
-    onDragEnd?.();
-  };
+  // Wire up Pragmatic DnD — only re-run when the element identity or readOnly changes.
+  // All callbacks read from propsRef so they always have fresh parentPath/name.
+  // Visual state (overId, draggingId) is driven by the global monitor in SchemaFieldList.
+  useEffect(() => {
+    if (readOnly || !handleRef.current || !fieldsetRef.current) return;
+    return combine(
+      draggable({
+        element: fieldsetRef.current,
+        dragHandle: handleRef.current,
+        getInitialData: () => ({
+          parentPath: propsRef.current.parentPath,
+          name: propsRef.current.name,
+        }),
+      }),
+      dropTargetForElements({
+        element: fieldsetRef.current,
+        canDrop: ({ source }) => {
+          const src = source.data as { parentPath: string[]; name: string };
+          const { parentPath: tp, name: tn } = propsRef.current;
+          // Prevent dropping onto self
+          if (src.name === tn && src.parentPath.length === tp.length &&
+              src.parentPath.every((s, i) => s === tp[i])) return false;
+          // Prevent dropping onto a descendant of the source
+          const srcSubtreePrefix = [...src.parentPath, "properties", src.name];
+          if (tp.length >= srcSubtreePrefix.length &&
+              srcSubtreePrefix.every((s, i) => s === tp[i])) return false;
+          return true;
+        },
+        getData: ({ input, element }) =>
+          attachClosestEdge(
+            { parentPath: propsRef.current.parentPath, name: propsRef.current.name },
+            { element, input, allowedEdges: ["top", "bottom"] },
+          ),
+      }),
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [readOnly, sortableId]);
 
   const handleNameSubmit = () => {
     const trimmedName = tempName.trim();
@@ -183,13 +172,17 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
     <div className="relative">
       {/* Drop indicator above the item */}
       {isDragOver && dropPosition === "top" && (
-        <DropIndicator position="top" onDrop={handleDrop} />
+        <div
+          role="presentation"
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 right-0 -top-2.5 h-3 flex items-center justify-center"
+        >
+          <div className="w-full h-0 border-t-2 border-primary rounded-none" />
+        </div>
       )}
 
       <fieldset
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-        onDragEnd={handleDragEnd}
+        ref={fieldsetRef}
         className={cn(
           "mb-2 animate-in rounded-lg border transition-all duration-200",
           depth > 0 && "ml-0 sm:ml-4 border-l border-l-border/40",
@@ -202,10 +195,9 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
             {/* Drag handle */}
             {!readOnly && (
               <button
+                ref={handleRef}
                 type="button"
                 aria-label="Drag to reorder field"
-                draggable
-                onDragStart={handleDragStart}
                 className="cursor-grab active:cursor-grabbing text-foreground transition-colors p-1 rounded hover:bg-secondary/50"
               >
                 <GripVertical size={16} />
@@ -358,9 +350,16 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
           </div>
         )}
       </fieldset>
+
       {/* Drop indicator below the item */}
       {isDragOver && dropPosition === "bottom" && (
-        <DropIndicator position="bottom" onDrop={handleDrop} />
+        <div
+          role="presentation"
+          aria-hidden="true"
+          className="pointer-events-none absolute left-0 right-0 -bottom-2.5 h-3 flex items-center justify-center"
+        >
+          <div className="w-full h-0 border-t-2 border-primary rounded-none" />
+        </div>
       )}
     </div>
   );

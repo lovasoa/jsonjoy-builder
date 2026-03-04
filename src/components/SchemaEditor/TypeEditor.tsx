@@ -21,6 +21,17 @@ export interface TypeEditorProps {
   validationNode: ValidationTreeNode | undefined;
   onChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
+  /**
+   * Path (from the root visual-editor schema) to this type's schema node.
+   */
+  path: string[];
+  /**
+   * Centralized field drop handler forwarded down to object/field editors.
+   */
+  onFieldDrop?: (
+    source: import("../../lib/schemaEditor.ts").FieldMoveLocation,
+    target: import("../../lib/schemaEditor.ts").FieldDropTarget,
+  ) => void;
 }
 
 const TypeEditor: React.FC<TypeEditorProps> = ({
@@ -29,6 +40,8 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
   onChange,
   depth = 0,
   readOnly = false,
+  path,
+  onFieldDrop,
 }) => {
   const t = useTranslation();
   const type = withObjectSchema(
@@ -41,6 +54,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
     <Suspense fallback={<div>{t.schemaEditorLoading}</div>}>
       {type === "string" && (
         <StringEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -50,6 +64,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "number" && (
         <NumberEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -59,6 +74,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "integer" && (
         <NumberEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -69,6 +85,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "boolean" && (
         <BooleanEditor
+          path={path}
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
@@ -83,6 +100,8 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           onChange={onChange}
           depth={depth}
           validationNode={validationNode}
+          path={path}
+          onFieldDrop={onFieldDrop}
         />
       )}
       {type === "array" && (
@@ -92,6 +111,8 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           onChange={onChange}
           depth={depth}
           validationNode={validationNode}
+          path={path}
+          onFieldDrop={onFieldDrop}
         />
       )}
     </Suspense>

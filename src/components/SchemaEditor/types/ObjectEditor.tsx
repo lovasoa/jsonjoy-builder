@@ -18,22 +18,20 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   onChange,
   depth = 0,
   readOnly = false,
+  path,
+  onFieldDrop,
 }) => {
   const t = useTranslation();
 
-  // Get object properties
   const properties = getSchemaProperties(schema);
 
-  // Create a normalized schema object
   const normalizedSchema: ObjectJSONSchema = isBooleanSchema(schema)
     ? { type: "object", properties: {} }
     : { ...schema, type: "object", properties: schema.properties || {} };
 
   const { additionalProperties } = normalizedSchema;
 
-  // Handle adding a new property
   const handleAddProperty = (newField: NewField) => {
-    // Create field schema from the new field data
     const { type, description, validation, additionalProperties } = newField;
 
     const fieldSchema = {
@@ -43,29 +41,24 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       ...(additionalProperties === false ? { additionalProperties } : {}),
     } as ObjectJSONSchema;
 
-    // Add the property to the schema
     let newSchema = updateObjectProperty(
       normalizedSchema,
       newField.name,
       fieldSchema,
     );
 
-    // Update required status if needed
     if (newField.required) {
       newSchema = updatePropertyRequired(newSchema, newField.name, true);
     }
 
-    // Update the schema
     onChange(newSchema);
   };
 
-  // Handle deleting a property
   const handleDeleteProperty = (propertyName: string) => {
     const newSchema = removeObjectProperty(normalizedSchema, propertyName);
     onChange(newSchema);
   };
 
-  // Handle property name change
   const handlePropertyNameChange = (oldName: string, newName: string) => {
     if (oldName === newName) return;
 
@@ -74,7 +67,6 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
     const propertySchemaObj = asObjectSchema(property.schema);
 
-    // Add property with new name
     let newSchema = updateObjectProperty(
       normalizedSchema,
       newName,
@@ -90,7 +82,6 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     onChange(newSchema);
   };
 
-  // Handle property required status change
   const handlePropertyRequiredChange = (
     propertyName: string,
     required: boolean,
@@ -117,7 +108,6 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   const handleAdditionalPropertiesToggle = () => {
     const { additionalProperties, ...restOfSchema } = normalizedSchema;
-
     const updatedSchema = asObjectSchema(restOfSchema);
 
     if (additionalProperties !== false) {
@@ -130,29 +120,32 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   return (
     <div className="space-y-4">
       {properties.length > 0 ? (
-        <div className="space-y-2">
+        <ul className="space-y-2" aria-label="Object properties">
           {properties.map((property) => (
-            <SchemaPropertyEditor
-              readOnly={readOnly}
-              key={property.name}
-              name={property.name}
-              schema={property.schema}
-              required={property.required}
-              validationNode={validationNode?.children[property.name]}
-              onDelete={() => handleDeleteProperty(property.name)}
-              onNameChange={(newName) =>
-                handlePropertyNameChange(property.name, newName)
-              }
-              onRequiredChange={(required) =>
-                handlePropertyRequiredChange(property.name, required)
-              }
-              onSchemaChange={(schema) =>
-                handlePropertySchemaChange(property.name, schema)
-              }
-              depth={depth}
-            />
+            <li key={property.name}>
+              <SchemaPropertyEditor
+                readOnly={readOnly}
+                name={property.name}
+                schema={property.schema}
+                required={property.required}
+                validationNode={validationNode?.children[property.name]}
+                onDelete={() => handleDeleteProperty(property.name)}
+                onNameChange={(newName) =>
+                  handlePropertyNameChange(property.name, newName)
+                }
+                onRequiredChange={(required) =>
+                  handlePropertyRequiredChange(property.name, required)
+                }
+                onSchemaChange={(schema) =>
+                  handlePropertySchemaChange(property.name, schema)
+                }
+                depth={depth}
+                parentPath={path}
+                onFieldDrop={onFieldDrop}
+              />
+            </li>
           ))}
-        </div>
+        </ul>
       ) : (
         <div className="text-sm text-muted-foreground italic p-2 text-center border rounded-md">
           {t.objectPropertiesNone}
@@ -162,7 +155,6 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       {!readOnly && (
         <div className="mt-4 flex flex-row gap-x-4">
           <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
-          {/* Additional properties */}
           <ButtonToggle
             onClick={handleAdditionalPropertiesToggle}
             className={

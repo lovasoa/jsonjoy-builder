@@ -127,6 +127,27 @@ export const ru: Translation = {
   stringValidationErrorLengthRange:
     "'Минимальная длина' не может быть больше 'Максимальной длины'.",
 
+  schemaTypeAnyOf: "Одно из",
+  anyOfAddOption: "Добавить вариант",
+  anyOfRemoveOption: "Удалить вариант",
+  anyOfOptionLabel: "Вариант",
+  anyOfDescription: "Значение должно соответствовать хотя бы одной из этих схем",
+  anyOfNoOptions: "Варианты не определены",
+
+  schemaTypeOneOf: "Ровно одно из",
+  oneOfAddOption: "Добавить вариант",
+  oneOfRemoveOption: "Удалить вариант",
+  oneOfOptionLabel: "Вариант",
+  oneOfDescription: "Значение должно соответствовать ровно одной из этих схем",
+  oneOfNoOptions: "Варианты не определены",
+
+  schemaTypeAllOf: "Все из",
+  allOfAddSchema: "Добавить схему",
+  allOfRemoveSchema: "Удалить схему",
+  allOfSchemaLabel: "Схема",
+  allOfDescription: "Значение должно соответствовать всем этим схемам",
+  allOfNoSchemas: "Схемы не определены",
+
   schemaTypeArray: "Список",
   schemaTypeBoolean: "Да/Нет",
   schemaTypeNumber: "Число",

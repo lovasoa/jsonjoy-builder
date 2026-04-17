@@ -148,6 +148,26 @@ The built files will be available in the `dist` directory.
 - **SchemaInferencer**: Dialog component for generating schemas from JSON data
 - **JsonValidator**: Dialog component for validating JSON against the current schema
 
+### Component Props
+
+#### `JsonSchemaVisualizer`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `schema` | `JSONSchema` | — | The JSON Schema to display and edit |
+| `className` | `string` | — | Additional CSS class name |
+| `onChange` | `(schema: JSONSchema) => void` | — | Called when the schema is edited |
+| `autoFocus` | `boolean` | `true` | Whether the editor should be focused when mounted |
+
+#### `SchemaInferencer`
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | — | Whether the dialog is open |
+| `onOpenChange` | `(open: boolean) => void` | — | Called when the dialog open state changes |
+| `onSchemaInferred` | `(schema: JSONSchema) => void` | — | Called when a schema is generated from JSON input |
+| `autoFocus` | `boolean` | `true` | Whether the editor should be focused when mounted |
+
 ### Key Features
 
 #### Schema Inference

@@ -11,6 +11,8 @@ export interface JsonSchemaVisualizerProps {
   schema: JSONSchema;
   className?: string;
   onChange?: (schema: JSONSchema) => void;
+  /** Whether the editor should be focused when mounted. Defaults to `true`. */
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -18,6 +20,7 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
   schema,
   className,
   onChange,
+  autoFocus = true,
 }) => {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const {
@@ -36,7 +39,8 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
-    editor.focus();
+    if(autoFocus) editor.focus();
+    
   };
 
   const handleEditorChange = (value: string | undefined) => {

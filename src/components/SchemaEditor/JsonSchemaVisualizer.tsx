@@ -39,8 +39,7 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
-    if(autoFocus) editor.focus();
-    
+    if (autoFocus) editor.focus();
   };
 
   const handleEditorChange = (value: string | undefined) => {

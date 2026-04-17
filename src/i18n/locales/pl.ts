@@ -130,14 +130,16 @@ export const pl: Translation = {
   anyOfAddOption: "Dodaj opcję",
   anyOfRemoveOption: "Usuń opcję",
   anyOfOptionLabel: "Opcja",
-  anyOfDescription: "Wartość musi pasować do co najmniej jednego z tych schematów",
+  anyOfDescription:
+    "Wartość musi pasować do co najmniej jednego z tych schematów",
   anyOfNoOptions: "Nie zdefiniowano opcji",
 
   schemaTypeOneOf: "Dokładnie jeden z",
   oneOfAddOption: "Dodaj opcję",
   oneOfRemoveOption: "Usuń opcję",
   oneOfOptionLabel: "Opcja",
-  oneOfDescription: "Wartość musi pasować do dokładnie jednego z tych schematów",
+  oneOfDescription:
+    "Wartość musi pasować do dokładnie jednego z tych schematów",
   oneOfNoOptions: "Nie zdefiniowano opcji",
 
   schemaTypeAllOf: "Wszystkie z",

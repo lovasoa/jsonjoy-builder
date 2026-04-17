@@ -131,7 +131,8 @@ export const de: Translation = {
   anyOfAddOption: "Option hinzufügen",
   anyOfRemoveOption: "Option entfernen",
   anyOfOptionLabel: "Option",
-  anyOfDescription: "Der Wert muss mindestens einem dieser Schemata entsprechen",
+  anyOfDescription:
+    "Der Wert muss mindestens einem dieser Schemata entsprechen",
   anyOfNoOptions: "Keine Optionen definiert",
 
   schemaTypeOneOf: "Genau eines von",

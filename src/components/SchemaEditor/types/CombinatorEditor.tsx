@@ -9,10 +9,7 @@ import type {
   SchemaEditorType,
   SchemaType,
 } from "../../../types/jsonSchema.ts";
-import {
-  getEditorType,
-  isBooleanSchema,
-} from "../../../types/jsonSchema.ts";
+import { getEditorType, isBooleanSchema } from "../../../types/jsonSchema.ts";
 import TypeDropdown from "../TypeDropdown.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
 import TypeEditor from "../TypeEditor.tsx";
@@ -116,7 +113,8 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
         [combinator]: _old,
         type: _type,
         ...rest
-      } = base as ObjectJSONSchema & Record<Combinator, JSONSchema[] | undefined>;
+      } = base as ObjectJSONSchema &
+        Record<Combinator, JSONSchema[] | undefined>;
       onChange({ ...rest, [combinator]: newOptions });
     },
     [schema, onChange, combinator],
@@ -136,10 +134,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
     if (expandedId === ids[index]) setExpandedId(null);
   };
 
-  const handleOptionTypeChange = (
-    index: number,
-    newType: SchemaEditorType,
-  ) => {
+  const handleOptionTypeChange = (index: number, newType: SchemaEditorType) => {
     const newOptions = [...options];
     newOptions[index] = DEFAULT_SCHEMAS[newType as SchemaType] ??
       DEFAULT_SCHEMAS[newType as Combinator] ?? { type: "string" };

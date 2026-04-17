@@ -139,7 +139,8 @@ export const fr: Translation = {
   oneOfAddOption: "Ajouter une option",
   oneOfRemoveOption: "Supprimer l'option",
   oneOfOptionLabel: "Option",
-  oneOfDescription: "La valeur doit correspondre à exactement un de ces schémas",
+  oneOfDescription:
+    "La valeur doit correspondre à exactement un de ces schémas",
   oneOfNoOptions: "Aucune option définie",
 
   schemaTypeAllOf: "Tous de",

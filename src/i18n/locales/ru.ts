@@ -131,7 +131,8 @@ export const ru: Translation = {
   anyOfAddOption: "Добавить вариант",
   anyOfRemoveOption: "Удалить вариант",
   anyOfOptionLabel: "Вариант",
-  anyOfDescription: "Значение должно соответствовать хотя бы одной из этих схем",
+  anyOfDescription:
+    "Значение должно соответствовать хотя бы одной из этих схем",
   anyOfNoOptions: "Варианты не определены",
 
   schemaTypeOneOf: "Ровно одно из",

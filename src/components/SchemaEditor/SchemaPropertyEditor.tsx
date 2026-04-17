@@ -176,16 +176,30 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                     newType === "oneOf" ||
                     newType === "allOf"
                   ) {
-                    const { type: _type, anyOf: _a, oneOf: _o, allOf: _al, ...rest } =
-                      asObjectSchema(schema);
+                    const {
+                      type: _type,
+                      anyOf: _a,
+                      oneOf: _o,
+                      allOf: _al,
+                      ...rest
+                    } = asObjectSchema(schema);
                     const initial =
                       newType === "allOf"
                         ? { allOf: [{ type: "object" as const }] }
-                        : { [newType]: [{ type: "string" as const }, { type: "number" as const }] };
+                        : {
+                            [newType]: [
+                              { type: "string" as const },
+                              { type: "number" as const },
+                            ],
+                          };
                     onSchemaChange({ ...rest, ...initial });
                   } else {
-                    const { anyOf: _a, oneOf: _o, allOf: _al, ...rest } =
-                      asObjectSchema(schema);
+                    const {
+                      anyOf: _a,
+                      oneOf: _o,
+                      allOf: _al,
+                      ...rest
+                    } = asObjectSchema(schema);
                     onSchemaChange({ ...rest, type: newType });
                   }
                 }}

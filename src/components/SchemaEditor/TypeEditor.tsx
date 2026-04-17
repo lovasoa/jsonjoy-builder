@@ -1,9 +1,6 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
-import type {
-  JSONSchema,
-  ObjectJSONSchema,
-} from "../../types/jsonSchema.ts";
+import type { JSONSchema, ObjectJSONSchema } from "../../types/jsonSchema.ts";
 import { getEditorType } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 

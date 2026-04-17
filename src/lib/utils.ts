@@ -33,7 +33,10 @@ export const getTypeColor = (type: SchemaEditorType): string => {
 };
 
 // Get type display label
-export const getTypeLabel = (t: Translation, type: SchemaEditorType): string => {
+export const getTypeLabel = (
+  t: Translation,
+  type: SchemaEditorType,
+): string => {
   switch (type) {
     case "string":
       return t.schemaTypeString;

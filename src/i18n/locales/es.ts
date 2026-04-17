@@ -130,14 +130,16 @@ export const es: Translation = {
   anyOfAddOption: "Agregar opción",
   anyOfRemoveOption: "Eliminar opción",
   anyOfOptionLabel: "Opción",
-  anyOfDescription: "El valor debe coincidir con al menos uno de estos esquemas",
+  anyOfDescription:
+    "El valor debe coincidir con al menos uno de estos esquemas",
   anyOfNoOptions: "No hay opciones definidas",
 
   schemaTypeOneOf: "Exactamente uno de",
   oneOfAddOption: "Agregar opción",
   oneOfRemoveOption: "Eliminar opción",
   oneOfOptionLabel: "Opción",
-  oneOfDescription: "El valor debe coincidir con exactamente uno de estos esquemas",
+  oneOfDescription:
+    "El valor debe coincidir con exactamente uno de estos esquemas",
   oneOfNoOptions: "No hay opciones definidas",
 
   schemaTypeAllOf: "Todos de",

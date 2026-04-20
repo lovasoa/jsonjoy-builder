@@ -9,7 +9,7 @@ export const uk: Translation = {
   fieldDescription: "Опис",
   fieldDescriptionTooltip: "Додайте контекст про те, що представляє це поле",
   fieldNameLabel: "Назва поля",
-  fieldNamePlaceholder: "наприклад, ім'я, вік, активне",
+  fieldNamePlaceholder: "наприклад, firstName, age, isActive",
   fieldNameTooltip:
     "Використовуйте camelCase для кращої читабельності (наприклад, firstName)",
   fieldRequiredLabel: "Обов'язкове поле",
@@ -17,7 +17,7 @@ export const uk: Translation = {
   fieldTypeExample: "Приклад:",
   fieldTypeTooltipString: "string: Текст",
   fieldTypeTooltipNumber: "number: Число",
-  fieldTypeTooltipBoolean: "boolean: Так/Ні",
+  fieldTypeTooltipBoolean: "boolean: true/false",
   fieldTypeTooltipObject: "object: Вкладений JSON",
   fieldTypeTooltipArray: "array: Списки значень",
   fieldAddNewButton: "Додати поле",
@@ -154,7 +154,7 @@ export const uk: Translation = {
   schemaTypeString: "Текст",
   schemaTypeNull: "Пусто",
 
-  inferrerTitle: "Вивести JSON-схему",
+  inferrerTitle: "Згенерувати JSON-схему",
   inferrerDescription:
     "Вставте свій JSON-документ нижче, щоб згенерувати з нього схему.",
   inferrerCancel: "Скасувати",

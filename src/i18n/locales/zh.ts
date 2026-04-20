@@ -26,15 +26,15 @@ export const zh: Translation = {
   fieldAddNewDescription: "创建一个新的字段用于你的 JSON schema",
   fieldAddNewLabel: "添加新字段",
 
-  fieldTypeTextLabel: "字符串",
+  fieldTypeTextLabel: "文本",
   fieldTypeTextDescription: "用于文本值，如名称、描述等",
   fieldTypeNumberLabel: "数字",
   fieldTypeNumberDescription: "用于小数或整数",
-  fieldTypeBooleanLabel: "布尔值",
+  fieldTypeBooleanLabel: "是/否",
   fieldTypeBooleanDescription: "用于真/假值",
-  fieldTypeObjectLabel: "对象",
+  fieldTypeObjectLabel: "分组",
   fieldTypeObjectDescription: "用于分组相关的字段",
-  fieldTypeArrayLabel: "数组",
+  fieldTypeArrayLabel: "列表",
   fieldTypeArrayDescription: "用于集合的项",
 
   propertyDescriptionPlaceholder: "添加描述...",
@@ -89,7 +89,7 @@ export const zh: Translation = {
   numberValidationErrorEnumOutOfRange: "枚举值必须在定义的范围内。",
 
   objectPropertiesNone: "没有定义属性",
-  objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」.",
+  objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」。",
 
   additionalPropertiesAllow: "允许附加属性",
   additionalPropertiesForbid: "禁止附加属性",

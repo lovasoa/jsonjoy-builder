@@ -22,7 +22,7 @@ export * from "./i18n/locales/uk.ts";
 export * from "./i18n/locales/zh.ts";
 export * from "./i18n/translation-context.ts";
 export * from "./i18n/translation-keys.ts";
-
+export type { baseSchema, JSONSchema } from "./types/jsonSchema.ts";
 export {
   JsonSchemaEditor,
   type JsonSchemaEditorProps,
@@ -31,5 +31,3 @@ export {
   SchemaVisualEditor,
   type SchemaVisualEditorProps,
 };
-
-export type { baseSchema, JSONSchema } from "./types/jsonSchema.ts";

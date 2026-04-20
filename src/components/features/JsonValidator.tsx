@@ -224,9 +224,9 @@ export function JsonValidator({
                     </div>
                   )}
                   <ul className="space-y-2">
-                    {validationResult.errors.map((error, index) => (
+                    {validationResult.errors.map((error) => (
                       <button
-                        key={`error-${error.path}-${index}`}
+                        key={`error-${error.path}-${error.message}-${error.line ?? "na"}-${error.column ?? "na"}`}
                         type="button"
                         className="w-full text-left bg-white border border-red-100 rounded-md p-3 shadow-xs hover:shadow-md transition-shadow duration-200 cursor-pointer"
                         onClick={() =>

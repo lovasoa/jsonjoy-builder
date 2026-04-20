@@ -14,10 +14,13 @@ import {
 } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 interface SchemaFieldListProps {
   schema: JSONSchemaType;
   readOnly: boolean;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
   onAddField: (newField: NewField) => void;
   onEditField: (name: string, updatedField: NewField) => void;
   onDeleteField: (name: string) => void;
@@ -27,6 +30,8 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   schema,
   onEditField,
   onDeleteField,
+  onAddEnum,
+  onDeleteEnum,
   readOnly = false,
 }) => {
   const t = useTranslation();
@@ -143,9 +148,12 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
         <SchemaPropertyEditor
           key={property.name}
           name={property.name}
+          schemaKey={property.name}
           schema={property.schema}
           required={property.required}
           validationNode={validationTree.children[property.name] ?? undefined}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           onDelete={() => onDeleteField(property.name)}
           onNameChange={(newName) => handleNameChange(property.name, newName)}
           onRequiredChange={(required) =>

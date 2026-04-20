@@ -24,6 +24,9 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   readOnly = false,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   depth = 0,
 }) => {
   const t = useTranslation();
@@ -43,6 +46,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
 
   // Get the array's item schema
   const itemsSchema = getArrayItemsSchema(schema) || { type: "string" };
+  const itemSchemaKey = schemaKey ? `${schemaKey}[]` : undefined;
 
   // Get the type of the array items
   const itemType = withObjectSchema(
@@ -276,6 +280,9 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
           schema={itemsSchema}
           validationNode={validationNode}
           onChange={handleItemSchemaChange}
+          schemaKey={itemSchemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth + 1}
         />
       </div>

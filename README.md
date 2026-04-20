@@ -48,6 +48,50 @@ export function App() {
 }
 ```
 
+### Enum Change Callbacks
+
+You can subscribe to enum value changes in the visual editor via `onAddEnum` and `onDeleteEnum`.
+
+Both callbacks receive a single context object:
+
+```ts
+type EnumChangeContext = {
+  value: string | number | boolean;
+  index: number;
+  schemaKey?: string;
+};
+```
+
+- `value`: enum value that was added/removed
+- `index`: index in the enum list at the time of the change
+- `schemaKey`: path-like key of the edited field (for example: `person.firstName`, `hobbies[].name`)
+
+Example:
+
+```tsx
+import "jsonjoy-builder/styles.css";
+import { type JSONSchema, JsonSchemaEditor } from "jsonjoy-builder";
+import { useState } from "react";
+
+export function App() {
+  const [schema, setSchema] = useState<JSONSchema>({ type: "object" });
+
+  return (
+    <JsonSchemaEditor
+      schema={schema}
+      readOnly={false}
+      setSchema={setSchema}
+      onAddEnum={({ value, index, schemaKey }) => {
+        console.log("enum:add", { value, index, schemaKey });
+      }}
+      onDeleteEnum={({ value, index, schemaKey }) => {
+        console.log("enum:delete", { value, index, schemaKey });
+      }}
+    />
+  );
+}
+```
+
 ### Styling
 
 To style the component, add custom CSS. For basic styling, there are some CSS custom properties ("variables")

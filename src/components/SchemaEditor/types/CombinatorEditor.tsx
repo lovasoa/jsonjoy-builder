@@ -81,6 +81,9 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   readOnly = false,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   depth = 0,
   combinator,
 }) => {
@@ -219,6 +222,13 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
                       onChange={(updatedSchema) =>
                         handleOptionSchemaChange(index, updatedSchema)
                       }
+                      schemaKey={
+                        schemaKey
+                          ? `${schemaKey}.${combinator}[${index}]`
+                          : `${combinator}[${index}]`
+                      }
+                      onAddEnum={onAddEnum}
+                      onDeleteEnum={onDeleteEnum}
                       depth={depth + 1}
                     />
                   </div>

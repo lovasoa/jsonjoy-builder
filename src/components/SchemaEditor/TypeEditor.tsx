@@ -12,11 +12,20 @@ const ObjectEditor = lazy(() => import("./types/ObjectEditor.tsx"));
 const ArrayEditor = lazy(() => import("./types/ArrayEditor.tsx"));
 const CombinatorEditor = lazy(() => import("./types/CombinatorEditor.tsx"));
 
+export interface EnumChangeContext {
+  value: string | number | boolean;
+  index: number;
+  schemaKey?: string;
+}
+
 export interface TypeEditorProps {
   schema: JSONSchema;
   readOnly: boolean;
   validationNode: ValidationTreeNode | undefined;
   onChange: (schema: ObjectJSONSchema) => void;
+  schemaKey?: string;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
   depth?: number;
 }
 
@@ -24,6 +33,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
   schema,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   depth = 0,
   readOnly = false,
 }) => {
@@ -37,6 +49,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
         />
@@ -46,6 +61,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
         />
@@ -55,6 +73,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
           integer
@@ -65,6 +86,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
         />
@@ -74,6 +98,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
         />
@@ -83,6 +110,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
         />
@@ -92,6 +122,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth}
           validationNode={validationNode}
           combinator={type}

@@ -175,6 +175,10 @@ const Index = () => {
               readOnly={readOnly}
               setSchema={setSchema}
               className="shadow-lg animate-in border-border/50 backdrop-blur-xs"
+              onAddEnum={(v: string | number | boolean, index: number) =>
+                console.log(v, index)
+              }
+              onDeleteEnum={(v: string | number | boolean) => console.log(v)}
             />
           </div>
 

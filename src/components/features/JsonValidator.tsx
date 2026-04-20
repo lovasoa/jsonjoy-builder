@@ -25,6 +25,7 @@ export interface JsonValidatorProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   schema: JSONSchema;
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -32,6 +33,7 @@ export function JsonValidator({
   open,
   onOpenChange,
   schema,
+  autoFocus = true,
 }: JsonValidatorProps) {
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
@@ -88,7 +90,9 @@ export function JsonValidator({
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
-    editor.focus();
+    if (autoFocus) {
+      editor.focus();
+    }
   };
 
   const handleEditorChange = (value: string | undefined) => {

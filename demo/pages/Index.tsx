@@ -9,57 +9,57 @@ import {
   PencilOff,
   RefreshCw,
   User,
-} from "lucide-react";
-import React, { useState } from "react";
-import { exampleSchema } from "../../demo/utils/schemaExample.ts";
-import { JsonValidator } from "../../src/components/features/JsonValidator.tsx";
-import { SchemaInferencer } from "../../src/components/features/SchemaInferencer.tsx";
-import JsonSchemaEditor from "../../src/components/SchemaEditor/JsonSchemaEditor.tsx";
-import { Button } from "../../src/components/ui/button.tsx";
+} from "lucide-react"
+import React, { useState } from "react"
+import { exampleSchema } from "../../demo/utils/schemaExample.ts"
+import { JsonValidator } from "../../src/components/features/JsonValidator.tsx"
+import { SchemaInferencer } from "../../src/components/features/SchemaInferencer.tsx"
+import JsonSchemaEditor from "../../src/components/SchemaEditor/JsonSchemaEditor.tsx"
+import { Button } from "../../src/components/ui/button.tsx"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../src/components/ui/select.tsx";
-import { en } from "../../src/i18n/locales/en.ts";
-import { TranslationContext } from "../../src/i18n/translation-context.ts";
-import type { JSONSchema } from "../../src/types/jsonSchema.ts";
+} from "../../src/components/ui/select.tsx"
+import { en } from "../../src/i18n/locales/en.ts"
+import { TranslationContext } from "../../src/i18n/translation-context.ts"
+import type { JSONSchema } from "../../src/types/jsonSchema.ts"
 
 const Index = () => {
-  const [schema, setSchema] = useState<JSONSchema>(exampleSchema);
-  const [readOnly, setReadOnly] = useState<boolean>(false);
-  const [inferDialogOpen, setInferDialogOpen] = useState(false);
-  const [validateDialogOpen, setValidateDialogOpen] = useState(false);
-  const [language, setLanguage] = useState("en");
-  const [translation, setTranslation] = useState(en);
+  const [schema, setSchema] = useState<JSONSchema>(exampleSchema)
+  const [readOnly, setReadOnly] = useState<boolean>(false)
+  const [inferDialogOpen, setInferDialogOpen] = useState(false)
+  const [validateDialogOpen, setValidateDialogOpen] = useState(false)
+  const [language, setLanguage] = useState("en")
+  const [translation, setTranslation] = useState(en)
 
-  const handleReset = () => setSchema(exampleSchema);
+  const handleReset = () => setSchema(exampleSchema)
 
-  const handleReadOnlyToggle = () => setReadOnly(!readOnly);
+  const handleReadOnlyToggle = () => setReadOnly(!readOnly)
 
   const handleClear = () =>
     setSchema({
       type: "object",
       properties: {},
       required: [],
-    });
+    })
 
   const handleInferSchema = () => {
-    setInferDialogOpen(true);
-  };
+    setInferDialogOpen(true)
+  }
 
   const handleValidateJson = () => {
-    setValidateDialogOpen(true);
-  };
+    setValidateDialogOpen(true)
+  }
 
   const handleLanguageChange = (value: string) => {
-    setLanguage(value);
+    setLanguage(value)
     import(`../../src/i18n/locales/${value}.ts`).then((module) => {
-      setTranslation(module[value]);
-    });
-  };
+      setTranslation(module[value])
+    })
+  }
 
   return (
     <TranslationContext value={translation}>
@@ -175,10 +175,6 @@ const Index = () => {
               readOnly={readOnly}
               setSchema={setSchema}
               className="shadow-lg animate-in border-border/50 backdrop-blur-xs"
-              onAddEnum={(v: string | number | boolean, index: number) =>
-                console.log(v, index)
-              }
-              onDeleteEnum={(v: string | number | boolean) => console.log(v)}
             />
           </div>
 
@@ -478,7 +474,7 @@ const Index = () => {
         </div>
       </div>
     </TranslationContext>
-  );
-};
+  )
+}
 
-export default Index;
+export default Index

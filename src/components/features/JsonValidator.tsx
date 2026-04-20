@@ -83,6 +83,7 @@ export function JsonValidator({
   const handleSchemaEditorBeforeMount: BeforeMount = (monaco) => {
     schemaMonacoRef.current = monaco;
     defineMonacoThemes(monaco);
+    configureJsonDefaults(monaco);
   };
 
   const handleEditorDidMount: OnMount = (editor) => {

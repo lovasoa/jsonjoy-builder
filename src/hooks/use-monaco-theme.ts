@@ -2,7 +2,16 @@ import type * as Monaco from "monaco-editor";
 import type { json as MonacoJson } from "monaco-editor";
 import * as MonacoModule from "monaco-editor";
 import { useEffect, useState } from "react";
+import draft07Schema from "../lib/json-schema-draft-07.json";
 import type { JSONSchema } from "../types/jsonSchema.ts";
+
+const DRAFT_07_SCHEMA_URIS = [
+  "https://json-schema.org/draft-07/schema",
+  "https://json-schema.org/draft-07/schema#",
+  "http://json-schema.org/draft-07/schema",
+  "http://json-schema.org/draft-07/schema#",
+] as const;
+const DEFAULT_DRAFT_07_SCHEMA_URI = DRAFT_07_SCHEMA_URIS[0];
 
 export interface MonacoEditorOptions {
   minimap?: { enabled: boolean };
@@ -162,7 +171,7 @@ export function useMonacoTheme() {
 
   // Helper to configure JSON language validation
   const configureJsonDefaults = (
-    _monaco?: typeof Monaco,
+    monaco?: typeof Monaco,
     schema?: JSONSchema,
   ) => {
     // Create a new diagnostics options object
@@ -170,32 +179,31 @@ export function useMonacoTheme() {
       validate: true,
       allowComments: false,
       schemaValidation: "error",
-      enableSchemaRequest: true,
-      schemas: schema
-        ? [
-            {
-              uri:
-                typeof schema === "object" && schema.$id
-                  ? schema.$id
-                  : "https://jsonjoy-builder/schema",
-              fileMatch: ["*"],
-              schema,
-            },
-          ]
-        : [
-            {
-              uri: "http://json-schema.org/draft-07/schema",
-              fileMatch: ["*"],
-              schema: {
-                $schema: "http://json-schema.org/draft-07/schema",
-                type: "object",
-                additionalProperties: true,
-              },
-            },
-          ],
+      enableSchemaRequest: false,
+      schemas: [
+        ...DRAFT_07_SCHEMA_URIS.map((uri) => ({
+          uri,
+          schema: draft07Schema,
+        })),
+        {
+          uri:
+            typeof schema === "object" && schema.$id
+              ? schema.$id
+              : "https://jsonjoy-builder/schema",
+          fileMatch: ["*"],
+          schema:
+            schema ||
+            ({
+              $schema: DEFAULT_DRAFT_07_SCHEMA_URI,
+              type: "object",
+              additionalProperties: true,
+            } satisfies JSONSchema),
+        },
+      ],
     };
 
-    MonacoModule.json.jsonDefaults.setDiagnosticsOptions(diagnosticsOptions);
+    const jsonDefaults = (monaco || MonacoModule).json.jsonDefaults;
+    jsonDefaults.setDiagnosticsOptions(diagnosticsOptions);
   };
 
   return {

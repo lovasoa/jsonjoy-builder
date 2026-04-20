@@ -23,6 +23,8 @@ export interface JsonSchemaEditorProps {
   readOnly: boolean;
   setSchema?: (schema: JSONSchema) => void;
   className?: string;
+  /** Whether JSON editor should be focused when mounted. Defaults to `true`. */
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -31,6 +33,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   readOnly = false,
   setSchema,
   className,
+  autoFocus = true,
 }) => {
   // Handle schema changes and propagate to parent if needed
   const handleSchemaChange = (newSchema: JSONSchema) => {
@@ -137,6 +140,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
             />
           </TabsContent>
         </Tabs>
@@ -185,6 +189,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
             />
           </div>
         </div>

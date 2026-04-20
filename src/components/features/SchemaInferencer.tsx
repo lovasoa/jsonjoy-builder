@@ -80,7 +80,12 @@ export function SchemaInferencer({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col jsonjoy">
+      <DialogContent
+        className="sm:max-w-4xl max-h-[90vh] flex flex-col jsonjoy"
+        onOpenAutoFocus={(event) => {
+          if (!autoFocus) event.preventDefault();
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{t.inferrerTitle}</DialogTitle>
           <DialogDescription>{t.inferrerDescription}</DialogDescription>

@@ -121,6 +121,27 @@ export const zh: Translation = {
   stringFormatSelectPlaceholder: "选择格式",
   stringValidationErrorLengthRange: "「最小长度」不能大于「最大长度」",
 
+  schemaTypeAnyOf: "任意一个",
+  anyOfAddOption: "添加选项",
+  anyOfRemoveOption: "删除选项",
+  anyOfOptionLabel: "选项",
+  anyOfDescription: "值必须符合至少一个以下 Schema",
+  anyOfNoOptions: "未定义选项",
+
+  schemaTypeOneOf: "恰好一个",
+  oneOfAddOption: "添加选项",
+  oneOfRemoveOption: "删除选项",
+  oneOfOptionLabel: "选项",
+  oneOfDescription: "值必须恰好符合一个以下 Schema",
+  oneOfNoOptions: "未定义选项",
+
+  schemaTypeAllOf: "全部",
+  allOfAddSchema: "添加 Schema",
+  allOfRemoveSchema: "删除 Schema",
+  allOfSchemaLabel: "Schema",
+  allOfDescription: "值必须符合所有以下 Schema",
+  allOfNoSchemas: "未定义 Schema",
+
   schemaTypeArray: "数组",
   schemaTypeBoolean: "布尔值",
   schemaTypeNumber: "数字",

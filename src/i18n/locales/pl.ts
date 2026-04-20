@@ -126,6 +126,29 @@ export const pl: Translation = {
   stringValidationErrorLengthRange:
     "'Minimalna długość' nie może być większa niż 'Maksymalna długość'.",
 
+  schemaTypeAnyOf: "Jeden z",
+  anyOfAddOption: "Dodaj opcję",
+  anyOfRemoveOption: "Usuń opcję",
+  anyOfOptionLabel: "Opcja",
+  anyOfDescription:
+    "Wartość musi pasować do co najmniej jednego z tych schematów",
+  anyOfNoOptions: "Nie zdefiniowano opcji",
+
+  schemaTypeOneOf: "Dokładnie jeden z",
+  oneOfAddOption: "Dodaj opcję",
+  oneOfRemoveOption: "Usuń opcję",
+  oneOfOptionLabel: "Opcja",
+  oneOfDescription:
+    "Wartość musi pasować do dokładnie jednego z tych schematów",
+  oneOfNoOptions: "Nie zdefiniowano opcji",
+
+  schemaTypeAllOf: "Wszystkie z",
+  allOfAddSchema: "Dodaj schemat",
+  allOfRemoveSchema: "Usuń schemat",
+  allOfSchemaLabel: "Schemat",
+  allOfDescription: "Wartość musi pasować do wszystkich tych schematów",
+  allOfNoSchemas: "Nie zdefiniowano schematów",
+
   schemaTypeArray: "Lista",
   schemaTypeBoolean: "Tak/Nie",
   schemaTypeNumber: "Liczba",

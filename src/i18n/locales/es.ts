@@ -126,6 +126,29 @@ export const es: Translation = {
   stringValidationErrorLengthRange:
     "'Longitud Mínima' no puede ser mayor que 'Longitud Máxima'.",
 
+  schemaTypeAnyOf: "Cualquiera de",
+  anyOfAddOption: "Agregar opción",
+  anyOfRemoveOption: "Eliminar opción",
+  anyOfOptionLabel: "Opción",
+  anyOfDescription:
+    "El valor debe coincidir con al menos uno de estos esquemas",
+  anyOfNoOptions: "No hay opciones definidas",
+
+  schemaTypeOneOf: "Exactamente uno de",
+  oneOfAddOption: "Agregar opción",
+  oneOfRemoveOption: "Eliminar opción",
+  oneOfOptionLabel: "Opción",
+  oneOfDescription:
+    "El valor debe coincidir con exactamente uno de estos esquemas",
+  oneOfNoOptions: "No hay opciones definidas",
+
+  schemaTypeAllOf: "Todos de",
+  allOfAddSchema: "Agregar esquema",
+  allOfRemoveSchema: "Eliminar esquema",
+  allOfSchemaLabel: "Esquema",
+  allOfDescription: "El valor debe coincidir con todos estos esquemas",
+  allOfNoSchemas: "No hay esquemas definidos",
+
   schemaTypeArray: "Lista",
   schemaTypeBoolean: "Sí/No",
   schemaTypeNumber: "Número",

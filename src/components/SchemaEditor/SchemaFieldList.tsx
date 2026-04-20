@@ -7,6 +7,11 @@ import type {
   ObjectJSONSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
+import {
+  isAllOfSchema,
+  isAnyOfSchema,
+  isOneOfSchema,
+} from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 
@@ -32,6 +37,14 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   // Get schema type as a valid SchemaType
   const getValidSchemaType = (propSchema: JSONSchemaType): SchemaType => {
     if (typeof propSchema === "boolean") return "object";
+
+    // combinator schemas don't have a direct type — default to object for NewField purposes
+    if (
+      isAnyOfSchema(propSchema) ||
+      isOneOfSchema(propSchema) ||
+      isAllOfSchema(propSchema)
+    )
+      return "object";
 
     // Handle array of types by picking the first one
     const type = propSchema.type;
@@ -89,6 +102,22 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   ) => {
     const property = properties.find((prop) => prop.name === name);
     if (!property) return;
+
+    // combinator schemas have no direct type field
+    if (
+      isAnyOfSchema(updatedSchema) ||
+      isOneOfSchema(updatedSchema) ||
+      isAllOfSchema(updatedSchema)
+    ) {
+      onEditField(name, {
+        name,
+        type: "object",
+        description: updatedSchema.description || "",
+        required: property.required,
+        validation: updatedSchema,
+      });
+      return;
+    }
 
     const type = updatedSchema.type || "object";
     // Ensure we're using a single type, not an array of types

@@ -611,6 +611,117 @@ export interface Translation {
   readonly stringValidationErrorLengthRange: string;
 
   /**
+   * The translation for the key `schemaTypeAnyOf`. English default is:
+   *
+   * > Any Of
+   */
+  readonly schemaTypeAnyOf: string;
+  /**
+   * The translation for the key `anyOfAddOption`. English default is:
+   *
+   * > Add Option
+   */
+  readonly anyOfAddOption: string;
+  /**
+   * The translation for the key `anyOfRemoveOption`. English default is:
+   *
+   * > Remove option
+   */
+  readonly anyOfRemoveOption: string;
+  /**
+   * The translation for the key `anyOfOptionLabel`. English default is:
+   *
+   * > Option
+   */
+  readonly anyOfOptionLabel: string;
+  /**
+   * The translation for the key `anyOfDescription`. English default is:
+   *
+   * > Value must match at least one of these schemas
+   */
+  readonly anyOfDescription: string;
+  /**
+   * The translation for the key `anyOfNoOptions`. English default is:
+   *
+   * > No options defined
+   */
+  readonly anyOfNoOptions: string;
+
+  /**
+   * The translation for the key `schemaTypeOneOf`. English default is:
+   *
+   * > One Of
+   */
+  readonly schemaTypeOneOf: string;
+  /**
+   * The translation for the key `oneOfAddOption`. English default is:
+   *
+   * > Add Option
+   */
+  readonly oneOfAddOption: string;
+  /**
+   * The translation for the key `oneOfRemoveOption`. English default is:
+   *
+   * > Remove option
+   */
+  readonly oneOfRemoveOption: string;
+  /**
+   * The translation for the key `oneOfOptionLabel`. English default is:
+   *
+   * > Option
+   */
+  readonly oneOfOptionLabel: string;
+  /**
+   * The translation for the key `oneOfDescription`. English default is:
+   *
+   * > Value must match exactly one of these schemas
+   */
+  readonly oneOfDescription: string;
+  /**
+   * The translation for the key `oneOfNoOptions`. English default is:
+   *
+   * > No options defined
+   */
+  readonly oneOfNoOptions: string;
+
+  /**
+   * The translation for the key `schemaTypeAllOf`. English default is:
+   *
+   * > All Of
+   */
+  readonly schemaTypeAllOf: string;
+  /**
+   * The translation for the key `allOfAddSchema`. English default is:
+   *
+   * > Add Schema
+   */
+  readonly allOfAddSchema: string;
+  /**
+   * The translation for the key `allOfRemoveSchema`. English default is:
+   *
+   * > Remove schema
+   */
+  readonly allOfRemoveSchema: string;
+  /**
+   * The translation for the key `allOfSchemaLabel`. English default is:
+   *
+   * > Schema
+   */
+  readonly allOfSchemaLabel: string;
+  /**
+   * The translation for the key `allOfDescription`. English default is:
+   *
+   * > Value must match all of these schemas
+   */
+  readonly allOfDescription: string;
+  /**
+   * The translation for the key `allOfNoSchemas`. English default is:
+   *
+   * > No schemas defined
+   */
+  readonly allOfNoSchemas: string;
+
+  /**
    * The translation for the key `schemaTypeString`. English default is:
    *
    * > Text

@@ -126,6 +126,27 @@ export const uk: Translation = {
   stringValidationErrorLengthRange:
     "'Мінімальна довжина' не може бути більшою за 'Максимальну довжину'.",
 
+  schemaTypeAnyOf: "Одне з",
+  anyOfAddOption: "Додати варіант",
+  anyOfRemoveOption: "Видалити варіант",
+  anyOfOptionLabel: "Варіант",
+  anyOfDescription: "Значення має відповідати хоча б одній з цих схем",
+  anyOfNoOptions: "Варіанти не визначені",
+
+  schemaTypeOneOf: "Рівно одне з",
+  oneOfAddOption: "Додати варіант",
+  oneOfRemoveOption: "Видалити варіант",
+  oneOfOptionLabel: "Варіант",
+  oneOfDescription: "Значення має відповідати рівно одній з цих схем",
+  oneOfNoOptions: "Варіанти не визначені",
+
+  schemaTypeAllOf: "Усі з",
+  allOfAddSchema: "Додати схему",
+  allOfRemoveSchema: "Видалити схему",
+  allOfSchemaLabel: "Схема",
+  allOfDescription: "Значення має відповідати всім цим схемам",
+  allOfNoSchemas: "Схеми не визначені",
+
   schemaTypeArray: "Список",
   schemaTypeBoolean: "Так/Ні",
   schemaTypeNumber: "Число",

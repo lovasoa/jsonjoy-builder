@@ -12,6 +12,7 @@ import SchemaVisualEditor, {
 
 export * from "./components/features/JsonValidator.tsx";
 export * from "./components/features/SchemaInferencer.tsx";
+export type { EnumChangeContext } from "./components/SchemaEditor/TypeEditor.tsx";
 export * from "./i18n/locales/de.ts";
 export * from "./i18n/locales/en.ts";
 export * from "./i18n/locales/es.ts";

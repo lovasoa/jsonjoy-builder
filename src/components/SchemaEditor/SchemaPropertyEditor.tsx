@@ -17,13 +17,17 @@ import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
 import { ButtonToggle } from "../ui/button-toggle.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 import TypeEditor from "./TypeEditor.tsx";
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;
+  schemaKey?: string;
   required: boolean;
   readOnly: boolean;
   validationNode?: ValidationTreeNode;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
   onDelete: () => void;
   onNameChange: (newName: string) => void;
   onRequiredChange: (required: boolean) => void;
@@ -34,9 +38,12 @@ export interface SchemaPropertyEditorProps {
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   name,
   schema,
+  schemaKey,
   required,
   readOnly = false,
   validationNode,
+  onAddEnum,
+  onDeleteEnum,
   onDelete,
   onNameChange,
   onRequiredChange,
@@ -254,6 +261,9 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
             readOnly={readOnly}
             validationNode={validationNode}
             onChange={handleSchemaUpdate}
+            schemaKey={schemaKey ?? name}
+            onAddEnum={onAddEnum}
+            onDeleteEnum={onDeleteEnum}
             depth={depth + 1}
           />
         </div>

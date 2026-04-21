@@ -10,18 +10,23 @@ import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 /** @public */
 export interface SchemaVisualEditorProps {
   schema: JSONSchema;
   readOnly: boolean;
   onChange: (schema: JSONSchema) => void;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
 }
 
 /** @public */
 const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   schema,
   onChange,
+  onAddEnum,
+  onDeleteEnum,
   readOnly = false,
 }) => {
   const t = useTranslation();
@@ -125,6 +130,8 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
           <SchemaFieldList
             schema={schema}
             readOnly={readOnly}
+            onAddEnum={onAddEnum}
+            onDeleteEnum={onDeleteEnum}
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}

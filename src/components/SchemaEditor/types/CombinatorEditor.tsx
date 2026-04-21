@@ -1,5 +1,6 @@
-import { CirclePlus, X } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { ChevronDown, ChevronRight, CirclePlus, X } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { Input } from "../../../components/ui/input.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import type { Translation } from "../../../i18n/translation-keys.ts";
 import { cn } from "../../../lib/utils.ts";
@@ -9,7 +10,11 @@ import type {
   SchemaEditorType,
   SchemaType,
 } from "../../../types/jsonSchema.ts";
-import { getEditorType, isBooleanSchema } from "../../../types/jsonSchema.ts";
+import {
+  getEditorType,
+  getSchemaDescription,
+  isBooleanSchema,
+} from "../../../types/jsonSchema.ts";
 import TypeDropdown from "../TypeDropdown.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
 import TypeEditor from "../TypeEditor.tsx";
@@ -105,6 +110,13 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   }, [rawOptions, ids]);
 
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [descFocusId, setDescFocusId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (descFocusId !== null && !ids.includes(descFocusId)) {
+      setDescFocusId(null);
+    }
+  }, [descFocusId, ids]);
 
   const updateOptions = useCallback(
     (newOptions: JSONSchema[]) => {
@@ -136,8 +148,39 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
 
   const handleOptionTypeChange = (index: number, newType: SchemaEditorType) => {
     const newOptions = [...options];
-    newOptions[index] = DEFAULT_SCHEMAS[newType as SchemaType] ??
+    const prevDesc = getSchemaDescription(options[index]);
+    let next: ObjectJSONSchema = DEFAULT_SCHEMAS[newType as SchemaType] ??
       DEFAULT_SCHEMAS[newType as Combinator] ?? { type: "string" };
+    if (prevDesc !== "") {
+      next = { ...next, description: prevDesc };
+    }
+    newOptions[index] = next;
+    updateOptions(newOptions);
+  };
+
+  const handleOptionDescriptionChange = (index: number, value: string) => {
+    const opt = options[index];
+    const description = value === "" ? undefined : value;
+
+    let updated: JSONSchema;
+    if (isBooleanSchema(opt)) {
+      if (opt === true) {
+        updated = description !== undefined ? { description } : true;
+      } else {
+        updated = description !== undefined ? { description } : false;
+      }
+    } else {
+      const base = { ...(opt as ObjectJSONSchema) };
+      if (description !== undefined) {
+        base.description = description;
+      } else {
+        delete base.description;
+      }
+      updated = base;
+    }
+
+    const newOptions = [...options];
+    newOptions[index] = updated;
     updateOptions(newOptions);
   };
 
@@ -164,6 +207,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
         <div className="space-y-2">
           {options.map((option, index) => {
             const id = ids[index];
+            const optionDescription = getSchemaDescription(option);
             const optionType = getEditorType(option);
             const isExpanded = expandedId === id;
 
@@ -171,22 +215,81 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
               <div
                 key={id}
                 className={cn(
-                  "rounded-lg border transition-all duration-200",
+                  "group rounded-lg border transition-all duration-200",
                   depth > 0 && "ml-0 sm:ml-4 border-l border-l-border/40",
                 )}
               >
-                <div className="flex items-center gap-2 px-3 py-2">
+                <div className="flex flex-wrap items-center gap-2 px-3 py-2 sm:flex-nowrap">
                   <button
                     type="button"
-                    className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors min-w-[72px] text-left"
+                    className="flex shrink-0 items-center gap-2 text-left text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
                     onClick={() =>
                       setExpandedId(isExpanded ? null : (id ?? null))
                     }
                   >
-                    {strings.itemLabel} {index + 1}
+                    {isExpanded ? (
+                      <ChevronDown size={18} />
+                    ) : (
+                      <ChevronRight size={18} />
+                    )}
+
+                    <span className="shrink-0">
+                      {strings.itemLabel} {index + 1}
+                    </span>
                   </button>
 
-                  <div className="flex items-center gap-2 ml-auto">
+                  {readOnly ? (
+                    optionDescription ? (
+                      <span className="flex-1 truncate px-2 py-0.5 text-left text-xs text-muted-foreground italic">
+                        {optionDescription}
+                      </span>
+                    ) : null
+                  ) : descFocusId === id ? (
+                    <Input
+                      aria-label={t.propertyDescriptionPlaceholder}
+                      autoFocus
+                      className="z-10 min-w-40 flex-1 text-xs"
+                      placeholder={t.propertyDescriptionPlaceholder}
+                      value={optionDescription}
+                      onBlur={(e) => {
+                        handleOptionDescriptionChange(
+                          index,
+                          e.target.value.trim(),
+                        );
+                        setDescFocusId(null);
+                      }}
+                      onChange={(e) =>
+                        handleOptionDescriptionChange(index, e.target.value)
+                      }
+                      onFocus={(e) => e.target.select()}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          e.currentTarget.blur();
+                        }
+                      }}
+                    />
+                  ) : optionDescription ? (
+                    <button
+                      type="button"
+                      className="mr-2 min-w-0 flex-1 cursor-text truncate rounded-sm px-2 py-0.5 text-left text-xs text-muted-foreground italic transition-all -mx-0.5 hover:bg-secondary/30 hover:ring-1 hover:ring-ring/20 hover:shadow-xs"
+                      onClick={() => setDescFocusId(id)}
+                      onKeyDown={(e) => e.key === "Enter" && setDescFocusId(id)}
+                    >
+                      {optionDescription}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="mr-2 min-w-0 flex-1 cursor-text truncate rounded-sm px-2 py-0.5 text-left text-xs text-muted-foreground/50 italic opacity-0 transition-all -mx-0.5 hover:bg-secondary/30 hover:ring-1 hover:ring-ring/20 hover:shadow-xs group-hover:opacity-100"
+                      onClick={() => setDescFocusId(id)}
+                      onKeyDown={(e) => e.key === "Enter" && setDescFocusId(id)}
+                    >
+                      {t.propertyDescriptionButton}
+                    </button>
+                  )}
+
+                  <div className="flex shrink-0 items-center gap-2 sm:ml-auto">
                     <TypeDropdown
                       value={optionType}
                       readOnly={readOnly}

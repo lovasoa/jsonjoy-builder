@@ -20,6 +20,7 @@ export interface SchemaInferencerProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSchemaInferred: (schema: JSONSchema) => void;
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -27,6 +28,7 @@ export function SchemaInferencer({
   open,
   onOpenChange,
   onSchemaInferred,
+  autoFocus = true,
 }: SchemaInferencerProps) {
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
@@ -46,7 +48,9 @@ export function SchemaInferencer({
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
-    editor.focus();
+    if (autoFocus) {
+      editor.focus();
+    }
   };
 
   const handleEditorChange = (value: string | undefined) => {

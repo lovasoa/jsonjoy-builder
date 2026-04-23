@@ -24,11 +24,13 @@ import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 interface AddFieldButtonProps {
   onAddField: (field: NewField) => void;
   variant?: "primary" | "secondary";
+  autoFocus?: boolean;
 }
 
 const AddFieldButton: FC<AddFieldButtonProps> = ({
   onAddField,
   variant = "primary",
+  autoFocus = true,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [fieldName, setFieldName] = useState("");
@@ -123,6 +125,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     onChange={(e) => setFieldName(e.target.value)}
                     placeholder={t.fieldNamePlaceholder}
                     className="font-mono text-sm w-full"
+                    autoFocus={autoFocus}
                     required
                   />
                 </div>

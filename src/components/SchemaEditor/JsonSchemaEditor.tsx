@@ -26,6 +26,7 @@ export interface JsonSchemaEditorProps {
   onAddEnum?: (ctx: EnumChangeContext) => void;
   onDeleteEnum?: (ctx: EnumChangeContext) => void;
   className?: string;
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -36,6 +37,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   onAddEnum,
   onDeleteEnum,
   className,
+  autoFocus = true,
 }) => {
   // Handle schema changes and propagate to parent if needed
   const handleSchemaChange = (newSchema: JSONSchema) => {
@@ -129,6 +131,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               readOnly={readOnly}
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
               onAddEnum={onAddEnum}
               onDeleteEnum={onDeleteEnum}
             />
@@ -144,6 +147,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
             />
           </TabsContent>
         </Tabs>
@@ -177,6 +181,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               readOnly={readOnly}
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
               onAddEnum={onAddEnum}
               onDeleteEnum={onDeleteEnum}
             />
@@ -194,6 +199,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
             />
           </div>
         </div>

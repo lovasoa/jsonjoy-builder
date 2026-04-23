@@ -25,6 +25,7 @@ export interface SchemaPropertyEditorProps {
   schemaKey?: string;
   required: boolean;
   readOnly: boolean;
+  autoFocus?: boolean;
   validationNode?: ValidationTreeNode;
   onAddEnum?: (ctx: EnumChangeContext) => void;
   onDeleteEnum?: (ctx: EnumChangeContext) => void;
@@ -41,6 +42,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   schemaKey,
   required,
   readOnly = false,
+  autoFocus = true,
   validationNode,
   onAddEnum,
   onDeleteEnum,
@@ -125,7 +127,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   onBlur={handleNameSubmit}
                   onKeyDown={(e) => e.key === "Enter" && handleNameSubmit()}
                   className="h-8 text-sm font-medium min-w-[120px] max-w-full z-10"
-                  autoFocus
+                  autoFocus={autoFocus}
                   onFocus={(e) => e.target.select()}
                 />
               ) : (
@@ -148,7 +150,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   onKeyDown={(e) => e.key === "Enter" && handleDescSubmit()}
                   placeholder={t.propertyDescriptionPlaceholder}
                   className="h-8 text-xs text-muted-foreground italic flex-1 min-w-[150px] z-10"
-                  autoFocus
+                  autoFocus={autoFocus}
                   onFocus={(e) => e.target.select()}
                 />
               ) : tempDesc ? (

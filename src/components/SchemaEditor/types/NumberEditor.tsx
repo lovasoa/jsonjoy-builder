@@ -27,6 +27,9 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
   schema,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   integer = false,
   readOnly = false,
 }) => {
@@ -142,6 +145,15 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
     onChange(baseProperties as ObjectJSONSchema);
   };
 
+  const applyEnumValues = (values: number[]) => {
+    if (values.length > 0) {
+      handleValidationChange("enum", values);
+      return;
+    }
+
+    handleValidationChange("enum", undefined);
+  };
+
   // Handle adding enum value
   const handleAddEnumValue = () => {
     if (!enumValue.trim()) return;
@@ -153,7 +165,9 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
     const validValue = integer ? Math.floor(numValue) : numValue;
 
     if (!enumValues.includes(validValue)) {
-      handleValidationChange("enum", [...enumValues, validValue]);
+      const addedIndex = enumValues.length;
+      applyEnumValues([...enumValues, validValue]);
+      onAddEnum?.({ value: validValue, index: addedIndex, schemaKey });
     }
 
     setEnumValue("");
@@ -161,15 +175,13 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 
   // Handle removing enum value
   const handleRemoveEnumValue = (index: number) => {
+    const removedValue = enumValues[index];
+    if (removedValue === undefined) return;
+
     const newEnumValues = [...enumValues];
     newEnumValues.splice(index, 1);
-
-    if (newEnumValues.length === 0) {
-      // If empty, remove the enum property entirely by setting it to undefined
-      handleValidationChange("enum", undefined);
-    } else {
-      handleValidationChange("enum", newEnumValues);
-    }
+    applyEnumValues(newEnumValues);
+    onDeleteEnum?.({ value: removedValue, index, schemaKey });
   };
 
   const minMaxError = useMemo(

@@ -9,6 +9,9 @@ import type { TypeEditorProps } from "../TypeEditor.tsx";
 const BooleanEditor: React.FC<TypeEditorProps> = ({
   schema,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   readOnly = false,
 }) => {
   const t = useTranslation();
@@ -30,6 +33,7 @@ const BooleanEditor: React.FC<TypeEditorProps> = ({
   // Handle changing the allowed values
   const handleAllowedChange = (value: boolean, allowed: boolean) => {
     let newEnum: boolean[] | undefined;
+    let enumAction: "add" | "delete" | null = null;
 
     if (allowed) {
       // If allowing this value
@@ -45,6 +49,7 @@ const BooleanEditor: React.FC<TypeEditorProps> = ({
 
       // Add this value to enum
       newEnum = enumValues ? [...enumValues, value] : [value];
+      enumAction = "add";
 
       // If both are now allowed, we can remove the enum constraint
       if (newEnum.includes(true) && newEnum.includes(false)) {
@@ -59,6 +64,7 @@ const BooleanEditor: React.FC<TypeEditorProps> = ({
 
       // Create a new enum with just the opposite value
       newEnum = [!value];
+      enumAction = "delete";
     }
 
     // Create a new validation object with just the type and enum
@@ -71,10 +77,42 @@ const BooleanEditor: React.FC<TypeEditorProps> = ({
     } else {
       // Remove enum property if no restrictions
       onChange({ type: "boolean" });
+      if (enumAction === "add") {
+        onAddEnum?.({
+          value,
+          index: enumValues?.length ?? 0,
+          schemaKey,
+        });
+      }
+      if (enumAction === "delete") {
+        const deleteIndex =
+          enumValues?.indexOf(value) ?? [true, false].indexOf(value);
+        onDeleteEnum?.({
+          value,
+          index: Math.max(deleteIndex, 0),
+          schemaKey,
+        });
+      }
       return;
     }
 
     onChange(updatedValidation);
+    if (enumAction === "add") {
+      onAddEnum?.({
+        value,
+        index: newEnum.indexOf(value),
+        schemaKey,
+      });
+    }
+    if (enumAction === "delete") {
+      const deleteIndex =
+        enumValues?.indexOf(value) ?? [true, false].indexOf(value);
+      onDeleteEnum?.({
+        value,
+        index: Math.max(deleteIndex, 0),
+        schemaKey,
+      });
+    }
   };
 
   const hasEnum = enumValues && enumValues.length > 0;

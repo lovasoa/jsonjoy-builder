@@ -16,9 +16,16 @@ import {
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
 import { ButtonToggle } from "../ui/button-toggle.tsx";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import type { EnumChangeContext } from "./TypeEditor.tsx";
 import TypeEditor from "./TypeEditor.tsx";
+
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;
@@ -34,6 +41,8 @@ export interface SchemaPropertyEditorProps {
   onRequiredChange: (required: boolean) => void;
   onSchemaChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
+  isPatternProperty?: boolean;
+  onPropertyToggle?: (name: string, isPatternProperty?: boolean) => void;
 }
 
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
@@ -50,7 +59,9 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onNameChange,
   onRequiredChange,
   onSchemaChange,
+  onPropertyToggle,
   depth = 0,
+  isPatternProperty = false,
 }) => {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -174,8 +185,24 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               )}
             </div>
 
-            {/* Type display */}
             <div className="flex items-center gap-2 justify-end shrink-0">
+              {/* Regular/Pattern toggle */}
+              <ButtonToggle
+                onClick={() => {
+                  onPropertyToggle?.(name, isPatternProperty);
+                }}
+                readOnly={readOnly}
+                className={
+                  isPatternProperty
+                    ? "bg-emerald-50 text-emerald-600"
+                    : "bg-secondary text-muted-foreground"
+                }
+              >
+                {isPatternProperty
+                  ? t.patternPropertiesTitleShort
+                  : t.regularPropertiesTitleShort}
+              </ButtonToggle>
+              {/* Type display */}
               <TypeDropdown
                 value={type}
                 readOnly={readOnly}
@@ -213,18 +240,38 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   }
                 }}
               />
-
               {/* Required toggle */}
-              <ButtonToggle
-                onClick={() => !readOnly && onRequiredChange(!required)}
-                className={
-                  required
-                    ? "bg-red-50 text-red-500"
-                    : "bg-secondary text-muted-foreground"
-                }
-              >
-                {required ? t.propertyRequired : t.propertyOptional}
-              </ButtonToggle>
+              {isPatternProperty ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div
+                        className={cn(
+                          "text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap cursor-default",
+                          "bg-secondary text-muted-foreground",
+                        )}
+                      >
+                        {t.propertyOptional}
+                      </div>
+                    </TooltipTrigger>
+                    <TooltipContent className="max-w-[90vw]">
+                      {t.propertyRequiredToggleDisabledTooltip}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <ButtonToggle
+                  onClick={() => onRequiredChange(!required)}
+                  readOnly={readOnly}
+                  className={
+                    required
+                      ? "bg-red-50 text-red-500"
+                      : "bg-secondary text-muted-foreground"
+                  }
+                >
+                  {required ? t.propertyRequired : t.propertyOptional}
+                </ButtonToggle>
+              )}
             </div>
           </div>
         </div>

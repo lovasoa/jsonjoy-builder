@@ -228,9 +228,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
       <div
         className={cn(
           "space-y-2 pt-4 border-border/40",
-          !readOnly || !!minItems || !!maxItems || !!uniqueItems
-            ? "border-t"
-            : null,
+          !readOnly || minItems || maxItems || uniqueItems ? "border-t" : null,
         )}
       >
         <div className="flex items-center justify-between mb-4">

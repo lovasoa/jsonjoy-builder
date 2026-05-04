@@ -11,6 +11,7 @@ import { ButtonToggle } from "../../ui/button-toggle.tsx";
 import AddFieldButton from "../AddFieldButton.tsx";
 import SchemaPropertyEditor from "../SchemaPropertyEditor.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
+import handlePropertyToggle from "../utils/handlePropertyToggle.tsx";
 
 const ObjectEditor: React.FC<TypeEditorProps> = ({
   schema,
@@ -26,6 +27,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   // Get object properties
   const properties = getSchemaProperties(schema);
+  const patternProperties = getSchemaProperties(schema, true);
 
   // Create a normalized schema object
   const normalizedSchema: ObjectJSONSchema = isBooleanSchema(schema)
@@ -35,7 +37,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   const { additionalProperties } = normalizedSchema;
 
   // Handle adding a new property
-  const handleAddProperty = (newField: NewField) => {
+  const handleAddProperty = (newField: NewField, isPatternProperty = false) => {
     // Create field schema from the new field data
     const { type, description, validation, additionalProperties } = newField;
 
@@ -51,6 +53,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       normalizedSchema,
       newField.name,
       fieldSchema,
+      isPatternProperty,
     );
 
     // Update required status if needed
@@ -63,13 +66,24 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   };
 
   // Handle deleting a property
-  const handleDeleteProperty = (propertyName: string) => {
-    const newSchema = removeObjectProperty(normalizedSchema, propertyName);
+  const handleDeleteProperty = (
+    propertyName: string,
+    isPatternProperty = false,
+  ) => {
+    const newSchema = removeObjectProperty(
+      normalizedSchema,
+      propertyName,
+      isPatternProperty,
+    );
     onChange(newSchema);
   };
 
   // Handle property name change
-  const handlePropertyNameChange = (oldName: string, newName: string) => {
+  const handlePropertyNameChange = (
+    oldName: string,
+    newName: string,
+    isPatternProperty = false,
+  ) => {
     if (oldName === newName) return;
 
     const property = properties.find((p) => p.name === oldName);
@@ -82,13 +96,14 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       normalizedSchema,
       newName,
       propertySchemaObj,
+      isPatternProperty,
     );
 
     if (property.required) {
       newSchema = updatePropertyRequired(newSchema, newName, true);
     }
 
-    newSchema = removeObjectProperty(newSchema, oldName);
+    newSchema = removeObjectProperty(newSchema, oldName, isPatternProperty);
 
     onChange(newSchema);
   };
@@ -109,11 +124,13 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   const handlePropertySchemaChange = (
     propertyName: string,
     propertySchema: ObjectJSONSchema,
+    isPatternProperty = false,
   ) => {
     const newSchema = updateObjectProperty(
       normalizedSchema,
       propertyName,
       propertySchema,
+      isPatternProperty,
     );
     onChange(newSchema);
   };
@@ -130,49 +147,107 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     onChange(updatedSchema);
   };
 
-  return (
-    <div className="space-y-4">
-      {properties.length > 0 ? (
-        <div className="space-y-2">
-          {properties.map((property) => (
-            <SchemaPropertyEditor
-              readOnly={readOnly}
-              key={property.name}
-              name={property.name}
-              schemaKey={
-                schemaKey ? `${schemaKey}.${property.name}` : property.name
-              }
-              schema={property.schema}
-              required={property.required}
-              validationNode={validationNode?.children[property.name]}
-              onAddEnum={onAddEnum}
-              onDeleteEnum={onDeleteEnum}
-              onDelete={() => handleDeleteProperty(property.name)}
-              onNameChange={(newName) =>
-                handlePropertyNameChange(property.name, newName)
-              }
-              onRequiredChange={(required) =>
-                handlePropertyRequiredChange(property.name, required)
-              }
-              onSchemaChange={(schema) =>
-                handlePropertySchemaChange(property.name, schema)
-              }
-              depth={depth}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="text-sm text-muted-foreground italic p-2 text-center border rounded-md">
-          {t.objectPropertiesNone}
-        </div>
-      )}
+  const hasProperties = properties.length > 0 || patternProperties.length > 0;
 
-      {!readOnly && (
+  return (
+    <div className="space-y-6">
+      {/* Regular Properties Section */}
+      <div className="space-y-2">
+        {hasProperties ? (
+          <div className="space-y-2">
+            {properties.length > 0 ? (
+              <h3 className="ml-5">{t.regularPropertiesTitle}:</h3>
+            ) : null}
+            {properties.map((property) => (
+              <SchemaPropertyEditor
+                readOnly={readOnly}
+                key={property.name}
+                name={property.name}
+                schemaKey={
+                  schemaKey ? `${schemaKey}.${property.name}` : property.name
+                }
+                schema={property.schema}
+                required={property.required}
+                validationNode={validationNode?.children[property.name]}
+                onAddEnum={onAddEnum}
+                onDeleteEnum={onDeleteEnum}
+                onDelete={() => handleDeleteProperty(property.name)}
+                onNameChange={(newName) =>
+                  handlePropertyNameChange(property.name, newName)
+                }
+                onRequiredChange={(required) =>
+                  handlePropertyRequiredChange(property.name, required)
+                }
+                onSchemaChange={(schema) =>
+                  handlePropertySchemaChange(property.name, schema)
+                }
+                depth={depth}
+                onPropertyToggle={(name, isPatternProperty) =>
+                  handlePropertyToggle(
+                    onChange,
+                    normalizedSchema,
+                    name,
+                    isPatternProperty,
+                  )
+                }
+              />
+            ))}
+            {patternProperties.length > 0 ? (
+              <h3 className="ml-5">{t.patternPropertiesTitle}:</h3>
+            ) : null}
+            {patternProperties.map((property) => (
+              <SchemaPropertyEditor
+                readOnly={readOnly}
+                key={property.name}
+                name={property.name}
+                schema={property.schema}
+                schemaKey={
+                  schemaKey ? `${schemaKey}.${property.name}` : property.name
+                }
+                required={property.required}
+                validationNode={validationNode?.children[property.name]}
+                onAddEnum={onAddEnum}
+                onDeleteEnum={onDeleteEnum}
+                onDelete={() => handleDeleteProperty(property.name, true)}
+                onNameChange={(newName) =>
+                  handlePropertyNameChange(property.name, newName, true)
+                }
+                onRequiredChange={(required) =>
+                  handlePropertyRequiredChange(property.name, required)
+                }
+                onSchemaChange={(schema) =>
+                  handlePropertySchemaChange(property.name, schema, true)
+                }
+                depth={depth}
+                onPropertyToggle={(name, isPatternProperty) =>
+                  handlePropertyToggle(
+                    onChange,
+                    normalizedSchema,
+                    name,
+                    isPatternProperty,
+                  )
+                }
+                isPatternProperty
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="text-sm text-muted-foreground italic p-2 text-center border rounded-md">
+            {t.objectPropertiesNone}
+          </div>
+        )}
         <div className="mt-4 flex flex-row gap-x-4">
-          <AddFieldButton onAddField={handleAddProperty} variant="secondary" />
+          {readOnly ? null : (
+            <AddFieldButton
+              onAddField={handleAddProperty}
+              variant="secondary"
+            />
+          )}
+
           {/* Additional properties */}
           <ButtonToggle
             onClick={handleAdditionalPropertiesToggle}
+            readOnly={readOnly}
             className={
               additionalProperties === false
                 ? "bg-amber-50 text-amber-600"
@@ -184,7 +259,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
               : t.additionalPropertiesAllow}
           </ButtonToggle>
         </div>
-      )}
+      </div>
     </div>
   );
 };

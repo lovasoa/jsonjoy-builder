@@ -11,6 +11,11 @@ export type Property = {
   required: boolean;
 };
 
+export type PatternProperty = {
+  pattern: string;
+  schema: JSONSchema;
+};
+
 export function copySchema<T extends JSONSchema>(schema: T): T {
   if (typeof structuredClone === "function") return structuredClone(schema);
   return JSON.parse(JSON.stringify(schema));
@@ -23,15 +28,28 @@ export function updateObjectProperty(
   schema: ObjectJSONSchema,
   propertyName: string,
   propertySchema: JSONSchema,
+  isPatternProperty = false,
 ): ObjectJSONSchema {
   if (!isObjectSchema(schema)) return schema;
 
   const newSchema = copySchema(schema);
+
   if (!newSchema.properties) {
     newSchema.properties = {};
   }
 
+  if (isPatternProperty) {
+    if (!newSchema.patternProperties) {
+      newSchema.patternProperties = {};
+    }
+
+    newSchema.patternProperties[propertyName] = propertySchema;
+
+    return newSchema;
+  }
+
   newSchema.properties[propertyName] = propertySchema;
+
   return newSchema;
 }
 
@@ -41,12 +59,15 @@ export function updateObjectProperty(
 export function removeObjectProperty(
   schema: ObjectJSONSchema,
   propertyName: string,
+  isPatternProperty = false,
 ): ObjectJSONSchema {
-  if (!isObjectSchema(schema) || !schema.properties) return schema;
+  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
+
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
-  const { [propertyName]: _, ...remainingProps } = newSchema.properties;
-  newSchema.properties = remainingProps;
+  const { [propertyName]: _, ...remainingProps } = newSchema[schemaProperty];
+  newSchema[schemaProperty] = remainingProps;
 
   // Also remove from required array if present
   if (newSchema.required) {
@@ -109,6 +130,7 @@ export function updateArrayItems(
  */
 export function createFieldSchema(field: NewField): JSONSchema {
   const { type, description, validation, additionalProperties } = field;
+
   if (isObjectSchema(validation)) {
     return {
       type,
@@ -117,6 +139,7 @@ export function createFieldSchema(field: NewField): JSONSchema {
       ...(additionalProperties === false ? { additionalProperties } : {}),
     };
   }
+
   return validation;
 }
 
@@ -136,12 +159,17 @@ export function validateFieldName(name: string): boolean {
 /**
  * Gets properties from an object schema
  */
-export function getSchemaProperties(schema: JSONSchema): Property[] {
-  if (!isObjectSchema(schema) || !schema.properties) return [];
+export function getSchemaProperties(
+  schema: JSONSchema,
+  isPatternProperty = false,
+): Property[] {
+  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
+
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return [];
 
   const required = schema.required || [];
 
-  return Object.entries(schema.properties).map(([name, propSchema]) => ({
+  return Object.entries(schema[schemaProperty]).map(([name, propSchema]) => ({
     name,
     schema: propSchema,
     required: required.includes(name),
@@ -165,14 +193,17 @@ export function renameObjectProperty(
   schema: ObjectJSONSchema,
   oldName: string,
   newName: string,
+  isPatternProperty = false,
 ): ObjectJSONSchema {
-  if (!isObjectSchema(schema) || !schema.properties) return schema;
+  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
+
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
   const newProperties: Record<string, JSONSchema> = {};
 
   // Iterate through properties in order, replacing old key with new key
-  for (const [key, value] of Object.entries(newSchema.properties)) {
+  for (const [key, value] of Object.entries(newSchema[schemaProperty])) {
     if (key === oldName) {
       newProperties[newName] = value;
     } else {
@@ -180,7 +211,7 @@ export function renameObjectProperty(
     }
   }
 
-  newSchema.properties = newProperties;
+  newSchema[schemaProperty] = newProperties;
 
   // Update required array if the field name changed
   if (newSchema.required) {
@@ -207,4 +238,39 @@ export function hasChildren(schema: JSONSchema): boolean {
   }
 
   return false;
+}
+
+/**
+ * Gets pattern properties from an object schema
+ */
+export function getSchemaPatternProperties(
+  schema: JSONSchema,
+): PatternProperty[] {
+  if (!isObjectSchema(schema) || !schema.patternProperties) return [];
+
+  return Object.entries(schema.patternProperties).map(
+    ([pattern, propSchema]) => ({
+      pattern,
+      schema: propSchema,
+    }),
+  );
+}
+
+/**
+ * Validates a regex pattern
+ */
+export function validateRegexPattern(pattern: string): {
+  valid: boolean;
+  error?: string;
+} {
+  if (!pattern || pattern.trim() === "") {
+    return { valid: false, error: "Pattern cannot be empty" };
+  }
+
+  try {
+    new RegExp(pattern);
+    return { valid: true };
+  } catch (e) {
+    return { valid: false, error: `Invalid regex: ${(e as Error).message}` };
+  }
 }

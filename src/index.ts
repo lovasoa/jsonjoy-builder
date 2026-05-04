@@ -12,11 +12,18 @@ import SchemaVisualEditor, {
 
 export * from "./components/features/JsonValidator.tsx";
 export * from "./components/features/SchemaInferencer.tsx";
+export type { EnumChangeContext } from "./components/SchemaEditor/TypeEditor.tsx";
 export * from "./i18n/locales/de.ts";
 export * from "./i18n/locales/en.ts";
+export * from "./i18n/locales/es.ts";
+export * from "./i18n/locales/fr.ts";
+export * from "./i18n/locales/pl.ts";
+export * from "./i18n/locales/ru.ts";
+export * from "./i18n/locales/uk.ts";
+export * from "./i18n/locales/zh.ts";
 export * from "./i18n/translation-context.ts";
 export * from "./i18n/translation-keys.ts";
-
+export type { baseSchema, JSONSchema } from "./types/jsonSchema.ts";
 export {
   JsonSchemaEditor,
   type JsonSchemaEditorProps,
@@ -25,5 +32,3 @@ export {
   SchemaVisualEditor,
   type SchemaVisualEditorProps,
 };
-
-export type { baseSchema, JSONSchema } from "./types/jsonSchema.ts";

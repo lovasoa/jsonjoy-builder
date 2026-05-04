@@ -25,6 +25,7 @@ export interface JsonValidatorProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   schema: JSONSchema;
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -32,6 +33,7 @@ export function JsonValidator({
   open,
   onOpenChange,
   schema,
+  autoFocus = true,
 }: JsonValidatorProps) {
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
@@ -83,11 +85,14 @@ export function JsonValidator({
   const handleSchemaEditorBeforeMount: BeforeMount = (monaco) => {
     schemaMonacoRef.current = monaco;
     defineMonacoThemes(monaco);
+    configureJsonDefaults(monaco);
   };
 
   const handleEditorDidMount: OnMount = (editor) => {
     editorRef.current = editor;
-    editor.focus();
+    if (autoFocus) {
+      editor.focus();
+    }
   };
 
   const handleEditorChange = (value: string | undefined) => {
@@ -223,9 +228,9 @@ export function JsonValidator({
                     </div>
                   )}
                   <ul className="space-y-2">
-                    {validationResult.errors.map((error, index) => (
+                    {validationResult.errors.map((error) => (
                       <button
-                        key={`error-${error.path}-${index}`}
+                        key={`error-${error.path}-${error.message}-${error.line ?? "na"}-${error.column ?? "na"}`}
                         type="button"
                         className="w-full text-left bg-white border border-red-100 rounded-md p-3 shadow-xs hover:shadow-md transition-shadow duration-200 cursor-pointer"
                         onClick={() =>

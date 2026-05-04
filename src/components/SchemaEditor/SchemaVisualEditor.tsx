@@ -11,19 +11,26 @@ import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
 import handlePropertyToggle from "./utils/handlePropertyToggle.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 /** @public */
 export interface SchemaVisualEditorProps {
   schema: JSONSchema;
   readOnly: boolean;
   onChange: (schema: JSONSchema) => void;
+  autoFocus?: boolean;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
 }
 
 /** @public */
 const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   schema,
   onChange,
+  onAddEnum,
+  onDeleteEnum,
   readOnly = false,
+  autoFocus = true,
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
@@ -141,7 +148,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
       {!readOnly && (
         <div className="mb-6 shrink-0">
-          <AddFieldButton onAddField={handleAddField} />
+          <AddFieldButton onAddField={handleAddField} autoFocus={autoFocus} />
         </div>
       )}
 
@@ -155,12 +162,15 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
           <SchemaFieldList
             schema={schema}
             readOnly={readOnly}
+            onAddEnum={onAddEnum}
+            onDeleteEnum={onDeleteEnum}
             onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
             onPropertyToggle={(name, isPatternProperty) =>
               handlePropertyToggle(onChange, schema, name, isPatternProperty)
             }
+            autoFocus={autoFocus}
           />
         )}
       </div>

@@ -17,6 +17,9 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   schema,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   depth = 0,
   readOnly = false,
 }) => {
@@ -160,9 +163,14 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 readOnly={readOnly}
                 key={property.name}
                 name={property.name}
+                schemaKey={
+                  schemaKey ? `${schemaKey}.${property.name}` : property.name
+                }
                 schema={property.schema}
                 required={property.required}
                 validationNode={validationNode?.children[property.name]}
+                onAddEnum={onAddEnum}
+                onDeleteEnum={onDeleteEnum}
                 onDelete={() => handleDeleteProperty(property.name)}
                 onNameChange={(newName) =>
                   handlePropertyNameChange(property.name, newName)
@@ -193,8 +201,13 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
                 key={property.name}
                 name={property.name}
                 schema={property.schema}
+                schemaKey={
+                  schemaKey ? `${schemaKey}.${property.name}` : property.name
+                }
                 required={property.required}
                 validationNode={validationNode?.children[property.name]}
+                onAddEnum={onAddEnum}
+                onDeleteEnum={onDeleteEnum}
                 onDelete={() => handleDeleteProperty(property.name, true)}
                 onNameChange={(newName) =>
                   handlePropertyNameChange(property.name, newName, true)

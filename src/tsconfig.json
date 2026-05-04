@@ -6,5 +6,5 @@
     "outDir": "../dist",
     "types": []
   },
-  "include": ["**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx", "**/*.json"]
 }

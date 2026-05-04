@@ -1,8 +1,8 @@
 import type { Translation } from "../translation-keys.ts";
 
 export const fr: Translation = {
-  collapse: "Réduire",
-  expand: "Étendre",
+  collapse: "Replier",
+  expand: "Déplier",
 
   fieldDescriptionPlaceholder: "Décrivez le but de ce champ",
   fieldDelete: "Supprimer le champ",
@@ -15,11 +15,11 @@ export const fr: Translation = {
   fieldRequiredLabel: "Champ obligatoire",
   fieldType: "Type de champ",
   fieldTypeExample: "Exemple:",
-  fieldTypeTooltipString: "chaîne: Texte",
-  fieldTypeTooltipNumber: "nombre: Numérique",
-  fieldTypeTooltipBoolean: "booléen: Vrai/faux",
-  fieldTypeTooltipObject: "objet: JSON imbriqué",
-  fieldTypeTooltipArray: "tableau: Listes de valeurs",
+  fieldTypeTooltipString: "string: Texte",
+  fieldTypeTooltipNumber: "number: Numérique",
+  fieldTypeTooltipBoolean: "boolean: Vrai/faux",
+  fieldTypeTooltipObject: "object: JSON imbriqué",
+  fieldTypeTooltipArray: "array: Listes de valeurs",
   fieldAddNewButton: "Ajouter un champ",
   fieldAddNewBadge: "Constructeur de schéma",
   fieldAddNewCancel: "Annuler",
@@ -70,7 +70,7 @@ export const fr: Translation = {
   booleanAllowFalseLabel: "Autoriser la valeur faux",
   booleanAllowTrueLabel: "Autoriser la valeur vrai",
   booleanNeitherWarning:
-    "Avertissement: Vous devez autoriser au moins une valeur.",
+    "Avertissement : vous devez autoriser au moins une valeur.",
 
   numberNoConstraint: "Pas de constrainte",
   numberMinimumLabel: "Valeur minimale",
@@ -137,6 +137,28 @@ export const fr: Translation = {
   stringValidationErrorLengthRange:
     "'Longueur minimale' ne peut pas être supérieure à 'Longueur maximale'.",
 
+  schemaTypeAnyOf: "Au moins un",
+  anyOfAddOption: "Ajouter une option",
+  anyOfRemoveOption: "Supprimer l'option",
+  anyOfOptionLabel: "Option",
+  anyOfDescription: "La valeur doit correspondre à au moins un de ces schémas",
+  anyOfNoOptions: "Aucune option définie",
+
+  schemaTypeOneOf: "Un seul",
+  oneOfAddOption: "Ajouter une option",
+  oneOfRemoveOption: "Supprimer l'option",
+  oneOfOptionLabel: "Option",
+  oneOfDescription:
+    "La valeur doit correspondre à exactement un de ces schémas",
+  oneOfNoOptions: "Aucune option définie",
+
+  schemaTypeAllOf: "Tous",
+  allOfAddSchema: "Ajouter un schéma",
+  allOfRemoveSchema: "Supprimer le schéma",
+  allOfSchemaLabel: "Schéma",
+  allOfDescription: "La valeur doit correspondre à tous ces schémas",
+  allOfNoSchemas: "Aucun schéma défini",
+
   schemaTypeArray: "Liste",
   schemaTypeBoolean: "Oui/Non",
   schemaTypeNumber: "Nombre",
@@ -155,9 +177,9 @@ export const fr: Translation = {
   validatorTitle: "Valider le JSON",
   validatorDescription:
     "Collez votre document JSON pour le valider par rapport au schéma actuel. La validation se produit automatiquement pendant que vous tapez.",
-  validatorCurrentSchema: "Schéma actuel:",
-  validatorContent: "Votre JSON:",
-  validatorValid: "Le JSON est valide selon le schéma!",
+  validatorCurrentSchema: "Schéma actuel :",
+  validatorContent: "Votre JSON :",
+  validatorValid: "Le JSON est valide selon le schéma !",
   validatorErrorInvalidSyntax: "Syntaxe JSON invalide",
   validatorErrorSchemaValidation: "Erreur de validation du schéma",
   validatorErrorCount: "{count} erreurs de validation détectées",

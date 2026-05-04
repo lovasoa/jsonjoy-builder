@@ -15,7 +15,7 @@ export const pl: Translation = {
   fieldType: "Typ pola",
   fieldTypeExample: "Przykład:",
   fieldTypeTooltipString: "string: Tekst",
-  fieldTypeTooltipNumber: "number: Liczby",
+  fieldTypeTooltipNumber: "number: Liczba",
   fieldTypeTooltipBoolean: "boolean: Prawda/fałsz",
   fieldTypeTooltipObject: "object: Zagnieżdżony JSON",
   fieldTypeTooltipArray: "array: Listy wartości",
@@ -32,8 +32,8 @@ export const pl: Translation = {
   fieldTypeNumberDescription: "Dla liczb dziesiętnych lub całkowitych",
   fieldTypeBooleanLabel: "Tak/Nie",
   fieldTypeBooleanDescription: "Dla wartości prawda/fałsz",
-  fieldTypeObjectLabel: "Obiekt",
-  fieldTypeObjectDescription: "Do grupowania powiązanych pól razem",
+  fieldTypeObjectLabel: "Grupa",
+  fieldTypeObjectDescription: "Do grupowania powiązanych pól",
   fieldTypeArrayLabel: "Lista",
   fieldTypeArrayDescription: "Dla kolekcji elementów",
 
@@ -134,6 +134,29 @@ export const pl: Translation = {
   stringFormatSelectPlaceholder: "Wybierz format",
   stringValidationErrorLengthRange:
     "'Minimalna długość' nie może być większa niż 'Maksymalna długość'.",
+
+  schemaTypeAnyOf: "Dowolny z",
+  anyOfAddOption: "Dodaj opcję",
+  anyOfRemoveOption: "Usuń opcję",
+  anyOfOptionLabel: "Opcja",
+  anyOfDescription:
+    "Wartość musi pasować do co najmniej jednego z tych schematów",
+  anyOfNoOptions: "Nie zdefiniowano opcji",
+
+  schemaTypeOneOf: "Dokładnie jeden z",
+  oneOfAddOption: "Dodaj opcję",
+  oneOfRemoveOption: "Usuń opcję",
+  oneOfOptionLabel: "Opcja",
+  oneOfDescription:
+    "Wartość musi pasować do dokładnie jednego z tych schematów",
+  oneOfNoOptions: "Nie zdefiniowano opcji",
+
+  schemaTypeAllOf: "Wszystkie",
+  allOfAddSchema: "Dodaj schemat",
+  allOfRemoveSchema: "Usuń schemat",
+  allOfSchemaLabel: "Schemat",
+  allOfDescription: "Wartość musi pasować do wszystkich tych schematów",
+  allOfNoSchemas: "Nie zdefiniowano schematów",
 
   schemaTypeArray: "Lista",
   schemaTypeBoolean: "Tak/Nie",

@@ -9,7 +9,7 @@ export const uk: Translation = {
   fieldDescription: "Опис",
   fieldDescriptionTooltip: "Додайте контекст про те, що представляє це поле",
   fieldNameLabel: "Назва поля",
-  fieldNamePlaceholder: "наприклад, ім'я, вік, активне",
+  fieldNamePlaceholder: "наприклад, firstName, age, isActive",
   fieldNameTooltip:
     "Використовуйте camelCase для кращої читабельності (наприклад, firstName)",
   fieldRequiredLabel: "Обов'язкове поле",
@@ -17,7 +17,7 @@ export const uk: Translation = {
   fieldTypeExample: "Приклад:",
   fieldTypeTooltipString: "string: Текст",
   fieldTypeTooltipNumber: "number: Число",
-  fieldTypeTooltipBoolean: "boolean: Так/Ні",
+  fieldTypeTooltipBoolean: "boolean: true/false",
   fieldTypeTooltipObject: "object: Вкладений JSON",
   fieldTypeTooltipArray: "array: Списки значень",
   fieldAddNewButton: "Додати поле",
@@ -135,6 +135,27 @@ export const uk: Translation = {
   stringValidationErrorLengthRange:
     "'Мінімальна довжина' не може бути більшою за 'Максимальну довжину'.",
 
+  schemaTypeAnyOf: "Одне з",
+  anyOfAddOption: "Додати варіант",
+  anyOfRemoveOption: "Видалити варіант",
+  anyOfOptionLabel: "Варіант",
+  anyOfDescription: "Значення має відповідати хоча б одній з цих схем",
+  anyOfNoOptions: "Варіанти не визначені",
+
+  schemaTypeOneOf: "Рівно одне з",
+  oneOfAddOption: "Додати варіант",
+  oneOfRemoveOption: "Видалити варіант",
+  oneOfOptionLabel: "Варіант",
+  oneOfDescription: "Значення має відповідати рівно одній з цих схем",
+  oneOfNoOptions: "Варіанти не визначені",
+
+  schemaTypeAllOf: "Усі з",
+  allOfAddSchema: "Додати схему",
+  allOfRemoveSchema: "Видалити схему",
+  allOfSchemaLabel: "Схема",
+  allOfDescription: "Значення має відповідати всім цим схемам",
+  allOfNoSchemas: "Схеми не визначені",
+
   schemaTypeArray: "Список",
   schemaTypeBoolean: "Так/Ні",
   schemaTypeNumber: "Число",
@@ -142,7 +163,7 @@ export const uk: Translation = {
   schemaTypeString: "Текст",
   schemaTypeNull: "Пусто",
 
-  inferrerTitle: "Вивести JSON-схему",
+  inferrerTitle: "Згенерувати JSON-схему",
   inferrerDescription:
     "Вставте свій JSON-документ нижче, щоб згенерувати з нього схему.",
   inferrerCancel: "Скасувати",

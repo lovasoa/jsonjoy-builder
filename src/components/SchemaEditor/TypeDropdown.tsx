@@ -2,22 +2,25 @@ import { Check, ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn, getTypeColor, getTypeLabel } from "../../lib/utils.ts";
-import type { SchemaType } from "../../types/jsonSchema.ts";
+import type { SchemaEditorType } from "../../types/jsonSchema.ts";
 
 export interface TypeDropdownProps {
-  value: SchemaType;
-  onChange: (value: SchemaType) => void;
+  value: SchemaEditorType;
+  onChange: (value: SchemaEditorType) => void;
   className?: string;
   readOnly: boolean;
 }
 
-const typeOptions: SchemaType[] = [
+const typeOptions: SchemaEditorType[] = [
   "string",
   "number",
   "boolean",
   "object",
   "array",
   "null",
+  "anyOf",
+  "oneOf",
+  "allOf",
 ];
 
 export const TypeDropdown: React.FC<TypeDropdownProps> = ({

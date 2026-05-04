@@ -24,6 +24,9 @@ const StringEditor: React.FC<TypeEditorProps> = ({
   schema,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   readOnly = false,
 }) => {
   const t = useTranslation();
@@ -66,12 +69,41 @@ const StringEditor: React.FC<TypeEditorProps> = ({
     onChange(updatedValidation);
   };
 
+  const applyEnumValues = (values: string[]) => {
+    if (values.length > 0) {
+      const updatedSchema: ObjectJSONSchema = {
+        ...(isBooleanSchema(schema)
+          ? { type: "string" as const }
+          : { ...schema }),
+        type: "string",
+        enum: values,
+      };
+      onChange(updatedSchema);
+      return;
+    }
+
+    const baseSchema = isBooleanSchema(schema)
+      ? { type: "string" as const }
+      : { ...schema };
+
+    if (!isBooleanSchema(baseSchema) && "enum" in baseSchema) {
+      const { enum: _, ...rest } = baseSchema;
+      onChange(rest as ObjectJSONSchema);
+      return;
+    }
+
+    onChange(baseSchema as ObjectJSONSchema);
+  };
+
   // Handle adding enum value
   const handleAddEnumValue = () => {
-    if (!enumValue.trim()) return;
+    const trimmedValue = enumValue.trim();
+    if (!trimmedValue) return;
 
-    if (!enumValues.includes(enumValue)) {
-      handleValidationChange("enum", [...enumValues, enumValue]);
+    if (!enumValues.includes(trimmedValue)) {
+      const addedIndex = enumValues.length;
+      applyEnumValues([...enumValues, trimmedValue]);
+      onAddEnum?.({ value: trimmedValue, index: addedIndex, schemaKey });
     }
 
     setEnumValue("");
@@ -79,25 +111,13 @@ const StringEditor: React.FC<TypeEditorProps> = ({
 
   // Handle removing enum value
   const handleRemoveEnumValue = (index: number) => {
+    const removedValue = enumValues[index];
+    if (removedValue === undefined) return;
+
     const newEnumValues = [...enumValues];
     newEnumValues.splice(index, 1);
-
-    if (newEnumValues.length === 0) {
-      // If empty, remove the enum property entirely
-      const baseSchema = isBooleanSchema(schema)
-        ? { type: "string" as const }
-        : { ...schema };
-
-      // Use a type safe approach
-      if (!isBooleanSchema(baseSchema) && "enum" in baseSchema) {
-        const { enum: _, ...rest } = baseSchema;
-        onChange(rest as ObjectJSONSchema);
-      } else {
-        onChange(baseSchema as ObjectJSONSchema);
-      }
-    } else {
-      handleValidationChange("enum", newEnumValues);
-    }
+    applyEnumValues(newEnumValues);
+    onDeleteEnum?.({ value: removedValue, index, schemaKey });
   };
 
   const minMaxError = useMemo(

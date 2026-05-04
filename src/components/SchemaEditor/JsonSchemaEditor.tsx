@@ -16,13 +16,17 @@ import { cn } from "../../lib/utils.ts";
 import type { JSONSchema } from "../../types/jsonSchema.ts";
 import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
 import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 /** @public */
 export interface JsonSchemaEditorProps {
   schema?: JSONSchema;
   readOnly: boolean;
   setSchema?: (schema: JSONSchema) => void;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
   className?: string;
+  autoFocus?: boolean;
 }
 
 /** @public */
@@ -30,7 +34,10 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   schema = { type: "object" },
   readOnly = false,
   setSchema,
+  onAddEnum,
+  onDeleteEnum,
   className,
+  autoFocus = true,
 }) => {
   // Handle schema changes and propagate to parent if needed
   const handleSchemaChange = (newSchema: JSONSchema) => {
@@ -124,6 +131,9 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               readOnly={readOnly}
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
+              onAddEnum={onAddEnum}
+              onDeleteEnum={onDeleteEnum}
             />
           </TabsContent>
 
@@ -137,6 +147,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
             />
           </TabsContent>
         </Tabs>
@@ -170,6 +181,9 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               readOnly={readOnly}
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
+              onAddEnum={onAddEnum}
+              onDeleteEnum={onDeleteEnum}
             />
           </div>
           {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
@@ -185,6 +199,7 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             <JsonSchemaVisualizer
               schema={schema}
               onChange={handleSchemaChange}
+              autoFocus={autoFocus}
             />
           </div>
         </div>

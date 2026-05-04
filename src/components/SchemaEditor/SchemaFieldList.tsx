@@ -7,8 +7,14 @@ import type {
   ObjectJSONSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
+import {
+  isAllOfSchema,
+  isAnyOfSchema,
+  isOneOfSchema,
+} from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 interface SchemaFieldListProps {
   schema: JSONSchemaType;
@@ -21,6 +27,9 @@ interface SchemaFieldListProps {
   ) => void;
   onDeleteField: (name: string, isPatternProperty?: boolean) => void;
   onPropertyToggle: (name: string, isPatternProperty?: boolean) => void;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
+  autoFocus?: boolean;
 }
 
 const SchemaFieldList: FC<SchemaFieldListProps> = ({
@@ -28,7 +37,10 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   onEditField,
   onDeleteField,
   onPropertyToggle,
+  onAddEnum,
+  onDeleteEnum,
   readOnly = false,
+  autoFocus = true,
 }) => {
   const t = useTranslation();
 
@@ -39,6 +51,14 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   // Get schema type as a valid SchemaType
   const getValidSchemaType = (propSchema: JSONSchemaType): SchemaType => {
     if (typeof propSchema === "boolean") return "object";
+
+    // combinator schemas don't have a direct type — default to object for NewField purposes
+    if (
+      isAnyOfSchema(propSchema) ||
+      isOneOfSchema(propSchema) ||
+      isAllOfSchema(propSchema)
+    )
+      return "object";
 
     // Handle array of types by picking the first one
     const type = propSchema.type;
@@ -110,6 +130,22 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
     if (!property) return;
 
+    // combinator schemas have no direct type field
+    if (
+      isAnyOfSchema(updatedSchema) ||
+      isOneOfSchema(updatedSchema) ||
+      isAllOfSchema(updatedSchema)
+    ) {
+      onEditField(name, {
+        name,
+        type: "object",
+        description: updatedSchema.description || "",
+        required: property.required,
+        validation: updatedSchema,
+      });
+      return;
+    }
+
     const type = updatedSchema.type || "object";
     // Ensure we're using a single type, not an array of types
     const validType = Array.isArray(type) ? type[0] || "object" : type;
@@ -139,9 +175,12 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
         <SchemaPropertyEditor
           key={property.name}
           name={property.name}
+          schemaKey={property.name}
           schema={property.schema}
           required={property.required}
           validationNode={validationTree.children[property.name] ?? undefined}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           onDelete={() => onDeleteField(property.name)}
           onNameChange={(newName) => handleNameChange(property.name, newName)}
           onRequiredChange={(required) =>
@@ -150,6 +189,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           onSchemaChange={(schema) => handleSchemaChange(property.name, schema)}
           readOnly={readOnly}
           onPropertyToggle={onPropertyToggle}
+          autoFocus={autoFocus}
         />
       ))}
       {patternProperties.length > 0 ? (
@@ -159,9 +199,12 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
         <SchemaPropertyEditor
           key={property.name}
           name={property.name}
+          schemaKey={property.name}
           schema={property.schema}
           required={property.required}
           validationNode={validationTree.children[property.name] ?? undefined}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           onDelete={() => onDeleteField(property.name, true)}
           onNameChange={(newName) =>
             handleNameChange(property.name, newName, true)
@@ -175,6 +218,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
           readOnly={readOnly}
           onPropertyToggle={onPropertyToggle}
           isPatternProperty
+          autoFocus={autoFocus}
         />
       ))}
     </div>

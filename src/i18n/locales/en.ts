@@ -133,6 +133,27 @@ export const en: Translation = {
   stringValidationErrorLengthRange:
     "'Minimum Length' cannot be greater than 'Maximum Length'.",
 
+  schemaTypeAnyOf: "Any Of",
+  anyOfAddOption: "Add Option",
+  anyOfRemoveOption: "Remove option",
+  anyOfOptionLabel: "Option",
+  anyOfDescription: "Value must match at least one of these schemas",
+  anyOfNoOptions: "No options defined",
+
+  schemaTypeOneOf: "One Of",
+  oneOfAddOption: "Add Option",
+  oneOfRemoveOption: "Remove option",
+  oneOfOptionLabel: "Option",
+  oneOfDescription: "Value must match exactly one of these schemas",
+  oneOfNoOptions: "No options defined",
+
+  schemaTypeAllOf: "All Of",
+  allOfAddSchema: "Add Schema",
+  allOfRemoveSchema: "Remove schema",
+  allOfSchemaLabel: "Schema",
+  allOfDescription: "Value must match all of these schemas",
+  allOfNoSchemas: "No schemas defined",
+
   schemaTypeArray: "List",
   schemaTypeBoolean: "Yes/No",
   schemaTypeNumber: "Number",

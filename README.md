@@ -16,6 +16,8 @@ A modern, React-based visual JSON Schema editor for creating and manipulating JS
 - **Real-time JSON Preview**: See your schema in JSON format as you build it visually
 - **Schema Inference**: Generate schemas automatically from existing JSON data
 - **JSON Validation**: Test JSON data against your schema with detailed validation feedback
+- **Combinator Types**: Full support for `anyOf`, `oneOf`, and `allOf` schema composition
+- **Additional Properties**: Control whether objects allow extra properties beyond the defined ones
 - **Responsive Design**: Fully responsive interface that works on desktop and mobile devices
 
 ## Getting Started
@@ -42,6 +44,50 @@ export function App() {
       <h1>JSONJoy Builder</h1>
       <SchemaVisualEditor schema={schema} onChange={setSchema}/>
     </div>
+  );
+}
+```
+
+### Enum Change Callbacks
+
+You can subscribe to enum value changes in the visual editor via `onAddEnum` and `onDeleteEnum`.
+
+Both callbacks receive a single context object:
+
+```ts
+type EnumChangeContext = {
+  value: string | number | boolean;
+  index: number;
+  schemaKey?: string;
+};
+```
+
+- `value`: enum value that was added/removed
+- `index`: index in the enum list at the time of the change
+- `schemaKey`: path-like key of the edited field (for example: `person.firstName`, `hobbies[].name`)
+
+Example:
+
+```tsx
+import "jsonjoy-builder/styles.css";
+import { type JSONSchema, JsonSchemaEditor } from "jsonjoy-builder";
+import { useState } from "react";
+
+export function App() {
+  const [schema, setSchema] = useState<JSONSchema>({ type: "object" });
+
+  return (
+    <JsonSchemaEditor
+      schema={schema}
+      readOnly={false}
+      setSchema={setSchema}
+      onAddEnum={({ value, index, schemaKey }) => {
+        console.log("enum:add", { value, index, schemaKey });
+      }}
+      onDeleteEnum={({ value, index, schemaKey }) => {
+        console.log("enum:delete", { value, index, schemaKey });
+      }}
+    />
   );
 }
 ```
@@ -160,6 +206,10 @@ The `SchemaInferencer` component can automatically generate JSON Schema definiti
 - Numeric types (integers vs. floats)
 - Required fields
 
+#### Combinator Schemas
+
+The editor supports composing schemas with `anyOf`, `oneOf`, and `allOf` combinators. Each combinator option can be edited independently with its own type and constraints.
+
 #### JSON Validation
 
 Validate any JSON document against your schema with:
@@ -188,7 +238,7 @@ Validate any JSON document against your schema with:
 | `npm run build:dev` | Build with development settings |
 | `npm run lint` | Run linter |
 | `npm run format` | Format code |
-| `npm run check` | Type check the project |
+| `npm run check` | Lint and format check (Biome) |
 | `npm run fix` | Fix linting issues |
 | `npm run typecheck` | Type check with TypeScript |
 | `npm run preview` | Preview production build |

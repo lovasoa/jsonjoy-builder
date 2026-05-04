@@ -55,7 +55,7 @@ export const de: Translation = {
   arrayNoConstraint: "Keine Einschränkung",
   arrayMinimumLabel: "Mindestanzahl an Elementen",
   arrayMinimumPlaceholder: "Kein Minimum",
-  arrayMaximumLabel: "Maximale Anzahl an Elemente",
+  arrayMaximumLabel: "Maximale Anzahl an Elementen",
   arrayMaximumPlaceholder: "Kein Maximum",
   arrayForceUniqueItemsLabel: "Nur eindeutige Elemente erlauben",
   arrayItemTypeLabel: "Elementtyp",
@@ -136,6 +136,28 @@ export const de: Translation = {
   stringValidationErrorLengthRange:
     "'Minimale Länge' darf nicht größer als 'Maximale Länge' sein.",
 
+  schemaTypeAnyOf: "Eines von",
+  anyOfAddOption: "Option hinzufügen",
+  anyOfRemoveOption: "Option entfernen",
+  anyOfOptionLabel: "Option",
+  anyOfDescription:
+    "Der Wert muss mindestens einem dieser Schemata entsprechen",
+  anyOfNoOptions: "Keine Optionen definiert",
+
+  schemaTypeOneOf: "Genau eines von",
+  oneOfAddOption: "Option hinzufügen",
+  oneOfRemoveOption: "Option entfernen",
+  oneOfOptionLabel: "Option",
+  oneOfDescription: "Der Wert muss genau einem dieser Schemata entsprechen",
+  oneOfNoOptions: "Keine Optionen definiert",
+
+  schemaTypeAllOf: "Alle von",
+  allOfAddSchema: "Schema hinzufügen",
+  allOfRemoveSchema: "Schema entfernen",
+  allOfSchemaLabel: "Schema",
+  allOfDescription: "Der Wert muss allen diesen Schemata entsprechen",
+  allOfNoSchemas: "Keine Schemata definiert",
+
   schemaTypeArray: "Liste",
   schemaTypeBoolean: "Ja/Nein",
   schemaTypeNumber: "Zahl",
@@ -155,7 +177,7 @@ export const de: Translation = {
     "JSON-Dokument einfügen, um es gegen das aktuelle Schema zu prüfen. Die Validierung erfolgt automatisch beim Tippen.",
   validatorCurrentSchema: "Aktuelles Schema:",
   validatorContent: "Zu prüfendes JSON:",
-  validatorValid: "JSON ist gültig zum Schema!",
+  validatorValid: "JSON ist gemäß dem Schema gültig!",
   validatorErrorInvalidSyntax: "Ungültige JSON-Syntax",
   validatorErrorSchemaValidation: "Schema-Validierungsfehler",
   validatorErrorCount: "{count} Validierungsfehler gefunden",

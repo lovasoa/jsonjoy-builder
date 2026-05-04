@@ -7,9 +7,11 @@ import { getArrayItemsSchema } from "../../../lib/schemaEditor.ts";
 import { cn } from "../../../lib/utils.ts";
 import type {
   ObjectJSONSchema,
+  SchemaEditorType,
   SchemaType,
 } from "../../../types/jsonSchema.ts";
 import {
+  asObjectSchema,
   isBooleanSchema,
   withObjectSchema,
 } from "../../../types/jsonSchema.ts";
@@ -22,6 +24,9 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   readOnly = false,
   validationNode,
   onChange,
+  schemaKey,
+  onAddEnum,
+  onDeleteEnum,
   depth = 0,
 }) => {
   const t = useTranslation();
@@ -41,6 +46,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
 
   // Get the array's item schema
   const itemsSchema = getArrayItemsSchema(schema) || { type: "string" };
+  const itemSchemaKey = schemaKey ? `${schemaKey}[]` : undefined;
 
   // Get the type of the array items
   const itemType = withObjectSchema(
@@ -232,11 +238,38 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
           <TypeDropdown
             readOnly={readOnly}
             value={itemType}
-            onChange={(newType) => {
-              handleItemSchemaChange({
-                ...withObjectSchema(itemsSchema, (s) => s, {}),
-                type: newType,
-              });
+            onChange={(newType: SchemaEditorType) => {
+              if (
+                newType === "anyOf" ||
+                newType === "oneOf" ||
+                newType === "allOf"
+              ) {
+                const {
+                  type: _type,
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  ...rest
+                } = asObjectSchema(itemsSchema);
+                const initial =
+                  newType === "allOf"
+                    ? { allOf: [{ type: "object" as const }] }
+                    : {
+                        [newType]: [
+                          { type: "string" as const },
+                          { type: "number" as const },
+                        ],
+                      };
+                handleItemSchemaChange({ ...rest, ...initial });
+              } else {
+                const {
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  ...rest
+                } = asObjectSchema(itemsSchema);
+                handleItemSchemaChange({ ...rest, type: newType });
+              }
             }}
           />
         </div>
@@ -247,6 +280,9 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
           schema={itemsSchema}
           validationNode={validationNode}
           onChange={handleItemSchemaChange}
+          schemaKey={itemSchemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
           depth={depth + 1}
         />
       </div>

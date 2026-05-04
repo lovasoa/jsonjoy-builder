@@ -26,15 +26,15 @@ export const zh: Translation = {
   fieldAddNewDescription: "创建一个新的字段用于你的 JSON schema",
   fieldAddNewLabel: "添加新字段",
 
-  fieldTypeTextLabel: "字符串",
+  fieldTypeTextLabel: "文本",
   fieldTypeTextDescription: "用于文本值，如名称、描述等",
   fieldTypeNumberLabel: "数字",
   fieldTypeNumberDescription: "用于小数或整数",
-  fieldTypeBooleanLabel: "布尔值",
+  fieldTypeBooleanLabel: "是/否",
   fieldTypeBooleanDescription: "用于真/假值",
-  fieldTypeObjectLabel: "对象",
+  fieldTypeObjectLabel: "分组",
   fieldTypeObjectDescription: "用于分组相关的字段",
-  fieldTypeArrayLabel: "数组",
+  fieldTypeArrayLabel: "列表",
   fieldTypeArrayDescription: "用于集合的项",
 
   propertyDescriptionPlaceholder: "添加描述...",
@@ -91,7 +91,7 @@ export const zh: Translation = {
   numberValidationErrorEnumOutOfRange: "枚举值必须在定义的范围内。",
 
   objectPropertiesNone: "没有定义属性",
-  objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」.",
+  objectValidationErrorMinMax: "「最少属性数」不能大于「最多属性数」。",
 
   patternPropertiesTitle: "模式属性",
   patternPropertiesTitleShort: "模式",
@@ -129,6 +129,27 @@ export const zh: Translation = {
   stringAllowedValuesEnumAddLabel: "添加",
   stringFormatSelectPlaceholder: "选择格式",
   stringValidationErrorLengthRange: "「最小长度」不能大于「最大长度」",
+
+  schemaTypeAnyOf: "任意一个",
+  anyOfAddOption: "添加选项",
+  anyOfRemoveOption: "删除选项",
+  anyOfOptionLabel: "选项",
+  anyOfDescription: "值必须符合至少一个以下 Schema",
+  anyOfNoOptions: "未定义选项",
+
+  schemaTypeOneOf: "恰好一个",
+  oneOfAddOption: "添加选项",
+  oneOfRemoveOption: "删除选项",
+  oneOfOptionLabel: "选项",
+  oneOfDescription: "值必须恰好符合一个以下 Schema",
+  oneOfNoOptions: "未定义选项",
+
+  schemaTypeAllOf: "全部",
+  allOfAddSchema: "添加 Schema",
+  allOfRemoveSchema: "删除 Schema",
+  allOfSchemaLabel: "Schema",
+  allOfDescription: "值必须符合所有以下 Schema",
+  allOfNoSchemas: "未定义 Schema",
 
   schemaTypeArray: "数组",
   schemaTypeBoolean: "布尔值",

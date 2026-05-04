@@ -303,76 +303,70 @@ describe("Schema Inference", () => {
     assert.strictEqual(coordsSchema2.maxItems, 2);
   });
 
-  test(
-    "should detect coordinate arrays [lat, lon, alt]",
-    {
-      skip: "todo - number and integer are treated as different schemas, resulting in a oneOf schema",
-    },
-    () => {
-      const json = {
-        points: [
-          { id: 1, point: [40.7, -74.0, 10.0] },
-          { id: 2, point: [34.0, -118.2, 50.5] },
-        ],
-      };
-      const schema = createSchemaFromJson(json);
-      const pointSchema = schema.properties.points.items.properties.point;
-      assert.strictEqual(pointSchema.type, "array");
-      assert.strictEqual(pointSchema.items.type, "number");
-      assert.strictEqual(pointSchema.minItems, 3);
-      assert.strictEqual(pointSchema.maxItems, 3);
-    },
-  );
+  test("should detect coordinate arrays [lat, lon, alt]", {
+    skip: "todo - number and integer are treated as different schemas, resulting in a oneOf schema",
+  }, () => {
+    const json = {
+      points: [
+        { id: 1, point: [40.7, -74.0, 10.0] },
+        { id: 2, point: [34.0, -118.2, 50.5] },
+      ],
+    };
+    const schema = createSchemaFromJson(json);
+    const pointSchema = schema.properties.points.items.properties.point;
+    assert.strictEqual(pointSchema.type, "array");
+    assert.strictEqual(pointSchema.items.type, "number");
+    assert.strictEqual(pointSchema.minItems, 3);
+    assert.strictEqual(pointSchema.maxItems, 3);
+  });
 
-  test(
-    "should NOT detect coordinates if structure varies or type is wrong",
-    { skip: "todo - minItems is being set" },
-    () => {
-      const json = {
-        mixedCoords: [
-          { id: 1, coordinates: [1, 2] },
-          { id: 2, coordinates: [3, 4, 5] }, // Different length
-        ],
-        wrongType: [
-          { id: 3, coordinates: ["lat", "lon"] }, // Wrong item type
-        ],
-      };
-      const schema = createSchemaFromJson(json);
-      const mixedSchema =
-        schema.properties.mixedCoords.items.properties.coordinates;
-      // Should fall back to default array inference (oneOf for items or simpler)
-      assert.ok(mixedSchema.type === "array");
-      assert.strictEqual(
-        mixedSchema.minItems,
-        undefined,
-        "minItems shouldn't be set for varied length",
-      );
-      assert.strictEqual(
-        mixedSchema.maxItems,
-        undefined,
-        "maxItems shouldn't be set for varied length",
-      );
+  test("should NOT detect coordinates if structure varies or type is wrong", {
+    skip: "todo - minItems is being set",
+  }, () => {
+    const json = {
+      mixedCoords: [
+        { id: 1, coordinates: [1, 2] },
+        { id: 2, coordinates: [3, 4, 5] }, // Different length
+      ],
+      wrongType: [
+        { id: 3, coordinates: ["lat", "lon"] }, // Wrong item type
+      ],
+    };
+    const schema = createSchemaFromJson(json);
+    const mixedSchema =
+      schema.properties.mixedCoords.items.properties.coordinates;
+    // Should fall back to default array inference (oneOf for items or simpler)
+    assert.ok(mixedSchema.type === "array");
+    assert.strictEqual(
+      mixedSchema.minItems,
+      undefined,
+      "minItems shouldn't be set for varied length",
+    );
+    assert.strictEqual(
+      mixedSchema.maxItems,
+      undefined,
+      "maxItems shouldn't be set for varied length",
+    );
 
-      const wrongTypeSchema =
-        schema.properties.wrongType.items.properties.coordinates;
-      assert.ok(wrongTypeSchema.type === "array");
-      assert.strictEqual(
-        wrongTypeSchema.minItems,
-        undefined,
-        "minItems shouldn't be set for wrong type",
-      );
-      assert.strictEqual(
-        wrongTypeSchema.maxItems,
-        undefined,
-        "maxItems shouldn't be set for wrong type",
-      );
-      assert.strictEqual(
-        wrongTypeSchema.items.type,
-        "string",
-        "Item type should be string",
-      ); // Based on the single example
-    },
-  );
+    const wrongTypeSchema =
+      schema.properties.wrongType.items.properties.coordinates;
+    assert.ok(wrongTypeSchema.type === "array");
+    assert.strictEqual(
+      wrongTypeSchema.minItems,
+      undefined,
+      "minItems shouldn't be set for wrong type",
+    );
+    assert.strictEqual(
+      wrongTypeSchema.maxItems,
+      undefined,
+      "maxItems shouldn't be set for wrong type",
+    );
+    assert.strictEqual(
+      wrongTypeSchema.items.type,
+      "string",
+      "Item type should be string",
+    ); // Based on the single example
+  });
 
   test("should detect timestamp integers", () => {
     const now = Date.now();

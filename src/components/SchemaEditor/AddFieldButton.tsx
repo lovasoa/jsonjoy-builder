@@ -26,11 +26,13 @@ import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 interface AddFieldButtonProps {
   onAddField: (field: NewField, isPatternProperty: boolean) => void;
   variant?: "primary" | "secondary";
+  autoFocus?: boolean;
 }
 
 const AddFieldButton: FC<AddFieldButtonProps> = ({
   onAddField,
   variant = "primary",
+  autoFocus = true,
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [fieldName, setFieldName] = useState("");
@@ -162,13 +164,14 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     validate={
                       isPatternProperty
                         ? (value) => {
-                            const { valid, error } =
-                              validateRegexPattern(value);
+                          const { valid, error } =
+                            validateRegexPattern(value);
 
-                            return valid ? null : error;
-                          }
+                          return valid ? null : error;
+                        }
                         : undefined
                     }
+                    autoFocus={autoFocus}
                     required
                     ref={fieldInputRef}
                   />

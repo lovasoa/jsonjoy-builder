@@ -6,12 +6,12 @@ import { cn } from "../../lib/utils.ts";
 import type {
   JSONSchema,
   ObjectJSONSchema,
-  SchemaType,
+  SchemaEditorType,
 } from "../../types/jsonSchema.ts";
 import {
   asObjectSchema,
+  getEditorType,
   getSchemaDescription,
-  withObjectSchema,
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import { Badge } from "../ui/badge.tsx";
@@ -23,14 +23,19 @@ import {
   TooltipTrigger,
 } from "../ui/tooltip.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
+import type { EnumChangeContext } from "./TypeEditor.tsx";
 import TypeEditor from "./TypeEditor.tsx";
 
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JSONSchema;
+  schemaKey?: string;
   required: boolean;
   readOnly: boolean;
+  autoFocus?: boolean;
   validationNode?: ValidationTreeNode;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
   onDelete: () => void;
   onNameChange: (newName: string) => void;
   onRequiredChange: (required: boolean) => void;
@@ -43,9 +48,13 @@ export interface SchemaPropertyEditorProps {
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   name,
   schema,
+  schemaKey,
   required,
   readOnly = false,
+  autoFocus = true,
   validationNode,
+  onAddEnum,
+  onDeleteEnum,
   onDelete,
   onNameChange,
   onRequiredChange,
@@ -60,11 +69,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [tempName, setTempName] = useState(name);
   const [tempDesc, setTempDesc] = useState(getSchemaDescription(schema));
-  const type = withObjectSchema(
-    schema,
-    (s) => (s.type || "object") as SchemaType,
-    "object" as SchemaType,
-  );
+  const type = getEditorType(schema);
 
   // Update temp values when props change
   useEffect(() => {
@@ -133,7 +138,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   onBlur={handleNameSubmit}
                   onKeyDown={(e) => e.key === "Enter" && handleNameSubmit()}
                   className="h-8 text-sm font-medium min-w-[120px] max-w-full z-10"
-                  autoFocus
+                  autoFocus={autoFocus}
                   onFocus={(e) => e.target.select()}
                 />
               ) : (
@@ -156,7 +161,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   onKeyDown={(e) => e.key === "Enter" && handleDescSubmit()}
                   placeholder={t.propertyDescriptionPlaceholder}
                   className="h-8 text-xs text-muted-foreground italic flex-1 min-w-[150px] z-10"
-                  autoFocus
+                  autoFocus={autoFocus}
                   onFocus={(e) => e.target.select()}
                 />
               ) : tempDesc ? (
@@ -201,11 +206,38 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               <TypeDropdown
                 value={type}
                 readOnly={readOnly}
-                onChange={(newType) => {
-                  onSchemaChange({
-                    ...asObjectSchema(schema),
-                    type: newType,
-                  });
+                onChange={(newType: SchemaEditorType) => {
+                  if (
+                    newType === "anyOf" ||
+                    newType === "oneOf" ||
+                    newType === "allOf"
+                  ) {
+                    const {
+                      type: _type,
+                      anyOf: _a,
+                      oneOf: _o,
+                      allOf: _al,
+                      ...rest
+                    } = asObjectSchema(schema);
+                    const initial =
+                      newType === "allOf"
+                        ? { allOf: [{ type: "object" as const }] }
+                        : {
+                            [newType]: [
+                              { type: "string" as const },
+                              { type: "number" as const },
+                            ],
+                          };
+                    onSchemaChange({ ...rest, ...initial });
+                  } else {
+                    const {
+                      anyOf: _a,
+                      oneOf: _o,
+                      allOf: _al,
+                      ...rest
+                    } = asObjectSchema(schema);
+                    onSchemaChange({ ...rest, type: newType });
+                  }
                 }}
               />
               {/* Required toggle */}
@@ -278,6 +310,9 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
             readOnly={readOnly}
             validationNode={validationNode}
             onChange={handleSchemaUpdate}
+            schemaKey={schemaKey ?? name}
+            onAddEnum={onAddEnum}
+            onDeleteEnum={onDeleteEnum}
             depth={depth + 1}
           />
         </div>

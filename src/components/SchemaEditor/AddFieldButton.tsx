@@ -23,13 +23,15 @@ import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
-  onAddField: (field: NewField, isPatternProperty?: boolean) => void;
+  onAddField: (field: NewField) => void;
+  onAddPatternField: (field: NewField) => void;
   variant?: "primary" | "secondary";
   autoFocus?: boolean;
 }
 
 const AddFieldButton: FC<AddFieldButtonProps> = ({
   onAddField,
+  onAddPatternField,
   variant = "primary",
   autoFocus = true,
 }) => {
@@ -48,9 +50,8 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const additionalPropertiesId = useId();
 
   const t = useTranslation();
-  const isPatternProperty = useNameRegex;
   const regexError = (() => {
-    if (!isPatternProperty || !fieldName.trim()) return "";
+    if (!useNameRegex || !fieldName.trim()) return "";
     try {
       new RegExp(fieldName);
       return "";
@@ -71,17 +72,20 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
     if (!fieldName.trim()) return;
     if (regexError) return;
 
-    onAddField(
-      {
-        name: fieldName,
-        type: fieldType,
-        description: fieldDesc,
-        required: isPatternProperty ? false : fieldRequired,
-        additionalProperties:
-          fieldType === "object" ? additionalProperties : undefined,
-      },
-      isPatternProperty,
-    );
+    const field = {
+      name: fieldName,
+      type: fieldType,
+      description: fieldDesc,
+      required: useNameRegex ? false : fieldRequired,
+      additionalProperties:
+        fieldType === "object" ? additionalProperties : undefined,
+    };
+
+    if (useNameRegex) {
+      onAddPatternField(field);
+    } else {
+      onAddField(field);
+    }
 
     setFieldName("");
     setFieldType("string");
@@ -131,9 +135,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                       htmlFor={fieldNameId}
                       className="text-sm font-medium"
                     >
-                      {isPatternProperty
-                        ? t.fieldNameRegexLabel
-                        : t.fieldNameLabel}
+                      {useNameRegex ? t.fieldNameRegexLabel : t.fieldNameLabel}
                     </label>
                     <TooltipProvider>
                       <Tooltip>
@@ -142,7 +144,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                         </TooltipTrigger>
                         <TooltipContent className="max-w-[90vw]">
                           <p>
-                            {isPatternProperty
+                            {useNameRegex
                               ? t.fieldNameRegexHelp
                               : t.fieldNameTooltip}
                           </p>
@@ -154,7 +156,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                       onClick={() => setNameRegexMode(!useNameRegex)}
                       className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
                     >
-                      {isPatternProperty
+                      {useNameRegex
                         ? t.fieldNameUseExactName
                         : t.fieldNameUseRegex}
                     </button>
@@ -164,19 +166,19 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)}
                     placeholder={
-                      isPatternProperty
+                      useNameRegex
                         ? t.fieldNameRegexPlaceholder
                         : t.fieldNamePlaceholder
                     }
                     aria-describedby={
-                      isPatternProperty ? fieldNameHelpId : undefined
+                      useNameRegex ? fieldNameHelpId : undefined
                     }
                     aria-invalid={regexError ? true : undefined}
                     className="font-mono text-sm w-full"
                     autoFocus={autoFocus}
                     required
                   />
-                  {isPatternProperty ? (
+                  {useNameRegex ? (
                     <p
                       id={fieldNameHelpId}
                       className={cn(
@@ -219,7 +221,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                   />
                 </div>
 
-                {isPatternProperty ? null : (
+                {useNameRegex ? null : (
                   <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
                     <input
                       type="checkbox"

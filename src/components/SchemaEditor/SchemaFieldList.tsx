@@ -1,6 +1,10 @@
 import { type FC, useMemo } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
-import { getSchemaProperties } from "../../lib/schemaEditor.ts";
+import {
+  getSchemaPatternProperties,
+  getSchemaProperties,
+  type Property,
+} from "../../lib/schemaEditor.ts";
 import type {
   JSONSchema as JSONSchemaType,
   NewField,
@@ -13,7 +17,7 @@ import {
   isOneOfSchema,
 } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
-import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
+import SchemaPropertyRows from "./SchemaPropertyRows.tsx";
 import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 interface SchemaFieldListProps {
@@ -21,13 +25,10 @@ interface SchemaFieldListProps {
   readOnly: boolean;
   onAddEnum?: (ctx: EnumChangeContext) => void;
   onDeleteEnum?: (ctx: EnumChangeContext) => void;
-  onAddField: (newField: NewField, isPatternProperty?: boolean) => void;
-  onEditField: (
-    name: string,
-    updatedField: NewField,
-    isPatternProperty?: boolean,
-  ) => void;
-  onDeleteField: (name: string, isPatternProperty?: boolean) => void;
+  onEditField: (name: string, updatedField: NewField) => void;
+  onDeleteField: (name: string) => void;
+  onEditPatternField: (name: string, updatedField: NewField) => void;
+  onDeletePatternField: (name: string) => void;
   autoFocus?: boolean;
 }
 
@@ -35,6 +36,8 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   schema,
   onEditField,
   onDeleteField,
+  onEditPatternField,
+  onDeletePatternField,
   onAddEnum,
   onDeleteEnum,
   readOnly = false,
@@ -44,8 +47,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
   // Get the properties from the schema
   const properties = getSchemaProperties(schema);
-  const patternProperties = getSchemaProperties(schema, true);
-  const allProperties = [...properties, ...patternProperties];
+  const patternProperties = getSchemaPatternProperties(schema);
 
   // Get schema type as a valid SchemaType
   const getValidSchemaType = (propSchema: JSONSchemaType): SchemaType => {
@@ -68,100 +70,90 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     return type || "object";
   };
 
-  // Handle field name change (generates an edit event)
-  const handleNameChange = (
-    oldName: string,
-    newName: string,
-    isPatternProperty = false,
+  const createUpdatedField = (
+    property: Property,
+    overrides: Partial<NewField> = {},
+  ): NewField => ({
+    name: property.name,
+    type: getValidSchemaType(property.schema),
+    description:
+      typeof property.schema === "boolean"
+        ? ""
+        : property.schema.description || "",
+    required: property.required,
+    validation:
+      typeof property.schema === "boolean"
+        ? { type: "object" }
+        : property.schema,
+    ...overrides,
+  });
+
+  const updateProperty = (
+    schemaProperties: Property[],
+    name: string,
+    editField: (name: string, updatedField: NewField) => void,
+    overrides: Partial<NewField>,
   ) => {
-    const schemaProperties = isPatternProperty ? patternProperties : properties;
-    const property = schemaProperties.find((prop) => prop.name === oldName);
+    const property = schemaProperties.find((prop) => prop.name === name);
     if (!property) return;
 
-    onEditField(
-      oldName,
-      {
-        name: newName,
-        type: getValidSchemaType(property.schema),
-        description:
-          typeof property.schema === "boolean"
-            ? ""
-            : property.schema.description || "",
-        required: property.required,
-        validation:
-          typeof property.schema === "boolean"
-            ? { type: "object" }
-            : property.schema,
-      },
-      isPatternProperty,
-    );
+    editField(name, createUpdatedField(property, overrides));
+  };
+
+  // Handle field name change (generates an edit event)
+  const handleNameChange = (
+    schemaProperties: Property[],
+    editField: (name: string, updatedField: NewField) => void,
+    oldName: string,
+    newName: string,
+  ) => {
+    updateProperty(schemaProperties, oldName, editField, { name: newName });
   };
 
   // Handle required status change
   const handleRequiredChange = (name: string, required: boolean) => {
-    const property = properties.find((prop) => prop.name === name);
-    if (!property) return;
-
-    onEditField(name, {
-      name,
-      type: getValidSchemaType(property.schema),
-      description:
-        typeof property.schema === "boolean"
-          ? ""
-          : property.schema.description || "",
-      required,
-      validation:
-        typeof property.schema === "boolean"
-          ? { type: "object" }
-          : property.schema,
-    });
+    updateProperty(properties, name, onEditField, { required });
   };
 
-  // Handle schema change
-  const handleSchemaChange = (
-    name: string,
+  const createFieldForSchemaChange = (
+    property: Property,
     updatedSchema: ObjectJSONSchema,
-    isPatternProperty = false,
-  ) => {
-    const schemaProperties = isPatternProperty ? patternProperties : properties;
-    const property = schemaProperties.find((prop) => prop.name === name);
-    if (!property) return;
-
+  ): NewField => {
     // combinator schemas have no direct type field
     if (
       isAnyOfSchema(updatedSchema) ||
       isOneOfSchema(updatedSchema) ||
       isAllOfSchema(updatedSchema)
     ) {
-      onEditField(
-        name,
-        {
-          name,
-          type: "object",
-          description: updatedSchema.description || "",
-          required: property.required,
-          validation: updatedSchema,
-        },
-        isPatternProperty,
-      );
-      return;
+      return createUpdatedField(property, {
+        type: "object",
+        description: updatedSchema.description || "",
+        validation: updatedSchema,
+      });
     }
 
     const type = updatedSchema.type || "object";
     // Ensure we're using a single type, not an array of types
     const validType = Array.isArray(type) ? type[0] || "object" : type;
 
-    onEditField(
-      name,
-      {
-        name,
-        type: validType,
-        description: updatedSchema.description || "",
-        required: property.required,
-        validation: updatedSchema,
-      },
-      isPatternProperty,
-    );
+    return createUpdatedField(property, {
+      type: validType,
+      description: updatedSchema.description || "",
+      validation: updatedSchema,
+    });
+  };
+
+  // Handle schema change
+  const handleSchemaChange = (
+    schemaProperties: Property[],
+    editField: (name: string, updatedField: NewField) => void,
+    name: string,
+    updatedSchema: ObjectJSONSchema,
+  ) => {
+    const property = schemaProperties.find((prop) => prop.name === name);
+    if (!property) return;
+
+    editField(name, createFieldForSchemaChange(property, updatedSchema));
   };
 
   const validationTree = useMemo(
@@ -171,43 +163,40 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
   return (
     <div className="space-y-2 animate-in">
-      {allProperties.map((property) => (
-        <SchemaPropertyEditor
-          key={`${property.isPatternProperty ? "pattern:" : "property:"}${property.name}`}
-          name={property.name}
-          schemaKey={property.name}
-          schema={property.schema}
-          required={property.required}
-          validationNode={
-            validationTree.children[
-              property.isPatternProperty
-                ? `pattern:${property.name}`
-                : property.name
-            ] ?? undefined
-          }
-          onAddEnum={onAddEnum}
-          onDeleteEnum={onDeleteEnum}
-          onDelete={() =>
-            onDeleteField(property.name, property.isPatternProperty)
-          }
-          onNameChange={(newName) =>
-            handleNameChange(property.name, newName, property.isPatternProperty)
-          }
-          onRequiredChange={(required) =>
-            handleRequiredChange(property.name, required)
-          }
-          onSchemaChange={(schema) =>
-            handleSchemaChange(
-              property.name,
-              schema,
-              property.isPatternProperty,
-            )
-          }
-          readOnly={readOnly}
-          isPatternProperty={property.isPatternProperty}
-          autoFocus={autoFocus}
-        />
-      ))}
+      <SchemaPropertyRows
+        properties={properties}
+        patternProperties={patternProperties}
+        validationChildren={validationTree.children}
+        onAddEnum={onAddEnum}
+        onDeleteEnum={onDeleteEnum}
+        onDelete={onDeleteField}
+        onDeletePattern={onDeletePatternField}
+        onNameChange={(oldName, newName) =>
+          handleNameChange(properties, onEditField, oldName, newName)
+        }
+        onPatternNameChange={(oldName, newName) =>
+          handleNameChange(
+            patternProperties,
+            onEditPatternField,
+            oldName,
+            newName,
+          )
+        }
+        onRequiredChange={handleRequiredChange}
+        onSchemaChange={(name, updatedSchema) =>
+          handleSchemaChange(properties, onEditField, name, updatedSchema)
+        }
+        onPatternSchemaChange={(name, updatedSchema) =>
+          handleSchemaChange(
+            patternProperties,
+            onEditPatternField,
+            name,
+            updatedSchema,
+          )
+        }
+        readOnly={readOnly}
+        autoFocus={autoFocus}
+      />
     </div>
   );
 };

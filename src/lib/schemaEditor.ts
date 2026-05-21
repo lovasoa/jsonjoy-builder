@@ -9,7 +9,6 @@ export type Property = {
   name: string;
   schema: JSONSchema;
   required: boolean;
-  isPatternProperty?: boolean;
 };
 
 export function copySchema<T extends JSONSchema>(schema: T): T {
@@ -24,12 +23,37 @@ export function updateObjectProperty(
   schema: ObjectJSONSchema,
   propertyName: string,
   propertySchema: JSONSchema,
-  isPatternProperty = false,
+): ObjectJSONSchema {
+  return updateObjectSchemaEntry(
+    schema,
+    "properties",
+    propertyName,
+    propertySchema,
+  );
+}
+
+export function updateObjectPatternProperty(
+  schema: ObjectJSONSchema,
+  propertyName: string,
+  propertySchema: JSONSchema,
+): ObjectJSONSchema {
+  return updateObjectSchemaEntry(
+    schema,
+    "patternProperties",
+    propertyName,
+    propertySchema,
+  );
+}
+
+function updateObjectSchemaEntry(
+  schema: ObjectJSONSchema,
+  schemaProperty: "properties" | "patternProperties",
+  propertyName: string,
+  propertySchema: JSONSchema,
 ): ObjectJSONSchema {
   if (!isObjectSchema(schema)) return schema;
 
   const newSchema = copySchema(schema);
-  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
   if (!newSchema[schemaProperty]) {
     newSchema[schemaProperty] = {};
   }
@@ -44,26 +68,41 @@ export function updateObjectProperty(
 export function removeObjectProperty(
   schema: ObjectJSONSchema,
   propertyName: string,
-  isPatternProperty = false,
 ): ObjectJSONSchema {
-  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
-  if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
-
-  const newSchema = copySchema(schema);
-  const { [propertyName]: _, ...remainingProps } = newSchema[schemaProperty];
-  if (isPatternProperty && Object.keys(remainingProps).length === 0) {
-    delete newSchema.patternProperties;
-  } else {
-    newSchema[schemaProperty] = remainingProps;
-  }
+  const newSchema = removeObjectSchemaEntry(schema, "properties", propertyName);
 
   // Also remove from required array if present
-  if (!isPatternProperty && newSchema.required) {
+  if (newSchema.required) {
     newSchema.required = newSchema.required.filter(
       (name) => name !== propertyName,
     );
   }
 
+  return newSchema;
+}
+
+export function removeObjectPatternProperty(
+  schema: ObjectJSONSchema,
+  propertyName: string,
+): ObjectJSONSchema {
+  return removeObjectSchemaEntry(schema, "patternProperties", propertyName);
+}
+
+function removeObjectSchemaEntry(
+  schema: ObjectJSONSchema,
+  schemaProperty: "properties" | "patternProperties",
+  propertyName: string,
+): ObjectJSONSchema {
+  if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
+
+  const newSchema = copySchema(schema);
+  const { [propertyName]: _, ...remainingProps } = newSchema[schemaProperty];
+  if (Object.keys(remainingProps).length === 0) {
+    delete newSchema[schemaProperty];
+    return newSchema;
+  }
+
+  newSchema[schemaProperty] = remainingProps;
   return newSchema;
 }
 
@@ -145,21 +184,36 @@ export function validateFieldName(name: string): boolean {
 /**
  * Gets properties from an object schema
  */
-export function getSchemaProperties(
+export function getSchemaProperties(schema: JSONSchema): Property[] {
+  const required = isObjectSchema(schema) ? schema.required || [] : [];
+  return getObjectSchemaEntries(schema, "properties").map(
+    (entry) => propertyFromEntry(entry, required),
+  );
+}
+
+export function getSchemaPatternProperties(schema: JSONSchema): Property[] {
+  return getObjectSchemaEntries(schema, "patternProperties").map((entry) =>
+    propertyFromEntry(entry),
+  );
+}
+
+function getObjectSchemaEntries(
   schema: JSONSchema,
-  isPatternProperty = false,
-): Property[] {
-  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
+  schemaProperty: "properties" | "patternProperties",
+): Array<[string, JSONSchema]> {
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return [];
+  return Object.entries(schema[schemaProperty]);
+}
 
-  const required = schema.required || [];
-
-  return Object.entries(schema[schemaProperty]).map(([name, propSchema]) => ({
+function propertyFromEntry(
+  [name, propSchema]: [string, JSONSchema],
+  required: string[] = [],
+): Property {
+  return {
     name,
     schema: propSchema,
-    required: !isPatternProperty && required.includes(name),
-    isPatternProperty,
-  }));
+    required: required.includes(name),
+  };
 }
 
 /**
@@ -179,9 +233,38 @@ export function renameObjectProperty(
   schema: ObjectJSONSchema,
   oldName: string,
   newName: string,
-  isPatternProperty = false,
 ): ObjectJSONSchema {
-  const schemaProperty = isPatternProperty ? "patternProperties" : "properties";
+  const newSchema = renameObjectSchemaEntry(
+    schema,
+    "properties",
+    oldName,
+    newName,
+  );
+
+  // Update required array if the field name changed
+  if (newSchema.required) {
+    newSchema.required = newSchema.required.map((field) =>
+      field === oldName ? newName : field,
+    );
+  }
+
+  return newSchema;
+}
+
+export function renameObjectPatternProperty(
+  schema: ObjectJSONSchema,
+  oldName: string,
+  newName: string,
+): ObjectJSONSchema {
+  return renameObjectSchemaEntry(schema, "patternProperties", oldName, newName);
+}
+
+function renameObjectSchemaEntry(
+  schema: ObjectJSONSchema,
+  schemaProperty: "properties" | "patternProperties",
+  oldName: string,
+  newName: string,
+): ObjectJSONSchema {
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
@@ -197,14 +280,6 @@ export function renameObjectProperty(
   }
 
   newSchema[schemaProperty] = newProperties;
-
-  // Update required array if the field name changed
-  if (!isPatternProperty && newSchema.required) {
-    newSchema.required = newSchema.required.map((field) =>
-      field === oldName ? newName : field,
-    );
-  }
-
   return newSchema;
 }
 

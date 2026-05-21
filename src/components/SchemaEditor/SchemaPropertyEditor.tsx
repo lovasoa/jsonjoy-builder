@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronRight, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ChevronDown, ChevronRight, Regex, X } from "lucide-react";
+import { type ReactNode, useEffect, useState } from "react";
 import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
@@ -34,14 +34,31 @@ export interface SchemaPropertyEditorProps {
   onRequiredChange: (required: boolean) => void;
   onSchemaChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
-  isPatternProperty?: boolean;
 }
 
-export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
+interface SchemaPropertyEditorFrameProps {
+  name: string;
+  schema: JSONSchema;
+  schemaKey?: string;
+  readOnly: boolean;
+  autoFocus?: boolean;
+  validationNode?: ValidationTreeNode;
+  onAddEnum?: (ctx: EnumChangeContext) => void;
+  onDeleteEnum?: (ctx: EnumChangeContext) => void;
+  onDelete: () => void;
+  onNameChange: (newName: string) => void;
+  onSchemaChange: (schema: ObjectJSONSchema) => void;
+  depth?: number;
+  nameAriaLabel?: string;
+  nameClassName?: string;
+  nameTitle?: string;
+  statusControl: ReactNode;
+}
+
+const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
   name,
   schema,
   schemaKey,
-  required,
   readOnly = false,
   autoFocus = true,
   validationNode,
@@ -49,10 +66,12 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onDeleteEnum,
   onDelete,
   onNameChange,
-  onRequiredChange,
   onSchemaChange,
   depth = 0,
-  isPatternProperty = false,
+  nameAriaLabel,
+  nameClassName,
+  nameTitle,
+  statusControl,
 }) => {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -137,19 +156,11 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   type="button"
                   onClick={() => setIsEditingName(true)}
                   onKeyDown={(e) => e.key === "Enter" && setIsEditingName(true)}
-                  aria-label={
-                    isPatternProperty
-                      ? `${t.fieldNameRegexLabel}: ${name}`
-                      : undefined
-                  }
-                  title={
-                    isPatternProperty
-                      ? t.propertyNameRegexDescription
-                      : undefined
-                  }
+                  aria-label={nameAriaLabel}
+                  title={nameTitle}
                   className={cn(
                     "json-field-label font-medium cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate min-w-[80px] max-w-[50%]",
-                    isPatternProperty && "font-mono",
+                    nameClassName,
                   )}
                 >
                   {name}
@@ -228,26 +239,8 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                 }}
               />
 
-              {/* Required toggle */}
-              {isPatternProperty ? (
-                <span
-                  className="text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap bg-secondary text-muted-foreground"
-                  title={t.propertyNameRegexDescription}
-                >
-                  /.*/
-                </span>
-              ) : (
-                <ButtonToggle
-                  onClick={() => !readOnly && onRequiredChange(!required)}
-                  className={
-                    required
-                      ? "bg-red-50 text-red-500"
-                      : "bg-secondary text-muted-foreground"
-                  }
-                >
-                  {required ? t.propertyRequired : t.propertyOptional}
-                </ButtonToggle>
-              )}
+              {/* Status */}
+              {statusControl}
             </div>
           </div>
         </div>
@@ -294,6 +287,63 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
         </div>
       )}
     </div>
+  );
+};
+
+export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
+  required,
+  readOnly = false,
+  onRequiredChange,
+  ...props
+}) => {
+  const t = useTranslation();
+
+  return (
+    <SchemaPropertyEditorFrame
+      {...props}
+      readOnly={readOnly}
+      statusControl={
+        <ButtonToggle
+          onClick={() => !readOnly && onRequiredChange(!required)}
+          className={
+            required
+              ? "bg-red-50 text-red-500"
+              : "bg-secondary text-muted-foreground"
+          }
+        >
+          {required ? t.propertyRequired : t.propertyOptional}
+        </ButtonToggle>
+      }
+    />
+  );
+};
+
+export type PatternSchemaPropertyEditorProps = Omit<
+  SchemaPropertyEditorFrameProps,
+  "nameAriaLabel" | "nameClassName" | "nameTitle" | "statusControl"
+>;
+
+export const PatternSchemaPropertyEditor: React.FC<
+  PatternSchemaPropertyEditorProps
+> = (props) => {
+  const t = useTranslation();
+
+  return (
+    <SchemaPropertyEditorFrame
+      {...props}
+      nameAriaLabel={`${t.fieldNameRegexLabel}: ${props.name}`}
+      nameClassName="font-mono"
+      nameTitle={t.propertyNameRegexDescription}
+      statusControl={
+        <span
+          className="text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap bg-secondary text-muted-foreground flex items-center justify-center gap-1"
+          title={t.propertyNameRegexDescription}
+        >
+          <Regex size={12} aria-hidden="true" />
+          regex
+        </span>
+      }
+    />
   );
 };
 

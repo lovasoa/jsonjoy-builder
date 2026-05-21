@@ -2,8 +2,11 @@ import type { FC } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import {
   createFieldSchema,
+  removeObjectPatternProperty,
   removeObjectProperty,
+  renameObjectPatternProperty,
   renameObjectProperty,
+  updateObjectPatternProperty,
   updateObjectProperty,
   updatePropertyRequired,
 } from "../../lib/schemaEditor.ts";
@@ -34,7 +37,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
-  const handleAddField = (newField: NewField, isPatternProperty = false) => {
+  const handleAddField = (newField: NewField) => {
     // Create a field schema based on the new field data
     const fieldSchema = createFieldSchema(newField);
 
@@ -43,11 +46,10 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
       asObjectSchema(schema),
       newField.name,
       fieldSchema,
-      isPatternProperty,
     );
 
     // Update required status if needed
-    if (!isPatternProperty && newField.required) {
+    if (newField.required) {
       newSchema = updatePropertyRequired(newSchema, newField.name, true);
     }
 
@@ -55,12 +57,18 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     onChange(newSchema);
   };
 
+  const handleAddPatternField = (newField: NewField) => {
+    onChange(
+      updateObjectPatternProperty(
+        asObjectSchema(schema),
+        newField.name,
+        createFieldSchema(newField),
+      ),
+    );
+  };
+
   // Handle editing a top-level field
-  const handleEditField = (
-    name: string,
-    updatedField: NewField,
-    isPatternProperty = false,
-  ) => {
+  const handleEditField = (name: string, updatedField: NewField) => {
     // Create a field schema based on the updated field data
     const fieldSchema = createFieldSchema(updatedField);
 
@@ -72,43 +80,58 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         newSchema,
         name,
         updatedField.name,
-        isPatternProperty,
       );
       // Update the field schema after rename
       newSchema = updateObjectProperty(
         newSchema,
         updatedField.name,
         fieldSchema,
-        isPatternProperty,
       );
     } else {
       // Name didn't change, just update the schema
-      newSchema = updateObjectProperty(
-        newSchema,
-        name,
-        fieldSchema,
-        isPatternProperty,
-      );
+      newSchema = updateObjectProperty(newSchema, name, fieldSchema);
     }
 
     // Update required status
-    if (!isPatternProperty) {
-      newSchema = updatePropertyRequired(
-        newSchema,
-        updatedField.name,
-        updatedField.required || false,
-      );
-    }
+    newSchema = updatePropertyRequired(
+      newSchema,
+      updatedField.name,
+      updatedField.required || false,
+    );
 
     // Update the schema
     onChange(newSchema);
   };
 
+  const handleEditPatternField = (name: string, updatedField: NewField) => {
+    const fieldSchema = createFieldSchema(updatedField);
+    let newSchema = asObjectSchema(schema);
+
+    if (name !== updatedField.name) {
+      newSchema = renameObjectPatternProperty(
+        newSchema,
+        name,
+        updatedField.name,
+      );
+      newSchema = updateObjectPatternProperty(
+        newSchema,
+        updatedField.name,
+        fieldSchema,
+      );
+    } else {
+      newSchema = updateObjectPatternProperty(newSchema, name, fieldSchema);
+    }
+
+    onChange(newSchema);
+  };
+
   // Handle deleting a top-level field
-  const handleDeleteField = (name: string, isPatternProperty = false) => {
-    onChange(
-      removeObjectProperty(asObjectSchema(schema), name, isPatternProperty),
-    );
+  const handleDeleteField = (name: string) => {
+    onChange(removeObjectProperty(asObjectSchema(schema), name));
+  };
+
+  const handleDeletePatternField = (name: string) => {
+    onChange(removeObjectPatternProperty(asObjectSchema(schema), name));
   };
 
   const hasFields =
@@ -121,7 +144,11 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
     <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
       {!readOnly && (
         <div className="mb-6 shrink-0">
-          <AddFieldButton onAddField={handleAddField} autoFocus={autoFocus} />
+          <AddFieldButton
+            onAddField={handleAddField}
+            onAddPatternField={handleAddPatternField}
+            autoFocus={autoFocus}
+          />
         </div>
       )}
 
@@ -137,9 +164,10 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
             readOnly={readOnly}
             onAddEnum={onAddEnum}
             onDeleteEnum={onDeleteEnum}
-            onAddField={handleAddField}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
+            onEditPatternField={handleEditPatternField}
+            onDeletePatternField={handleDeletePatternField}
             autoFocus={autoFocus}
           />
         )}

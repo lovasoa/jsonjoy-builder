@@ -7,10 +7,8 @@ export const pl: Translation = {
   fieldDescriptionPlaceholder: "Opisz przeznaczenie tego pola",
   fieldDelete: "Usuń pole",
   fieldDescription: "Opis",
-  fieldDescriptionTooltip: "Dodaj kontekst o tym, co reprezentuje to pole",
   fieldNameLabel: "Nazwa pola",
   fieldNamePlaceholder: "np. firstName, age, isActive",
-  fieldNameTooltip: "Używaj camelCase dla lepszej czytelności (np. firstName)",
   fieldNameUseRegex: "Użyj wyrażenia regularnego",
   fieldNameUseExactName: "Użyj dokładnej nazwy",
   fieldNameRegexLabel: "Wyrażenie regularne dla nazw właściwości",
@@ -21,11 +19,6 @@ export const pl: Translation = {
   fieldRequiredLabel: "Pole wymagane",
   fieldType: "Typ pola",
   fieldTypeExample: "Przykład:",
-  fieldTypeTooltipString: "string: Tekst",
-  fieldTypeTooltipNumber: "number: Liczba",
-  fieldTypeTooltipBoolean: "boolean: Prawda/fałsz",
-  fieldTypeTooltipObject: "object: Zagnieżdżony JSON",
-  fieldTypeTooltipArray: "array: Listy wartości",
   fieldAddNewButton: "Dodaj pole",
   fieldAddNewBadge: "Kreator schematów",
   fieldAddNewCancel: "Anuluj",
@@ -106,8 +99,6 @@ export const pl: Translation = {
 
   additionalPropertiesAllow: "Zezwalaj na dodatkowe właściwości",
   additionalPropertiesForbid: "Zabroń dodatkowych właściwości",
-  additionalPropertiesTooltip:
-    "Kontroluje czy właściwości niezdefiniowane w 'properties' lub 'patternProperties' są dozwolone",
 
   stringNoConstraint: "Bez ograniczeń",
   stringMinimumLengthLabel: "Minimalna długość",

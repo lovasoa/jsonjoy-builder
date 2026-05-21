@@ -7,11 +7,8 @@ export const fr: Translation = {
   fieldDescriptionPlaceholder: "Décrivez le but de ce champ",
   fieldDelete: "Supprimer le champ",
   fieldDescription: "Description",
-  fieldDescriptionTooltip: "Ajoutez du contexte sur ce que ce champ représente",
   fieldNameLabel: "Nom du champ",
   fieldNamePlaceholder: "ex. prenom, age, estActif",
-  fieldNameTooltip:
-    "Utilisez camelCase pour une meilleure lisibilité (ex. prenom)",
   fieldNameUseRegex: "Utiliser une expression régulière",
   fieldNameUseExactName: "Utiliser un nom exact",
   fieldNameRegexLabel: "Expression régulière pour les noms de propriétés",
@@ -22,11 +19,6 @@ export const fr: Translation = {
   fieldRequiredLabel: "Champ obligatoire",
   fieldType: "Type de champ",
   fieldTypeExample: "Exemple:",
-  fieldTypeTooltipString: "string: Texte",
-  fieldTypeTooltipNumber: "number: Numérique",
-  fieldTypeTooltipBoolean: "boolean: Vrai/faux",
-  fieldTypeTooltipObject: "object: JSON imbriqué",
-  fieldTypeTooltipArray: "array: Listes de valeurs",
   fieldAddNewButton: "Ajouter un champ",
   fieldAddNewBadge: "Constructeur de schéma",
   fieldAddNewCancel: "Annuler",
@@ -108,8 +100,6 @@ export const fr: Translation = {
 
   additionalPropertiesAllow: "Autoriser les propriétés additionnelles",
   additionalPropertiesForbid: "Interdire les propriétés additionnelles",
-  additionalPropertiesTooltip:
-    "Contrôle si les propriétés non définies dans 'properties' ou 'patternProperties' sont autorisées",
 
   stringNoConstraint: "Pas de constrainte",
   stringMinimumLengthLabel: "Longueur minimale",

@@ -7,11 +7,8 @@ export const uk: Translation = {
   fieldDescriptionPlaceholder: "Опишіть призначення цього поля",
   fieldDelete: "Видалити поле",
   fieldDescription: "Опис",
-  fieldDescriptionTooltip: "Додайте контекст про те, що представляє це поле",
   fieldNameLabel: "Назва поля",
   fieldNamePlaceholder: "наприклад, firstName, age, isActive",
-  fieldNameTooltip:
-    "Використовуйте camelCase для кращої читабельності (наприклад, firstName)",
   fieldNameUseRegex: "Використати регулярний вираз",
   fieldNameUseExactName: "Використати точну назву",
   fieldNameRegexLabel: "Регулярний вираз для назв властивостей",
@@ -22,11 +19,6 @@ export const uk: Translation = {
   fieldRequiredLabel: "Обов'язкове поле",
   fieldType: "Тип поля",
   fieldTypeExample: "Приклад:",
-  fieldTypeTooltipString: "string: Текст",
-  fieldTypeTooltipNumber: "number: Число",
-  fieldTypeTooltipBoolean: "boolean: true/false",
-  fieldTypeTooltipObject: "object: Вкладений JSON",
-  fieldTypeTooltipArray: "array: Списки значень",
   fieldAddNewButton: "Додати поле",
   fieldAddNewBadge: "Конструктор схем",
   fieldAddNewCancel: "Скасувати",
@@ -106,8 +98,6 @@ export const uk: Translation = {
 
   additionalPropertiesAllow: "Дозволити додаткові властивості",
   additionalPropertiesForbid: "Заборонити додаткові властивості",
-  additionalPropertiesTooltip:
-    "Контролює, чи дозволені властивості, не визначені в 'properties' або 'patternProperties'",
 
   stringNoConstraint: "Без обмежень",
   stringMinimumLengthLabel: "Мінімальна довжина",

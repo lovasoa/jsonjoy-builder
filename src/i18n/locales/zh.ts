@@ -7,10 +7,8 @@ export const zh: Translation = {
   fieldDescriptionPlaceholder: "描述这个字段的用途",
   fieldDelete: "删除字段",
   fieldDescription: "描述",
-  fieldDescriptionTooltip: "添加关于这个字段代表的上下文",
   fieldNameLabel: "字段名称",
   fieldNamePlaceholder: "例如：firstName, age, isActive",
-  fieldNameTooltip: "使用驼峰命名法提高可读性（例如：firstName）",
   fieldNameUseRegex: "使用正则表达式",
   fieldNameUseExactName: "使用精确名称",
   fieldNameRegexLabel: "属性名称正则表达式",
@@ -21,11 +19,6 @@ export const zh: Translation = {
   fieldRequiredLabel: "必填字段",
   fieldType: "字段类型",
   fieldTypeExample: "示例：",
-  fieldTypeTooltipString: "string: 文本",
-  fieldTypeTooltipNumber: "number: 数字",
-  fieldTypeTooltipBoolean: "boolean: true/false",
-  fieldTypeTooltipObject: "object: 嵌套的 JSON 对象",
-  fieldTypeTooltipArray: "array: 数组",
   fieldAddNewButton: "添加字段",
   fieldAddNewBadge: "Schema 构建器",
   fieldAddNewCancel: "取消",
@@ -101,8 +94,6 @@ export const zh: Translation = {
 
   additionalPropertiesAllow: "允许附加属性",
   additionalPropertiesForbid: "禁止附加属性",
-  additionalPropertiesTooltip:
-    "控制是否允许未在 'properties' 或 'patternProperties' 中定义的属性",
 
   stringNoConstraint: "无约束",
   stringMinimumLengthLabel: "最小长度",

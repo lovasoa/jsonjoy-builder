@@ -1,4 +1,4 @@
-import { CirclePlus, HelpCircle, Info } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { type FC, type FormEvent, useId, useState } from "react";
 import { Badge } from "../../components/ui/badge.tsx";
 import { Button } from "../../components/ui/button.tsx";
@@ -11,12 +11,6 @@ import {
   DialogTitle,
 } from "../../components/ui/dialog.tsx";
 import { Input } from "../../components/ui/input.tsx";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../../components/ui/tooltip.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
@@ -137,20 +131,6 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     >
                       {useNameRegex ? t.fieldNameRegexLabel : t.fieldNameLabel}
                     </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[90vw]">
-                          <p>
-                            {useNameRegex
-                              ? t.fieldNameRegexHelp
-                              : t.fieldNameTooltip}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
                     <button
                       type="button"
                       onClick={() => setNameRegexMode(!useNameRegex)}
@@ -194,24 +174,12 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                 </div>
 
                 <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <label
-                      htmlFor={fieldDescId}
-                      className="text-sm font-medium"
-                    >
-                      {t.fieldDescription}
-                    </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[90vw]">
-                          <p>{t.fieldDescriptionTooltip}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  <label
+                    htmlFor={fieldDescId}
+                    className="block text-sm font-medium mb-1.5"
+                  >
+                    {t.fieldDescription}
+                  </label>
                   <Input
                     id={fieldDescId}
                     value={fieldDesc}
@@ -249,51 +217,18 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     <label htmlFor={additionalPropertiesId} className="text-sm">
                       {t.additionalPropertiesAllow}
                     </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Info className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent className="max-w-[90vw]">
-                          <p>{t.additionalPropertiesTooltip}</p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
                   </div>
                 ) : null}
               </div>
 
               <div className="space-y-4 min-w-[280px]">
                 <div>
-                  <div className="flex flex-wrap items-center gap-2 mb-1.5">
-                    <label
-                      htmlFor={fieldTypeId}
-                      className="text-sm font-medium"
-                    >
-                      {t.fieldType}
-                    </label>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <HelpCircle className="h-4 w-4 text-muted-foreground shrink-0" />
-                        </TooltipTrigger>
-                        <TooltipContent
-                          side="left"
-                          className="w-72 max-w-[90vw]"
-                        >
-                          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs">
-                            <div>• {t.fieldTypeTooltipString}</div>
-                            <div>• {t.fieldTypeTooltipNumber}</div>
-                            <div>• {t.fieldTypeTooltipBoolean}</div>
-                            <div>• {t.fieldTypeTooltipObject}</div>
-                            <div className="col-span-2">
-                              • {t.fieldTypeTooltipArray}
-                            </div>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </div>
+                  <label
+                    htmlFor={fieldTypeId}
+                    className="block text-sm font-medium mb-1.5"
+                  >
+                    {t.fieldType}
+                  </label>
                   <SchemaTypeSelector
                     id={fieldTypeId}
                     value={fieldType}

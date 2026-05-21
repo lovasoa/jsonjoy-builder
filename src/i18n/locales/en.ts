@@ -7,10 +7,8 @@ export const en: Translation = {
   fieldDescriptionPlaceholder: "Describe the purpose of this field",
   fieldDelete: "Delete field",
   fieldDescription: "Description",
-  fieldDescriptionTooltip: "Add context about what this field represents",
   fieldNameLabel: "Field Name",
   fieldNamePlaceholder: "e.g. firstName, age, isActive",
-  fieldNameTooltip: "Use camelCase for better readability (e.g., firstName)",
   fieldNameUseRegex: "Use regular expression",
   fieldNameUseExactName: "Use exact name",
   fieldNameRegexLabel: "Regular expression for property names",
@@ -21,11 +19,6 @@ export const en: Translation = {
   fieldRequiredLabel: "Required Field",
   fieldType: "Field Type",
   fieldTypeExample: "Example:",
-  fieldTypeTooltipString: "string: Text",
-  fieldTypeTooltipNumber: "number: Numeric",
-  fieldTypeTooltipBoolean: "boolean: True/false",
-  fieldTypeTooltipObject: "object: Nested JSON",
-  fieldTypeTooltipArray: "array: Lists of values",
   fieldAddNewButton: "Add Field",
   fieldAddNewBadge: "Schema Builder",
   fieldAddNewCancel: "Cancel",
@@ -104,8 +97,6 @@ export const en: Translation = {
 
   additionalPropertiesAllow: "Allow additional properties",
   additionalPropertiesForbid: "Forbid additional properties",
-  additionalPropertiesTooltip:
-    "Controls whether properties not defined in 'properties' or 'patternProperties' are allowed",
 
   stringNoConstraint: "No constraint",
   stringMinimumLengthLabel: "Minimum Length",

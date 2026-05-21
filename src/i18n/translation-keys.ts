@@ -37,12 +37,6 @@ export interface Translation {
    */
   readonly fieldNameLabel: string;
   /**
-   * The translation for the key `fieldNameTooltip`. English default is:
-   *
-   * > Use camelCase for better readability (e.g., firstName)
-   */
-  readonly fieldNameTooltip: string;
-  /**
    * The translation for the key `fieldNameUseRegex`. English default is:
    *
    * > Use regular expression
@@ -91,12 +85,6 @@ export interface Translation {
    */
   readonly fieldDescription: string;
   /**
-   * The translation for the key `fieldDescriptionTooltip`. English default is:
-   *
-   * > Add context about what this field represents
-   */
-  readonly fieldDescriptionTooltip: string;
-  /**
    * The translation for the key `fieldType`. English default is:
    *
    * > Field Type
@@ -108,36 +96,6 @@ export interface Translation {
    * > Example:
    */
   readonly fieldTypeExample: string;
-  /**
-   * The translation for the key `fieldTypeTooltipString`. English default is:
-   *
-   * > string: Text
-   */
-  readonly fieldTypeTooltipString: string;
-  /**
-   * The translation for the key `fieldTypeTooltipNumber`. English default is:
-   *
-   * > number: Numeric
-   */
-  readonly fieldTypeTooltipNumber: string;
-  /**
-   * The translation for the key `fieldTypeTooltipBoolean`. English default is:
-   *
-   * > boolean: True/false
-   */
-  readonly fieldTypeTooltipBoolean: string;
-  /**
-   * The translation for the key `fieldTypeTooltipObject`. English default is:
-   *
-   * > object: Nested JSON
-   */
-  readonly fieldTypeTooltipObject: string;
-  /**
-   * The translation for the key `fieldTypeTooltipArray`. English default is:
-   *
-   * > array: Lists of values
-   */
-  readonly fieldTypeTooltipArray: string;
 
   /**
    * The translation for the key `fieldAddNewButton`. English default is:
@@ -500,12 +458,6 @@ export interface Translation {
    * > Forbid additional properties
    */
   readonly additionalPropertiesForbid: string;
-  /**
-   * The translation for the key `additionalPropertiesTooltip`. English default is:
-   *
-   * > Controls whether properties not defined in 'properties' or 'patternProperties' are allowed
-   */
-  readonly additionalPropertiesTooltip: string;
 
   /**
    * The translation for the key `stringMinimumLengthLabel`. English default is:

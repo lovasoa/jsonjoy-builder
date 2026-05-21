@@ -76,11 +76,7 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
 
     // If name changed, rename the property while preserving order
     if (name !== updatedField.name) {
-      newSchema = renameObjectProperty(
-        newSchema,
-        name,
-        updatedField.name,
-      );
+      newSchema = renameObjectProperty(newSchema, name, updatedField.name);
       // Update the field schema after rename
       newSchema = updateObjectProperty(
         newSchema,

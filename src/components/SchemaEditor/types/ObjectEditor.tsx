@@ -106,7 +106,10 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
     onChange(renameObjectProperty(normalizedSchema, oldName, newName));
   };
 
-  const handlePatternPropertyNameChange = (oldName: string, newName: string) => {
+  const handlePatternPropertyNameChange = (
+    oldName: string,
+    newName: string,
+  ) => {
     if (oldName === newName) return;
 
     const property = patternProperties.find((p) => p.name === oldName);

@@ -81,7 +81,9 @@ const SchemaPropertyRows: FC<SchemaPropertyRowsProps> = ({
         onDeleteEnum={onDeleteEnum}
         onDelete={() => onDeletePattern(property.name)}
         onNameChange={(newName) => onPatternNameChange(property.name, newName)}
-        onSchemaChange={(schema) => onPatternSchemaChange(property.name, schema)}
+        onSchemaChange={(schema) =>
+          onPatternSchemaChange(property.name, schema)
+        }
         depth={depth}
         autoFocus={autoFocus}
       />

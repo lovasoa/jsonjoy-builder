@@ -186,8 +186,8 @@ export function validateFieldName(name: string): boolean {
  */
 export function getSchemaProperties(schema: JSONSchema): Property[] {
   const required = isObjectSchema(schema) ? schema.required || [] : [];
-  return getObjectSchemaEntries(schema, "properties").map(
-    (entry) => propertyFromEntry(entry, required),
+  return getObjectSchemaEntries(schema, "properties").map((entry) =>
+    propertyFromEntry(entry, required),
   );
 }
 

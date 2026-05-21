@@ -21,7 +21,6 @@ export default defineConfig({
     },
     define: {
       ...publicVars,
-      "import.meta.env.SSR": "false",
     },
   },
   html: {

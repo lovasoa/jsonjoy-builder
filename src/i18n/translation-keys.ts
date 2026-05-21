@@ -43,6 +43,42 @@ export interface Translation {
    */
   readonly fieldNameTooltip: string;
   /**
+   * The translation for the key `fieldNameUseRegex`. English default is:
+   *
+   * > Use regular expression
+   */
+  readonly fieldNameUseRegex: string;
+  /**
+   * The translation for the key `fieldNameUseExactName`. English default is:
+   *
+   * > Use exact name
+   */
+  readonly fieldNameUseExactName: string;
+  /**
+   * The translation for the key `fieldNameRegexLabel`. English default is:
+   *
+   * > Regular expression for property names
+   */
+  readonly fieldNameRegexLabel: string;
+  /**
+   * The translation for the key `fieldNameRegexPlaceholder`. English default is:
+   *
+   * > e.g. ^S_
+   */
+  readonly fieldNameRegexPlaceholder: string;
+  /**
+   * The translation for the key `fieldNameRegexHelp`. English default is:
+   *
+   * > Allows any property whose name matches this regular expression. Matching properties must follow this field schema. Use ^ and $ to match the whole name.
+   */
+  readonly fieldNameRegexHelp: string;
+  /**
+   * The translation for the key `fieldNameRegexError`. English default is:
+   *
+   * > Enter a valid regular expression.
+   */
+  readonly fieldNameRegexError: string;
+  /**
    * The translation for the key `fieldRequiredLabel`. English default is:
    *
    * > Required Field
@@ -219,6 +255,12 @@ export interface Translation {
    * > Required
    */
   readonly propertyRequired: string;
+  /**
+   * The translation for the key `propertyNameRegexDescription`. English default is:
+   *
+   * > Allows and validates properties whose names match this regular expression.
+   */
+  readonly propertyNameRegexDescription: string;
   /**
    * The translation for the key `propertyOptional`. English default is:
    *

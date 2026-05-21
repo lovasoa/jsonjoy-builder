@@ -11,6 +11,13 @@ export const es: Translation = {
   fieldNameLabel: "Nombre del campo",
   fieldNamePlaceholder: "ej. firstName, age, isActive",
   fieldNameTooltip: "Usa camelCase para mejor legibilidad (ej., firstName)",
+  fieldNameUseRegex: "Usar expresión regular",
+  fieldNameUseExactName: "Usar nombre exacto",
+  fieldNameRegexLabel: "Expresión regular para nombres de propiedades",
+  fieldNameRegexPlaceholder: "ej. ^S_",
+  fieldNameRegexHelp:
+    "Permite cualquier propiedad cuyo nombre coincida con esta expresión regular. Las propiedades coincidentes deben cumplir este esquema de campo. Usa ^ y $ para coincidir con el nombre completo.",
+  fieldNameRegexError: "Introduce una expresión regular válida.",
   fieldRequiredLabel: "Campo obligatorio",
   fieldType: "Tipo de campo",
   fieldTypeExample: "Ejemplo:",
@@ -41,6 +48,8 @@ export const es: Translation = {
   propertyDescriptionPlaceholder: "Agregar descripción...",
   propertyDescriptionButton: "Agregar descripción...",
   propertyRequired: "Requerido",
+  propertyNameRegexDescription:
+    "Permite y valida propiedades cuyo nombre coincide con esta expresión regular.",
   propertyOptional: "Opcional",
   propertyDelete: "Eliminar campo",
 

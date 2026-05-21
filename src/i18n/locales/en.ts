@@ -11,6 +11,13 @@ export const en: Translation = {
   fieldNameLabel: "Field Name",
   fieldNamePlaceholder: "e.g. firstName, age, isActive",
   fieldNameTooltip: "Use camelCase for better readability (e.g., firstName)",
+  fieldNameUseRegex: "Use regular expression",
+  fieldNameUseExactName: "Use exact name",
+  fieldNameRegexLabel: "Regular expression for property names",
+  fieldNameRegexPlaceholder: "e.g. ^S_",
+  fieldNameRegexHelp:
+    "Allows any property whose name matches this regular expression. Matching properties must follow this field schema. Use ^ and $ to match the whole name.",
+  fieldNameRegexError: "Enter a valid regular expression.",
   fieldRequiredLabel: "Required Field",
   fieldType: "Field Type",
   fieldTypeExample: "Example:",
@@ -40,6 +47,8 @@ export const en: Translation = {
   propertyDescriptionPlaceholder: "Add description...",
   propertyDescriptionButton: "Add description...",
   propertyRequired: "Required",
+  propertyNameRegexDescription:
+    "Allows and validates properties whose names match this regular expression.",
   propertyOptional: "Optional",
   propertyDelete: "Delete field",
 

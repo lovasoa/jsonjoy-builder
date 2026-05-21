@@ -11,6 +11,13 @@ export const pl: Translation = {
   fieldNameLabel: "Nazwa pola",
   fieldNamePlaceholder: "np. firstName, age, isActive",
   fieldNameTooltip: "Używaj camelCase dla lepszej czytelności (np. firstName)",
+  fieldNameUseRegex: "Użyj wyrażenia regularnego",
+  fieldNameUseExactName: "Użyj dokładnej nazwy",
+  fieldNameRegexLabel: "Wyrażenie regularne dla nazw właściwości",
+  fieldNameRegexPlaceholder: "np. ^S_",
+  fieldNameRegexHelp:
+    "Dopuszcza każdą właściwość, której nazwa pasuje do tego wyrażenia regularnego. Pasujące właściwości muszą spełniać ten schemat pola. Użyj ^ i $, aby dopasować całą nazwę.",
+  fieldNameRegexError: "Wpisz poprawne wyrażenie regularne.",
   fieldRequiredLabel: "Pole wymagane",
   fieldType: "Typ pola",
   fieldTypeExample: "Przykład:",
@@ -40,6 +47,8 @@ export const pl: Translation = {
   propertyDescriptionPlaceholder: "Dodaj opis...",
   propertyDescriptionButton: "Dodaj opis...",
   propertyRequired: "Wymagane",
+  propertyNameRegexDescription:
+    "Dopuszcza i waliduje właściwości, których nazwa pasuje do tego wyrażenia regularnego.",
   propertyOptional: "Opcjonalne",
   propertyDelete: "Usuń pole",
 

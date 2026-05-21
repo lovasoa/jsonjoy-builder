@@ -12,6 +12,13 @@ export const uk: Translation = {
   fieldNamePlaceholder: "наприклад, firstName, age, isActive",
   fieldNameTooltip:
     "Використовуйте camelCase для кращої читабельності (наприклад, firstName)",
+  fieldNameUseRegex: "Використати регулярний вираз",
+  fieldNameUseExactName: "Використати точну назву",
+  fieldNameRegexLabel: "Регулярний вираз для назв властивостей",
+  fieldNameRegexPlaceholder: "наприклад, ^S_",
+  fieldNameRegexHelp:
+    "Дозволяє будь-яку властивість, назва якої збігається з цим регулярним виразом. Властивості, що збігаються, мають відповідати цій схемі поля. Використовуйте ^ і $, щоб перевіряти назву повністю.",
+  fieldNameRegexError: "Введіть коректний регулярний вираз.",
   fieldRequiredLabel: "Обов'язкове поле",
   fieldType: "Тип поля",
   fieldTypeExample: "Приклад:",
@@ -41,6 +48,8 @@ export const uk: Translation = {
   propertyDescriptionPlaceholder: "Додати опис...",
   propertyDescriptionButton: "Додати опис...",
   propertyRequired: "Обов'язкове",
+  propertyNameRegexDescription:
+    "Дозволяє й перевіряє властивості, назви яких збігаються з цим регулярним виразом.",
   propertyOptional: "Необов'язкове",
   propertyDelete: "Видалити поле",
 

@@ -18,11 +18,12 @@ import {
   TooltipTrigger,
 } from "../../components/ui/tooltip.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { cn } from "../../lib/utils.ts";
 import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
-  onAddField: (field: NewField) => void;
+  onAddField: (field: NewField, isPatternProperty?: boolean) => void;
   variant?: "primary" | "secondary";
   autoFocus?: boolean;
 }
@@ -37,32 +38,56 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const [fieldType, setFieldType] = useState<SchemaType>("string");
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
+  const [useNameRegex, setUseNameRegex] = useState(false);
   const [additionalProperties, setAdditionalProperties] = useState(true);
   const fieldNameId = useId();
+  const fieldNameHelpId = useId();
   const fieldDescId = useId();
   const fieldRequiredId = useId();
   const fieldTypeId = useId();
   const additionalPropertiesId = useId();
 
   const t = useTranslation();
+  const isPatternProperty = useNameRegex;
+  const regexError = (() => {
+    if (!isPatternProperty || !fieldName.trim()) return "";
+    try {
+      new RegExp(fieldName);
+      return "";
+    } catch {
+      return t.fieldNameRegexError;
+    }
+  })();
+
+  const setNameRegexMode = (enabled: boolean) => {
+    setUseNameRegex(enabled);
+    if (enabled) {
+      setFieldRequired(false);
+    }
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!fieldName.trim()) return;
+    if (regexError) return;
 
-    onAddField({
-      name: fieldName,
-      type: fieldType,
-      description: fieldDesc,
-      required: fieldRequired,
-      additionalProperties:
-        fieldType === "object" ? additionalProperties : undefined,
-    });
+    onAddField(
+      {
+        name: fieldName,
+        type: fieldType,
+        description: fieldDesc,
+        required: isPatternProperty ? false : fieldRequired,
+        additionalProperties:
+          fieldType === "object" ? additionalProperties : undefined,
+      },
+      isPatternProperty,
+    );
 
     setFieldName("");
     setFieldType("string");
     setFieldDesc("");
     setFieldRequired(false);
+    setUseNameRegex(false);
     setDialogOpen(false);
     setAdditionalProperties(true);
   };
@@ -106,7 +131,9 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                       htmlFor={fieldNameId}
                       className="text-sm font-medium"
                     >
-                      {t.fieldNameLabel}
+                      {isPatternProperty
+                        ? t.fieldNameRegexLabel
+                        : t.fieldNameLabel}
                     </label>
                     <TooltipProvider>
                       <Tooltip>
@@ -114,20 +141,54 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                           <Info className="h-4 w-4 text-muted-foreground shrink-0" />
                         </TooltipTrigger>
                         <TooltipContent className="max-w-[90vw]">
-                          <p>{t.fieldNameTooltip}</p>
+                          <p>
+                            {isPatternProperty
+                              ? t.fieldNameRegexHelp
+                              : t.fieldNameTooltip}
+                          </p>
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
+                    <button
+                      type="button"
+                      onClick={() => setNameRegexMode(!useNameRegex)}
+                      className="text-xs text-muted-foreground hover:text-foreground underline-offset-2 hover:underline"
+                    >
+                      {isPatternProperty
+                        ? t.fieldNameUseExactName
+                        : t.fieldNameUseRegex}
+                    </button>
                   </div>
                   <Input
                     id={fieldNameId}
                     value={fieldName}
                     onChange={(e) => setFieldName(e.target.value)}
-                    placeholder={t.fieldNamePlaceholder}
+                    placeholder={
+                      isPatternProperty
+                        ? t.fieldNameRegexPlaceholder
+                        : t.fieldNamePlaceholder
+                    }
+                    aria-describedby={
+                      isPatternProperty ? fieldNameHelpId : undefined
+                    }
+                    aria-invalid={regexError ? true : undefined}
                     className="font-mono text-sm w-full"
                     autoFocus={autoFocus}
                     required
                   />
+                  {isPatternProperty ? (
+                    <p
+                      id={fieldNameHelpId}
+                      className={cn(
+                        "text-xs mt-1.5",
+                        regexError
+                          ? "text-destructive"
+                          : "text-muted-foreground",
+                      )}
+                    >
+                      {regexError || t.fieldNameRegexHelp}
+                    </p>
+                  ) : null}
                 </div>
 
                 <div>
@@ -158,18 +219,20 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                   />
                 </div>
 
-                <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                  <input
-                    type="checkbox"
-                    id={fieldRequiredId}
-                    checked={fieldRequired}
-                    onChange={(e) => setFieldRequired(e.target.checked)}
-                    className="rounded border-gray-300 shrink-0"
-                  />
-                  <label htmlFor={fieldRequiredId} className="text-sm">
-                    {t.fieldRequiredLabel}
-                  </label>
-                </div>
+                {isPatternProperty ? null : (
+                  <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
+                    <input
+                      type="checkbox"
+                      id={fieldRequiredId}
+                      checked={fieldRequired}
+                      onChange={(e) => setFieldRequired(e.target.checked)}
+                      className="rounded border-gray-300 shrink-0"
+                    />
+                    <label htmlFor={fieldRequiredId} className="text-sm">
+                      {t.fieldRequiredLabel}
+                    </label>
+                  </div>
+                )}
                 {fieldType === "object" ? (
                   <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
                     <input

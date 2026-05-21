@@ -12,6 +12,13 @@ export const fr: Translation = {
   fieldNamePlaceholder: "ex. prenom, age, estActif",
   fieldNameTooltip:
     "Utilisez camelCase pour une meilleure lisibilité (ex. prenom)",
+  fieldNameUseRegex: "Utiliser une expression régulière",
+  fieldNameUseExactName: "Utiliser un nom exact",
+  fieldNameRegexLabel: "Expression régulière pour les noms de propriétés",
+  fieldNameRegexPlaceholder: "ex. ^S_",
+  fieldNameRegexHelp:
+    "Autorise toute propriété dont le nom correspond à cette expression régulière. Les propriétés correspondantes doivent respecter ce schéma de champ. Utilisez ^ et $ pour cibler le nom entier.",
+  fieldNameRegexError: "Saisissez une expression régulière valide.",
   fieldRequiredLabel: "Champ obligatoire",
   fieldType: "Type de champ",
   fieldTypeExample: "Exemple:",
@@ -42,6 +49,8 @@ export const fr: Translation = {
   propertyDescriptionPlaceholder: "Ajouter une description...",
   propertyDescriptionButton: "Ajouter une description...",
   propertyRequired: "Obligatoire",
+  propertyNameRegexDescription:
+    "Autorise et valide les propriétés dont le nom correspond à cette expression régulière.",
   propertyOptional: "Facultatif",
   propertyDelete: "Supprimer le champ",
 

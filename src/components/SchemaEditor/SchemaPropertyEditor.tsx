@@ -34,6 +34,7 @@ export interface SchemaPropertyEditorProps {
   onRequiredChange: (required: boolean) => void;
   onSchemaChange: (schema: ObjectJSONSchema) => void;
   depth?: number;
+  isPatternProperty?: boolean;
 }
 
 export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
@@ -51,6 +52,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   onRequiredChange,
   onSchemaChange,
   depth = 0,
+  isPatternProperty = false,
 }) => {
   const t = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -135,12 +137,24 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
                   type="button"
                   onClick={() => setIsEditingName(true)}
                   onKeyDown={(e) => e.key === "Enter" && setIsEditingName(true)}
-                  className="json-field-label font-medium cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate min-w-[80px] max-w-[50%]"
+                  aria-label={
+                    isPatternProperty
+                      ? `${t.fieldNameRegexLabel}: ${name}`
+                      : undefined
+                  }
+                  title={
+                    isPatternProperty
+                      ? t.propertyNameRegexDescription
+                      : undefined
+                  }
+                  className={cn(
+                    "json-field-label font-medium cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate min-w-[80px] max-w-[50%]",
+                    isPatternProperty && "font-mono",
+                  )}
                 >
                   {name}
                 </button>
               )}
-
               {/* Description */}
               {!readOnly && isEditingDesc ? (
                 <Input
@@ -215,16 +229,25 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
               />
 
               {/* Required toggle */}
-              <ButtonToggle
-                onClick={() => !readOnly && onRequiredChange(!required)}
-                className={
-                  required
-                    ? "bg-red-50 text-red-500"
-                    : "bg-secondary text-muted-foreground"
-                }
-              >
-                {required ? t.propertyRequired : t.propertyOptional}
-              </ButtonToggle>
+              {isPatternProperty ? (
+                <span
+                  className="text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap bg-secondary text-muted-foreground"
+                  title={t.propertyNameRegexDescription}
+                >
+                  /.*/
+                </span>
+              ) : (
+                <ButtonToggle
+                  onClick={() => !readOnly && onRequiredChange(!required)}
+                  className={
+                    required
+                      ? "bg-red-50 text-red-500"
+                      : "bg-secondary text-muted-foreground"
+                  }
+                >
+                  {required ? t.propertyRequired : t.propertyOptional}
+                </ButtonToggle>
+              )}
             </div>
           </div>
         </div>

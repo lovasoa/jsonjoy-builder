@@ -12,6 +12,13 @@ export const ru: Translation = {
   fieldNamePlaceholder: "например, firstName, age, isActive",
   fieldNameTooltip:
     "Используйте camelCase для лучшей читаемости (например, firstName)",
+  fieldNameUseRegex: "Использовать регулярное выражение",
+  fieldNameUseExactName: "Использовать точное имя",
+  fieldNameRegexLabel: "Регулярное выражение для имен свойств",
+  fieldNameRegexPlaceholder: "например, ^S_",
+  fieldNameRegexHelp:
+    "Разрешает любое свойство, имя которого совпадает с этим регулярным выражением. Совпавшие свойства должны соответствовать этой схеме поля. Используйте ^ и $, чтобы проверять имя целиком.",
+  fieldNameRegexError: "Введите допустимое регулярное выражение.",
   fieldRequiredLabel: "Обязательное поле",
   fieldType: "Тип поля",
   fieldTypeExample: "Пример:",
@@ -42,6 +49,8 @@ export const ru: Translation = {
   propertyDescriptionPlaceholder: "Добавить описание...",
   propertyDescriptionButton: "Добавить описание...",
   propertyRequired: "Обязательное",
+  propertyNameRegexDescription:
+    "Разрешает и проверяет свойства, имена которых совпадают с этим регулярным выражением.",
   propertyOptional: "Необязательное",
   propertyDelete: "Удалить поле",
 

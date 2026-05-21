@@ -26,6 +26,8 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   // Get object properties
   const properties = getSchemaProperties(schema);
+  const patternProperties = getSchemaProperties(schema, true);
+  const allProperties = [...properties, ...patternProperties];
 
   // Create a normalized schema object
   const normalizedSchema: ObjectJSONSchema = isBooleanSchema(schema)
@@ -35,7 +37,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   const { additionalProperties } = normalizedSchema;
 
   // Handle adding a new property
-  const handleAddProperty = (newField: NewField) => {
+  const handleAddProperty = (newField: NewField, isPatternProperty = false) => {
     // Create field schema from the new field data
     const { type, description, validation, additionalProperties } = newField;
 
@@ -51,10 +53,11 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       normalizedSchema,
       newField.name,
       fieldSchema,
+      isPatternProperty,
     );
 
     // Update required status if needed
-    if (newField.required) {
+    if (!isPatternProperty && newField.required) {
       newSchema = updatePropertyRequired(newSchema, newField.name, true);
     }
 
@@ -63,16 +66,28 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   };
 
   // Handle deleting a property
-  const handleDeleteProperty = (propertyName: string) => {
-    const newSchema = removeObjectProperty(normalizedSchema, propertyName);
+  const handleDeleteProperty = (
+    propertyName: string,
+    isPatternProperty = false,
+  ) => {
+    const newSchema = removeObjectProperty(
+      normalizedSchema,
+      propertyName,
+      isPatternProperty,
+    );
     onChange(newSchema);
   };
 
   // Handle property name change
-  const handlePropertyNameChange = (oldName: string, newName: string) => {
+  const handlePropertyNameChange = (
+    oldName: string,
+    newName: string,
+    isPatternProperty = false,
+  ) => {
     if (oldName === newName) return;
 
-    const property = properties.find((p) => p.name === oldName);
+    const schemaProperties = isPatternProperty ? patternProperties : properties;
+    const property = schemaProperties.find((p) => p.name === oldName);
     if (!property) return;
 
     const propertySchemaObj = asObjectSchema(property.schema);
@@ -82,13 +97,14 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       normalizedSchema,
       newName,
       propertySchemaObj,
+      isPatternProperty,
     );
 
-    if (property.required) {
+    if (!isPatternProperty && property.required) {
       newSchema = updatePropertyRequired(newSchema, newName, true);
     }
 
-    newSchema = removeObjectProperty(newSchema, oldName);
+    newSchema = removeObjectProperty(newSchema, oldName, isPatternProperty);
 
     onChange(newSchema);
   };
@@ -109,11 +125,13 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   const handlePropertySchemaChange = (
     propertyName: string,
     propertySchema: ObjectJSONSchema,
+    isPatternProperty = false,
   ) => {
     const newSchema = updateObjectProperty(
       normalizedSchema,
       propertyName,
       propertySchema,
+      isPatternProperty,
     );
     onChange(newSchema);
   };
@@ -132,32 +150,49 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   return (
     <div className="space-y-4">
-      {properties.length > 0 ? (
+      {allProperties.length > 0 ? (
         <div className="space-y-2">
-          {properties.map((property) => (
+          {allProperties.map((property) => (
             <SchemaPropertyEditor
               readOnly={readOnly}
-              key={property.name}
+              key={`${property.isPatternProperty ? "pattern:" : "property:"}${property.name}`}
               name={property.name}
               schemaKey={
                 schemaKey ? `${schemaKey}.${property.name}` : property.name
               }
               schema={property.schema}
               required={property.required}
-              validationNode={validationNode?.children[property.name]}
+              validationNode={
+                validationNode?.children[
+                  property.isPatternProperty
+                    ? `pattern:${property.name}`
+                    : property.name
+                ]
+              }
               onAddEnum={onAddEnum}
               onDeleteEnum={onDeleteEnum}
-              onDelete={() => handleDeleteProperty(property.name)}
+              onDelete={() =>
+                handleDeleteProperty(property.name, property.isPatternProperty)
+              }
               onNameChange={(newName) =>
-                handlePropertyNameChange(property.name, newName)
+                handlePropertyNameChange(
+                  property.name,
+                  newName,
+                  property.isPatternProperty,
+                )
               }
               onRequiredChange={(required) =>
                 handlePropertyRequiredChange(property.name, required)
               }
               onSchemaChange={(schema) =>
-                handlePropertySchemaChange(property.name, schema)
+                handlePropertySchemaChange(
+                  property.name,
+                  schema,
+                  property.isPatternProperty,
+                )
               }
               depth={depth}
+              isPatternProperty={property.isPatternProperty}
             />
           ))}
         </div>

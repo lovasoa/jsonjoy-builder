@@ -11,6 +11,13 @@ export const zh: Translation = {
   fieldNameLabel: "字段名称",
   fieldNamePlaceholder: "例如：firstName, age, isActive",
   fieldNameTooltip: "使用驼峰命名法提高可读性（例如：firstName）",
+  fieldNameUseRegex: "使用正则表达式",
+  fieldNameUseExactName: "使用精确名称",
+  fieldNameRegexLabel: "属性名称正则表达式",
+  fieldNameRegexPlaceholder: "例如：^S_",
+  fieldNameRegexHelp:
+    "允许名称匹配此正则表达式的任何属性。匹配的属性必须符合此字段 schema。使用 ^ 和 $ 匹配完整名称。",
+  fieldNameRegexError: "请输入有效的正则表达式。",
   fieldRequiredLabel: "必填字段",
   fieldType: "字段类型",
   fieldTypeExample: "示例：",
@@ -40,6 +47,7 @@ export const zh: Translation = {
   propertyDescriptionPlaceholder: "添加描述...",
   propertyDescriptionButton: "添加描述...",
   propertyRequired: "必填",
+  propertyNameRegexDescription: "允许并验证名称匹配此正则表达式的属性。",
   propertyOptional: "可选",
   propertyDelete: "删除字段",
 

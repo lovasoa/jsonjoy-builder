@@ -12,6 +12,13 @@ export const de: Translation = {
   fieldNamePlaceholder: "z.B. firstName, age, isActive",
   fieldNameTooltip:
     "CamelCase für bessere Lesbarkeit verwenden (z.B. firstName)",
+  fieldNameUseRegex: "Regulären Ausdruck verwenden",
+  fieldNameUseExactName: "Exakten Namen verwenden",
+  fieldNameRegexLabel: "Regulärer Ausdruck für Eigenschaftsnamen",
+  fieldNameRegexPlaceholder: "z.B. ^S_",
+  fieldNameRegexHelp:
+    "Erlaubt jede Eigenschaft, deren Name auf diesen regulären Ausdruck passt. Passende Eigenschaften müssen diesem Feldschema entsprechen. Verwenden Sie ^ und $, um den ganzen Namen abzugleichen.",
+  fieldNameRegexError: "Geben Sie einen gültigen regulären Ausdruck ein.",
   fieldRequiredLabel: "Pflichtfeld",
   fieldType: "Feldart",
   fieldTypeExample: "Beispiel:",
@@ -41,6 +48,8 @@ export const de: Translation = {
   propertyDescriptionPlaceholder: "Beschreibung hinzufügen...",
   propertyDescriptionButton: "Beschreibung hinzufügen...",
   propertyRequired: "Erforderlich",
+  propertyNameRegexDescription:
+    "Erlaubt und validiert Eigenschaften, deren Name auf diesen regulären Ausdruck passt.",
   propertyOptional: "Optional",
   propertyDelete: "Feld löschen",
 

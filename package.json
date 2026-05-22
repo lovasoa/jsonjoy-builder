@@ -14,7 +14,7 @@
     "react"
   ],
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
   "sideEffects": false,
   "repository": {
@@ -22,16 +22,18 @@
     "url": "git+https://github.com/lovasoa/jsonjoy-builder.git"
   },
   "files": [
+    "README.md",
+    "LICENSE",
     "dist",
     "!tsconfig.tsbuildinfo",
     "!tsconfig.js"
   ],
   "main": "./dist/index.js",
   "module": "./dist/index.js",
-  "types": "./dist/jsonjoy-builder.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/jsonjoy-builder.d.ts",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "module": "./dist/index.js",
       "default": "./dist/index.js"

@@ -13,7 +13,7 @@ import {
 import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
-import type { NewField, SchemaType } from "../../types/jsonSchema.ts";
+import type { NewField, SchemaEditorType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
@@ -31,7 +31,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
 }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [fieldName, setFieldName] = useState("");
-  const [fieldType, setFieldType] = useState<SchemaType>("string");
+  const [fieldType, setFieldType] = useState<SchemaEditorType>("string");
   const [fieldDesc, setFieldDesc] = useState("");
   const [fieldRequired, setFieldRequired] = useState(false);
   const [useNameRegex, setUseNameRegex] = useState(false);
@@ -246,6 +246,9 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     {fieldType === "boolean" && "true"}
                     {fieldType === "object" && '{ "key": "value" }'}
                     {fieldType === "array" && '["item1", "item2"]'}
+                    {fieldType === "anyOf" && '{ "anyOf": [...] }'}
+                    {fieldType === "oneOf" && '{ "oneOf": [...] }'}
+                    {fieldType === "allOf" && '{ "allOf": [...] }'}
                   </code>
                 </div>
               </div>

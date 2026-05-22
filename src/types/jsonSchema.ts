@@ -126,7 +126,7 @@ export type SchemaType = (typeof simpleTypes)[number];
 
 export interface NewField {
   name: string;
-  type: SchemaType;
+  type: SchemaEditorType;
   description: string;
   required: boolean;
   validation?: ObjectJSONSchema;

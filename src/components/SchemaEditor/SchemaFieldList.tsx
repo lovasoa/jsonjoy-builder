@@ -9,13 +9,9 @@ import type {
   JSONSchema as JSONSchemaType,
   NewField,
   ObjectJSONSchema,
-  SchemaType,
+  SchemaEditorType,
 } from "../../types/jsonSchema.ts";
-import {
-  isAllOfSchema,
-  isAnyOfSchema,
-  isOneOfSchema,
-} from "../../types/jsonSchema.ts";
+import { getEditorType } from "../../types/jsonSchema.ts";
 import { buildValidationTree } from "../../types/validation.ts";
 import SchemaPropertyRows from "./SchemaPropertyRows.tsx";
 import type { EnumChangeContext } from "./TypeEditor.tsx";
@@ -50,16 +46,8 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   const patternProperties = getSchemaPatternProperties(schema);
 
   // Get schema type as a valid SchemaType
-  const getValidSchemaType = (propSchema: JSONSchemaType): SchemaType => {
+  const getValidSchemaType = (propSchema: JSONSchemaType): SchemaEditorType => {
     if (typeof propSchema === "boolean") return "object";
-
-    // combinator schemas don't have a direct type — default to object for NewField purposes
-    if (
-      isAnyOfSchema(propSchema) ||
-      isOneOfSchema(propSchema) ||
-      isAllOfSchema(propSchema)
-    )
-      return "object";
 
     // Handle array of types by picking the first one
     const type = propSchema.type;
@@ -67,7 +55,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
       return type[0] || "object";
     }
 
-    return type || "object";
+    return getEditorType(propSchema);
   };
 
   const createUpdatedField = (
@@ -119,25 +107,12 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     property: Property,
     updatedSchema: ObjectJSONSchema,
   ): NewField => {
-    // combinator schemas have no direct type field
-    if (
-      isAnyOfSchema(updatedSchema) ||
-      isOneOfSchema(updatedSchema) ||
-      isAllOfSchema(updatedSchema)
-    ) {
-      return createUpdatedField(property, {
-        type: "object",
-        description: updatedSchema.description || "",
-        validation: updatedSchema,
-      });
-    }
-
     const type = updatedSchema.type || "object";
     // Ensure we're using a single type, not an array of types
     const validType = Array.isArray(type) ? type[0] || "object" : type;
 
     return createUpdatedField(property, {
-      type: validType,
+      type: getEditorType(updatedSchema) || validType,
       description: updatedSchema.description || "",
       validation: updatedSchema,
     });

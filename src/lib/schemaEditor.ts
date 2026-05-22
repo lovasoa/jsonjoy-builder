@@ -157,6 +157,21 @@ export function updateArrayItems(
  */
 export function createFieldSchema(field: NewField): JSONSchema {
   const { type, description, validation, additionalProperties } = field;
+
+  if (type === "anyOf" || type === "oneOf" || type === "allOf") {
+    const schema = validation || {
+      [type]:
+        type === "allOf"
+          ? [{ type: "object" as const }]
+          : [{ type: "string" as const }, { type: "number" as const }],
+    };
+
+    return {
+      ...schema,
+      description: description || undefined,
+    };
+  }
+
   if (isObjectSchema(validation)) {
     return {
       type,

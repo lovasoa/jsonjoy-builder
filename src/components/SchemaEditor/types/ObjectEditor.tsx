@@ -1,5 +1,6 @@
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import {
+  createFieldSchema,
   getSchemaPatternProperties,
   getSchemaProperties,
   removeObjectPatternProperty,
@@ -40,21 +41,9 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   const { additionalProperties } = normalizedSchema;
 
-  const createPropertySchema = (newField: NewField): ObjectJSONSchema => {
-    // Create field schema from the new field data
-    const { type, description, validation, additionalProperties } = newField;
-
-    return {
-      type,
-      description: description || undefined,
-      ...(validation || {}),
-      ...(additionalProperties === false ? { additionalProperties } : {}),
-    } as ObjectJSONSchema;
-  };
-
   // Handle adding a new property
   const handleAddProperty = (newField: NewField) => {
-    const fieldSchema = createPropertySchema(newField);
+    const fieldSchema = createFieldSchema(newField);
 
     // Add the property to the schema
     let newSchema = updateObjectProperty(
@@ -77,7 +66,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
       updateObjectPatternProperty(
         normalizedSchema,
         newField.name,
-        createPropertySchema(newField),
+        createFieldSchema(newField),
       ),
     );
   };

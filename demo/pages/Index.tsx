@@ -27,6 +27,55 @@ import { en } from "../../src/i18n/locales/en.ts";
 import { TranslationContext } from "../../src/i18n/translation-context.ts";
 import type { JSONSchema } from "../../src/types/jsonSchema.ts";
 
+const tokenClasses = {
+  accent: "text-primary",
+  keyword: "text-sky-600",
+  string: "text-emerald-600",
+  function: "text-violet-600",
+  property: "text-amber-700",
+  type: "text-cyan-700",
+  muted: "text-muted-foreground",
+};
+
+const CodeWindow = ({
+  label,
+  meta,
+  prompt,
+  children,
+}: {
+  label: string;
+  meta: string;
+  prompt?: string;
+  children: React.ReactNode;
+}) => (
+  <div className="overflow-hidden rounded-lg border border-border/60 bg-background/80 shadow-xs transition-shadow hover:shadow-md">
+    <div className="flex items-center justify-between gap-3 border-b border-border/50 bg-muted/40 px-4 py-2.5">
+      <div className="flex items-center gap-2">
+        <span className="h-2.5 w-2.5 rounded-full bg-red-400/80" />
+        <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
+        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
+      </div>
+      <span className="text-xs font-medium text-muted-foreground">{meta}</span>
+    </div>
+    <div className="px-4 py-3">
+      <div className="mb-2 text-xs font-semibold text-foreground">{label}</div>
+      <div className="flex items-start gap-2 overflow-x-auto text-[0.78rem] leading-6 text-foreground">
+        {prompt && (
+          <span
+            className={`${tokenClasses.muted} shrink-0 select-none`}
+            aria-hidden="true"
+          >
+            {prompt}
+          </span>
+        )}
+        <pre className="min-w-max">
+          <code>{children}</code>
+        </pre>
+      </div>
+    </div>
+  </div>
+);
+
 const Index = () => {
   const [schema, setSchema] = useState<JSONSchema>(exampleSchema);
   const [readOnly, setReadOnly] = useState<boolean>(false);
@@ -290,6 +339,128 @@ const Index = () => {
                 without technical knowledge.
               </p>
             </div>
+
+            {/* React Library Copy */}
+            <section className="mt-12 animate-in text-left">
+              <div className="glass-panel relative overflow-hidden p-6 md:p-8 shadow-lg shadow-primary/5">
+                <div
+                  className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"
+                  aria-hidden="true"
+                />
+                <div
+                  className="absolute -right-24 -top-24 h-56 w-56 rounded-full bg-primary/10 blur-3xl"
+                  aria-hidden="true"
+                />
+                <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(320px,0.9fr)] gap-8 lg:gap-10 items-start">
+                  <div className="relative max-w-2xl">
+                    <div className="bg-primary/10 text-primary inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-5">
+                      <Package size={16} className="mr-1.5" />
+                      React JSON Schema editor library
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-5">
+                      Ship a visual JSON Schema editor inside your React app
+                    </h2>
+                    <div className="space-y-4 text-[0.95rem] leading-7 text-muted-foreground">
+                      <p>
+                        JSONJoy Builder is for products where JSON Schema
+                        matters, but editing raw schema files gets in the way.
+                        Drop it into an API console, admin dashboard, form
+                        builder, or internal tool and give users a calm visual
+                        editor for objects, arrays, enums, required fields, and
+                        validation rules.
+                      </p>
+                      <p>
+                        Developers still get real JSON Schema on the other side.
+                        The editor works with Ajv, OpenAPI, generated forms,
+                        backend validation, and schema-driven configuration
+                        screens. For richer models, it supports composed schemas
+                        like <code>anyOf</code>, <code>oneOf</code>, and{" "}
+                        <code>allOf</code>, plus flexible object keys with{" "}
+                        <code>patternProperties</code>.
+                      </p>
+                      <p>
+                        Use it as a controlled React JSON editor library. Your
+                        app owns the schema state, JSONJoy Builder handles the
+                        editing experience, and saving stays in your normal
+                        React flow.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="relative space-y-5">
+                    <CodeWindow label="Install" meta="terminal" prompt="$">
+                      <span className={tokenClasses.accent}>npm</span>{" "}
+                      <span className={tokenClasses.keyword}>install</span>{" "}
+                      <span className={tokenClasses.string}>
+                        jsonjoy-builder
+                      </span>
+                    </CodeWindow>
+
+                    <CodeWindow label="Use in React" meta="App.tsx">
+                      <span className={tokenClasses.keyword}>import</span>{" "}
+                      <span className={tokenClasses.string}>
+                        "jsonjoy-builder/styles.css"
+                      </span>
+                      ;{"\n"}
+                      <span className={tokenClasses.keyword}>import</span>{" "}
+                      {"{ "}
+                      <span className={tokenClasses.type}>
+                        JsonSchemaEditor
+                      </span>
+                      {" } "}
+                      <span className={tokenClasses.keyword}>from</span>{" "}
+                      <span className={tokenClasses.string}>
+                        "jsonjoy-builder"
+                      </span>
+                      ;{"\n"}
+                      <span className={tokenClasses.keyword}>import</span>{" "}
+                      {"{ "}
+                      <span className={tokenClasses.function}>useState</span>
+                      {" } "}
+                      <span className={tokenClasses.keyword}>from</span>{" "}
+                      <span className={tokenClasses.string}>"react"</span>
+                      {";"}
+                      {"\n\n"}
+                      <span className={tokenClasses.keyword}>export</span>{" "}
+                      <span className={tokenClasses.keyword}>function</span>{" "}
+                      <span className={tokenClasses.function}>App</span>() {"{"}
+                      {"\n  "}
+                      <span className={tokenClasses.keyword}>const</span> [
+                      <span className={tokenClasses.property}>schema</span>,{" "}
+                      <span className={tokenClasses.function}>setSchema</span>]
+                      = <span className={tokenClasses.function}>useState</span>(
+                      {"{"}
+                      {"\n    "}
+                      <span className={tokenClasses.property}>type</span>:{" "}
+                      <span className={tokenClasses.string}>"object"</span>,
+                      {"\n    "}
+                      <span className={tokenClasses.property}>properties</span>:{" "}
+                      {"{}"},{"\n  "}
+                      {"}"});{"\n\n  "}
+                      <span className={tokenClasses.keyword}>return</span> (
+                      {"\n    "}
+                      <span className={tokenClasses.type}>
+                        &lt;JsonSchemaEditor
+                      </span>
+                      {"\n      "}
+                      <span className={tokenClasses.property}>schema</span>=
+                      {"{"}
+                      <span className={tokenClasses.property}>schema</span>
+                      {"}"}
+                      {"\n      "}
+                      <span className={tokenClasses.property}>setSchema</span>=
+                      {"{"}
+                      <span className={tokenClasses.function}>setSchema</span>
+                      {"}"}
+                      {"\n    "}
+                      <span className={tokenClasses.type}>/&gt;</span>
+                      {"\n  "});{"\n"}
+                      {"}"}
+                    </CodeWindow>
+                  </div>
+                </div>
+              </div>
+            </section>
 
             {/* Tools Section */}
             <div className="mt-12 animate-in">

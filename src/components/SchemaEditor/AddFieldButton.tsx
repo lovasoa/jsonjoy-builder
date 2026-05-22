@@ -42,6 +42,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const fieldRequiredId = useId();
   const fieldTypeId = useId();
   const additionalPropertiesId = useId();
+  const formId = useId();
 
   const t = useTranslation();
   const regexError = (() => {
@@ -120,11 +121,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
             </DialogDescription>
           </DialogHeader>
 
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-6"
-            id="add-field-form"
-          >
+          <form onSubmit={handleSubmit} className="space-y-6" id={formId}>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="space-y-4 min-w-[280px]">
                 <div>
@@ -267,7 +264,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
               >
                 {t.fieldAddNewCancel}
               </Button>
-              <Button type="submit" size="sm" form="add-field-form">
+              <Button type="submit" size="sm" form={formId}>
                 {t.fieldAddNewConfirm}
               </Button>
             </DialogFooter>

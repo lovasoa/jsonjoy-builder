@@ -1,4 +1,4 @@
-import z from "zod";
+import * as z from "zod/mini";
 import type { Translation } from "../i18n/translation-keys.ts";
 import { baseSchema, type JsonSchema } from "./jsonSchema.ts";
 
@@ -23,179 +23,220 @@ function refineRangeConsistency(
 const getJsonStringType = (t: Translation) =>
   z
     .object({
-      minLength: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
-      maxLength: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
+      minLength: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
+      maxLength: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
       pattern: baseSchema.shape.pattern,
       format: baseSchema.shape.format,
       enum: baseSchema.shape.enum,
       contentMediaType: baseSchema.shape.contentMediaType, // TODO
       contentEncoding: baseSchema.shape.contentEncoding, // TODO
     })
-    // If minLength and maxLength are both set, minLength must not be greater than maxLength.
-    .refine(
-      ({ minLength, maxLength }) =>
-        refineRangeConsistency(minLength, false, maxLength, false),
-      {
-        message: t.stringValidationErrorLengthRange,
-        path: ["length"],
-      },
+    .check(
+      // If minLength and maxLength are both set, minLength must not be greater than maxLength.
+      z.refine(
+        ({
+          minLength,
+          maxLength,
+        }: {
+          minLength?: number;
+          maxLength?: number;
+        }) => refineRangeConsistency(minLength, false, maxLength, false),
+        {
+          error: t.stringValidationErrorLengthRange,
+          path: ["length"],
+        },
+      ),
     );
 
 const getJsonNumberType = (t: Translation) =>
   z
     .object({
-      multipleOf: z
-        .number()
-        .positive({ message: t.typeValidationErrorPositive })
-        .optional(),
+      multipleOf: z.optional(
+        z.number().check(z.positive({ error: t.typeValidationErrorPositive })),
+      ),
       minimum: baseSchema.shape.minimum,
       maximum: baseSchema.shape.maximum,
       exclusiveMinimum: baseSchema.shape.exclusiveMinimum,
       exclusiveMaximum: baseSchema.shape.exclusiveMaximum,
       enum: baseSchema.shape.enum,
     })
-    // If both minimum (or exclusiveMinimum) and maximum (or exclusiveMaximum) are set, minimum must not be greater than maximum.
-    .refine(
-      ({ minimum, exclusiveMinimum, maximum, exclusiveMaximum }) =>
-        refineRangeConsistency(minimum, false, maximum, false) &&
-        refineRangeConsistency(minimum, false, exclusiveMaximum, true) &&
-        refineRangeConsistency(exclusiveMinimum, true, maximum, false) &&
-        refineRangeConsistency(exclusiveMinimum, true, exclusiveMaximum, true),
-      {
-        message: t.numberValidationErrorMinMax,
-        path: ["minMax"],
-      },
-    )
-    // cannot set both exclusiveMinimum and minimum
-    .refine(
-      ({ minimum, exclusiveMinimum }) =>
-        exclusiveMinimum === undefined || minimum === undefined,
-      {
-        message: t.numberValidationErrorBothExclusiveAndInclusiveMin,
-        path: ["redundantMinimum"],
-      },
-    )
-    // cannot set both exclusiveMaximum and maximum
-    .refine(
-      ({ maximum, exclusiveMaximum }) =>
-        exclusiveMaximum === undefined || maximum === undefined,
-      {
-        message: t.numberValidationErrorBothExclusiveAndInclusiveMax,
-        path: ["redundantMaximum"],
-      },
-    )
-    // check that the enums are within min/max if they are set
-    .refine(
-      ({
-        enum: enumValues,
-        minimum,
-        maximum,
-        exclusiveMinimum,
-        exclusiveMaximum,
-      }) => {
-        if (!enumValues || enumValues.length === 0) return true;
-        return enumValues.every((val) => {
-          if (typeof val !== "number") return false;
-          if (minimum !== undefined && val < minimum) return false;
-          if (maximum !== undefined && val > maximum) return false;
-          if (exclusiveMinimum !== undefined && val <= exclusiveMinimum)
-            return false;
-          if (exclusiveMaximum !== undefined && val >= exclusiveMaximum)
-            return false;
-          return true;
-        });
-      },
-      {
-        message: t.numberValidationErrorEnumOutOfRange,
-        path: ["enum"],
-      },
+    .check(
+      // If both minimum (or exclusiveMinimum) and maximum (or exclusiveMaximum) are set, minimum must not be greater than maximum.
+      z.refine(
+        ({ minimum, exclusiveMinimum, maximum, exclusiveMaximum }) =>
+          refineRangeConsistency(minimum, false, maximum, false) &&
+          refineRangeConsistency(minimum, false, exclusiveMaximum, true) &&
+          refineRangeConsistency(exclusiveMinimum, true, maximum, false) &&
+          refineRangeConsistency(
+            exclusiveMinimum,
+            true,
+            exclusiveMaximum,
+            true,
+          ),
+        {
+          error: t.numberValidationErrorMinMax,
+          path: ["minMax"],
+        },
+      ),
+      // cannot set both exclusiveMinimum and minimum
+      z.refine(
+        ({ minimum, exclusiveMinimum }) =>
+          exclusiveMinimum === undefined || minimum === undefined,
+        {
+          error: t.numberValidationErrorBothExclusiveAndInclusiveMin,
+          path: ["redundantMinimum"],
+        },
+      ),
+      // cannot set both exclusiveMaximum and maximum
+      z.refine(
+        ({ maximum, exclusiveMaximum }) =>
+          exclusiveMaximum === undefined || maximum === undefined,
+        {
+          error: t.numberValidationErrorBothExclusiveAndInclusiveMax,
+          path: ["redundantMaximum"],
+        },
+      ),
+      // check that the enums are within min/max if they are set
+      z.refine(
+        ({
+          enum: enumValues,
+          minimum,
+          maximum,
+          exclusiveMinimum,
+          exclusiveMaximum,
+        }) => {
+          if (!enumValues || enumValues.length === 0) return true;
+          return enumValues.every((val) => {
+            if (typeof val !== "number") return false;
+            if (minimum !== undefined && val < minimum) return false;
+            if (maximum !== undefined && val > maximum) return false;
+            if (exclusiveMinimum !== undefined && val <= exclusiveMinimum)
+              return false;
+            if (exclusiveMaximum !== undefined && val >= exclusiveMaximum)
+              return false;
+            return true;
+          });
+        },
+        {
+          error: t.numberValidationErrorEnumOutOfRange,
+          path: ["enum"],
+        },
+      ),
     );
 
 const getJsonArrayType = (t: Translation) =>
   z
     .object({
-      minItems: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
-      maxItems: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
-      uniqueItems: z.boolean().optional(),
-      minContains: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
-      maxContains: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
+      minItems: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
+      maxItems: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
+      uniqueItems: z.optional(z.boolean()),
+      minContains: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
+      maxContains: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
     })
-    // If both minItems and maxItems are set, minItems must not be greater than maxItems.
-    .refine(
-      ({ minItems, maxItems }) =>
-        refineRangeConsistency(minItems, false, maxItems, false),
-      {
-        message: t.arrayValidationErrorMinMax,
-        path: ["minmax"],
-      },
-    )
-    // If both minContains and maxContains are set, minContains must not be greater than maxContains.
-    .refine(
-      ({ minContains, maxContains }) =>
-        refineRangeConsistency(minContains, false, maxContains, false),
-      {
-        message: t.arrayValidationErrorContainsMinMax,
-        path: ["minmaxContains"],
-      },
+    .check(
+      // If both minItems and maxItems are set, minItems must not be greater than maxItems.
+      z.refine(
+        ({ minItems, maxItems }) =>
+          refineRangeConsistency(minItems, false, maxItems, false),
+        {
+          error: t.arrayValidationErrorMinMax,
+          path: ["minmax"],
+        },
+      ),
+      // If both minContains and maxContains are set, minContains must not be greater than maxContains.
+      z.refine(
+        ({ minContains, maxContains }) =>
+          refineRangeConsistency(minContains, false, maxContains, false),
+        {
+          error: t.arrayValidationErrorContainsMinMax,
+          path: ["minmaxContains"],
+        },
+      ),
     );
 
 const getJsonObjectType = (t: Translation) =>
   z
     .object({
-      minProperties: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
-      maxProperties: z
-        .number()
-        .int({ message: t.typeValidationErrorIntValue })
-        .min(0, { message: t.typeValidationErrorNegativeLength })
-        .optional(),
+      minProperties: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
+      maxProperties: z.optional(
+        z
+          .number()
+          .check(
+            z.int({ error: t.typeValidationErrorIntValue }),
+            z.minimum(0, { error: t.typeValidationErrorNegativeLength }),
+          ),
+      ),
     })
-    // If both minProperties and maxProperties are set, minProperties must not be greater than maxProperties.
-    .refine(
-      ({ minProperties, maxProperties }) =>
-        refineRangeConsistency(minProperties, false, maxProperties, false),
-      {
-        message: t.objectValidationErrorMinMax,
-        path: ["minmax"],
-      },
+    .check(
+      // If both minProperties and maxProperties are set, minProperties must not be greater than maxProperties.
+      z.refine(
+        ({ minProperties, maxProperties }) =>
+          refineRangeConsistency(minProperties, false, maxProperties, false),
+        {
+          error: t.objectValidationErrorMinMax,
+          path: ["minmax"],
+        },
+      ),
     );
 
 export function getTypeValidation(type: string, t: Translation) {
-  const jsonTypesValidation: Record<string, z.ZodTypeAny> = {
+  const jsonTypesValidation: Record<string, z.ZodMiniType> = {
     string: getJsonStringType(t),
     number: getJsonNumberType(t),
     array: getJsonArrayType(t),
     object: getJsonObjectType(t),
   };
 
-  return jsonTypesValidation[type] || z.any();
+  return jsonTypesValidation[type] || z.unknown();
 }
 
 export interface TypeValidationResult {

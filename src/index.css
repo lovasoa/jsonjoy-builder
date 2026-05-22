@@ -168,6 +168,22 @@
   @apply animate-exit;
 }
 
+@utility dialog-overlay-in {
+  animation: jsonjoy-dialog-overlay-in 0.2s ease-out;
+}
+
+@utility dialog-overlay-out {
+  animation: jsonjoy-dialog-overlay-out 0.2s ease-in;
+}
+
+@utility dialog-content-in {
+  animation: jsonjoy-dialog-content-in 0.2s ease-out;
+}
+
+@utility dialog-content-out {
+  animation: jsonjoy-dialog-content-out 0.2s ease-in;
+}
+
 @utility field-button {
   @apply flex items-center gap-1.5 px-2 py-1 rounded-md text-xs font-medium bg-secondary hover:bg-secondary/80 text-secondary-foreground transition-colors;
 }
@@ -186,6 +202,46 @@
 
 @utility monaco-editor {
   @apply h-full;
+}
+
+@keyframes jsonjoy-dialog-overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes jsonjoy-dialog-overlay-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes jsonjoy-dialog-content-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes jsonjoy-dialog-content-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
 }
 
 @layer base {

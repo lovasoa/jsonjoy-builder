@@ -5,12 +5,6 @@ import {
   useRef,
   useState,
 } from "react";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "../../components/ui/tabs.tsx";
 import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
@@ -80,6 +74,7 @@ const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
   const t = useTranslation();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [mobileMode, setMobileMode] = useState<"visual" | "json">("visual");
   const [leftPanelWidth, setLeftPanelWidth] = useState(50); // percentage
   const resizeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -128,61 +123,67 @@ const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
         "jsonjoy",
       )}
     >
-      {/* For mobile screens - show as tabs */}
       <div className="block lg:hidden w-full">
-        <Tabs defaultValue="visual" className="w-full">
-          <div className="flex items-center justify-between px-4 py-3 border-b w-full">
-            <h3 className="font-medium">{t.schemaEditorTitle}</h3>
-            <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 py-3 border-b w-full">
+          <h3 className="font-medium">{t.schemaEditorTitle}</h3>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              className="p-1.5 rounded-md hover:bg-secondary transition-colors"
+              aria-label={t.schemaEditorToggleFullscreen}
+            >
+              <Maximize2 size={16} />
+            </button>
+            <div className="grid grid-cols-2 w-[200px] h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground">
               <button
                 type="button"
-                onClick={toggleFullscreen}
-                className="p-1.5 rounded-md hover:bg-secondary transition-colors"
-                aria-label={t.schemaEditorToggleFullscreen}
+                className={cn(
+                  "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all",
+                  mobileMode === "visual" &&
+                    "bg-background text-foreground shadow-xs",
+                )}
+                onClick={() => setMobileMode("visual")}
               >
-                <Maximize2 size={16} />
+                {t.schemaEditorEditModeVisual}
               </button>
-              <TabsList className="grid grid-cols-2 w-[200px]">
-                <TabsTrigger value="visual">
-                  {t.schemaEditorEditModeVisual}
-                </TabsTrigger>
-                <TabsTrigger value="json">
-                  {t.schemaEditorEditModeJson}
-                </TabsTrigger>
-              </TabsList>
+              <button
+                type="button"
+                className={cn(
+                  "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium transition-all",
+                  mobileMode === "json" &&
+                    "bg-background text-foreground shadow-xs",
+                )}
+                onClick={() => setMobileMode("json")}
+              >
+                {t.schemaEditorEditModeJson}
+              </button>
             </div>
           </div>
+        </div>
 
-          <TabsContent
-            value="visual"
-            className={cn(
-              "focus:outline-hidden w-full",
-              isFullscreen ? "h-screen" : "h-[500px]",
-            )}
-          >
+        <div
+          className={cn(
+            "focus:outline-hidden w-full",
+            isFullscreen ? "h-screen" : "h-[500px]",
+          )}
+        >
+          {mobileMode === "visual" ? (
             <SchemaFieldsEditor
               readOnly={readOnly}
               value={value}
               onChange={onChange}
               autoFocus={autoFocus}
             />
-          </TabsContent>
-
-          <TabsContent
-            value="json"
-            className={cn(
-              "focus:outline-hidden w-full",
-              isFullscreen ? "h-screen" : "h-[500px]",
-            )}
-          >
+          ) : (
             <SchemaJsonEditor
               value={value}
               onChange={onChange}
               readOnly={readOnly}
               autoFocus={autoFocus}
             />
-          </TabsContent>
-        </Tabs>
+          )}
+        </div>
       </div>
 
       {/* For large screens - show side by side */}

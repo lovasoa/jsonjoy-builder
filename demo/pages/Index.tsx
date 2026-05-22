@@ -13,13 +13,6 @@ import {
 import React, { useState } from "react";
 import { exampleSchema } from "../../demo/utils/schemaExample.ts";
 import { Button } from "../../src/components/ui/button.tsx";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../src/components/ui/select.tsx";
 import { en } from "../../src/i18n/locales/en.ts";
 import {
   InferSchemaDialog,
@@ -196,21 +189,23 @@ const Index = () => {
                   )}
                 </Button>
                 <div>
-                  <Select value={language} onValueChange={handleLanguageChange}>
-                    <SelectTrigger className="h-10 font-medium">
-                      <SelectValue placeholder="Language" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="en">English</SelectItem>
-                      <SelectItem value="de">German</SelectItem>
-                      <SelectItem value="fr">French</SelectItem>
-                      <SelectItem value="ru">Russian</SelectItem>
-                      <SelectItem value="uk">Ukrainian</SelectItem>
-                      <SelectItem value="es">Spanish</SelectItem>
-                      <SelectItem value="zh">Chinese</SelectItem>
-                      <SelectItem value="pl">Polish</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <select
+                    value={language}
+                    onChange={(event) =>
+                      handleLanguageChange(event.target.value)
+                    }
+                    className="h-10 rounded-md border border-input bg-background px-3 text-sm font-medium ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                    aria-label="Language"
+                  >
+                    <option value="en">English</option>
+                    <option value="de">German</option>
+                    <option value="fr">French</option>
+                    <option value="ru">Russian</option>
+                    <option value="uk">Ukrainian</option>
+                    <option value="es">Spanish</option>
+                    <option value="zh">Chinese</option>
+                    <option value="pl">Polish</option>
+                  </select>
                 </div>
               </div>
             </div>

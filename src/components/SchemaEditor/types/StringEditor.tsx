@@ -2,13 +2,6 @@ import { X } from "lucide-react";
 import { useId, useMemo, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../../../components/ui/select.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { cn } from "../../../lib/utils.ts";
 import type { ObjectJsonSchema } from "../../../types/jsonSchema.ts";
@@ -279,33 +272,30 @@ const StringEditor: React.FC<TypeEditorProps> = ({
           >
             {t.stringFormatLabel}
           </Label>
-          <Select
+          <select
+            id={formatId}
+            className="h-8 w-full rounded-md border border-input bg-background px-3 py-1 text-sm ring-offset-background focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            disabled={readOnly}
             value={formatValue}
-            onValueChange={(value) => {
+            onChange={(event) => {
+              const value = event.target.value;
               handleValidationChange(
                 "format",
                 value === "none" ? undefined : value,
               );
             }}
           >
-            <SelectTrigger id={formatId} className="h-8">
-              <SelectValue placeholder={t.stringFormatSelectPlaceholder} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="none">{t.stringFormatNone}</SelectItem>
-              <SelectItem value="date-time">
-                {t.stringFormatDateTime}
-              </SelectItem>
-              <SelectItem value="date">{t.stringFormatDate}</SelectItem>
-              <SelectItem value="time">{t.stringFormatTime}</SelectItem>
-              <SelectItem value="email">{t.stringFormatEmail}</SelectItem>
-              <SelectItem value="uri">{t.stringFormatUri}</SelectItem>
-              <SelectItem value="uuid">{t.stringFormatUuid}</SelectItem>
-              <SelectItem value="hostname">{t.stringFormatHostname}</SelectItem>
-              <SelectItem value="ipv4">{t.stringFormatIpv4}</SelectItem>
-              <SelectItem value="ipv6">{t.stringFormatIpv6}</SelectItem>
-            </SelectContent>
-          </Select>
+            <option value="none">{t.stringFormatNone}</option>
+            <option value="date-time">{t.stringFormatDateTime}</option>
+            <option value="date">{t.stringFormatDate}</option>
+            <option value="time">{t.stringFormatTime}</option>
+            <option value="email">{t.stringFormatEmail}</option>
+            <option value="uri">{t.stringFormatUri}</option>
+            <option value="uuid">{t.stringFormatUuid}</option>
+            <option value="hostname">{t.stringFormatHostname}</option>
+            <option value="ipv4">{t.stringFormatIpv4}</option>
+            <option value="ipv6">{t.stringFormatIpv6}</option>
+          </select>
         </div>
       )}
 

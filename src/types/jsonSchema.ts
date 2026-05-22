@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as z from "zod/mini";
 
 // Core definitions
 const simpleTypes = [
@@ -14,54 +14,56 @@ const simpleTypes = [
 // Define base schema first - Zod is the source of truth
 export const baseSchema = z.object({
   // Base schema properties
-  $id: z.string().optional(),
-  $schema: z.string().optional(),
-  $ref: z.string().optional(),
-  $anchor: z.string().optional(),
-  $dynamicRef: z.string().optional(),
-  $dynamicAnchor: z.string().optional(),
-  $vocabulary: z.record(z.string(), z.boolean()).optional(),
-  $comment: z.string().optional(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  default: z.unknown().optional(),
-  deprecated: z.boolean().optional(),
-  readOnly: z.boolean().optional(),
-  writeOnly: z.boolean().optional(),
-  examples: z.array(z.unknown()).optional(),
-  type: z.union([z.enum(simpleTypes), z.array(z.enum(simpleTypes))]).optional(),
+  $id: z.optional(z.string()),
+  $schema: z.optional(z.string()),
+  $ref: z.optional(z.string()),
+  $anchor: z.optional(z.string()),
+  $dynamicRef: z.optional(z.string()),
+  $dynamicAnchor: z.optional(z.string()),
+  $vocabulary: z.optional(z.record(z.string(), z.boolean())),
+  $comment: z.optional(z.string()),
+  title: z.optional(z.string()),
+  description: z.optional(z.string()),
+  default: z.optional(z.unknown()),
+  deprecated: z.optional(z.boolean()),
+  readOnly: z.optional(z.boolean()),
+  writeOnly: z.optional(z.boolean()),
+  examples: z.optional(z.array(z.unknown())),
+  type: z.optional(
+    z.union([z.enum(simpleTypes), z.array(z.enum(simpleTypes))]),
+  ),
 
   // String validations
-  minLength: z.number().int().min(0).optional(),
-  maxLength: z.number().int().min(0).optional(),
-  pattern: z.string().optional(),
-  format: z.string().optional(),
-  contentMediaType: z.string().optional(),
-  contentEncoding: z.string().optional(),
+  minLength: z.optional(z.number().check(z.int(), z.minimum(0))),
+  maxLength: z.optional(z.number().check(z.int(), z.minimum(0))),
+  pattern: z.optional(z.string()),
+  format: z.optional(z.string()),
+  contentMediaType: z.optional(z.string()),
+  contentEncoding: z.optional(z.string()),
 
   // Number validations
-  multipleOf: z.number().positive().optional(),
-  minimum: z.number().optional(),
-  maximum: z.number().optional(),
-  exclusiveMinimum: z.number().optional(),
-  exclusiveMaximum: z.number().optional(),
+  multipleOf: z.optional(z.number().check(z.positive())),
+  minimum: z.optional(z.number()),
+  maximum: z.optional(z.number()),
+  exclusiveMinimum: z.optional(z.number()),
+  exclusiveMaximum: z.optional(z.number()),
 
   // Array validations
-  minItems: z.number().int().min(0).optional(),
-  maxItems: z.number().int().min(0).optional(),
-  uniqueItems: z.boolean().optional(),
-  minContains: z.number().int().min(0).optional(),
-  maxContains: z.number().int().min(0).optional(),
+  minItems: z.optional(z.number().check(z.int(), z.minimum(0))),
+  maxItems: z.optional(z.number().check(z.int(), z.minimum(0))),
+  uniqueItems: z.optional(z.boolean()),
+  minContains: z.optional(z.number().check(z.int(), z.minimum(0))),
+  maxContains: z.optional(z.number().check(z.int(), z.minimum(0))),
 
   // Object validations
-  required: z.array(z.string()).optional(),
-  minProperties: z.number().int().min(0).optional(),
-  maxProperties: z.number().int().min(0).optional(),
-  dependentRequired: z.record(z.string(), z.array(z.string())).optional(),
+  required: z.optional(z.array(z.string())),
+  minProperties: z.optional(z.number().check(z.int(), z.minimum(0))),
+  maxProperties: z.optional(z.number().check(z.int(), z.minimum(0))),
+  dependentRequired: z.optional(z.record(z.string(), z.array(z.string()))),
 
   // Value validations
-  const: z.unknown().optional(),
-  enum: z.array(z.unknown()).optional(),
+  const: z.optional(z.unknown()),
+  enum: z.optional(z.array(z.unknown())),
 });
 
 // Define recursive schema type
@@ -92,29 +94,30 @@ export type JsonSchema =
     });
 
 // Define Zod schema with recursive types
-export const jsonSchemaType: z.ZodType<JsonSchema> = z.lazy(() =>
+export const jsonSchemaType: z.ZodMiniType<JsonSchema> = z.lazy(() =>
   z.union([
-    baseSchema.extend({
-      $defs: z.record(z.string(), jsonSchemaType).optional(),
-      contentSchema: jsonSchemaType.optional(),
-      items: jsonSchemaType.optional(),
-      prefixItems: z.array(jsonSchemaType).optional(),
-      contains: jsonSchemaType.optional(),
-      unevaluatedItems: jsonSchemaType.optional(),
-      properties: z.record(z.string(), jsonSchemaType).optional(),
-      patternProperties: z.record(z.string(), jsonSchemaType).optional(),
-      additionalProperties: z.union([jsonSchemaType, z.boolean()]).optional(),
-      propertyNames: jsonSchemaType.optional(),
-      dependentSchemas: z.record(z.string(), jsonSchemaType).optional(),
-      unevaluatedProperties: jsonSchemaType.optional(),
-      allOf: z.array(jsonSchemaType).optional(),
-      anyOf: z.array(jsonSchemaType).optional(),
-      oneOf: z.array(jsonSchemaType).optional(),
-      not: jsonSchemaType.optional(),
-      if: jsonSchemaType.optional(),
+    z.object({
+      ...baseSchema.shape,
+      $defs: z.optional(z.record(z.string(), jsonSchemaType)),
+      contentSchema: z.optional(jsonSchemaType),
+      items: z.optional(jsonSchemaType),
+      prefixItems: z.optional(z.array(jsonSchemaType)),
+      contains: z.optional(jsonSchemaType),
+      unevaluatedItems: z.optional(jsonSchemaType),
+      properties: z.optional(z.record(z.string(), jsonSchemaType)),
+      patternProperties: z.optional(z.record(z.string(), jsonSchemaType)),
+      additionalProperties: z.optional(z.union([jsonSchemaType, z.boolean()])),
+      propertyNames: z.optional(jsonSchemaType),
+      dependentSchemas: z.optional(z.record(z.string(), jsonSchemaType)),
+      unevaluatedProperties: z.optional(jsonSchemaType),
+      allOf: z.optional(z.array(jsonSchemaType)),
+      anyOf: z.optional(z.array(jsonSchemaType)),
+      oneOf: z.optional(z.array(jsonSchemaType)),
+      not: z.optional(jsonSchemaType),
+      if: z.optional(jsonSchemaType),
       // biome-ignore lint/suspicious/noThenProperty: This is a required property name in JSON Schema
-      then: jsonSchemaType.optional(),
-      else: jsonSchemaType.optional(),
+      then: z.optional(jsonSchemaType),
+      else: z.optional(jsonSchemaType),
     }),
     z.boolean(),
   ]),

@@ -355,34 +355,49 @@ const Index = () => {
                   <div className="relative max-w-2xl">
                     <div className="bg-primary/10 text-primary inline-flex items-center px-3 py-1 rounded-full text-sm font-medium mb-5">
                       <Package size={16} className="mr-1.5" />
-                      React JSON Schema editor library
+                      react typescript library
                     </div>
                     <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-5">
-                      Ship a visual JSON Schema editor inside your React app
+                      JSON Schema Editor Component for React
                     </h2>
                     <div className="space-y-4 text-[0.95rem] leading-7 text-muted-foreground">
                       <p>
-                        JSONJoy Builder is for products where JSON Schema
-                        matters, but editing raw schema files gets in the way.
-                        Drop it into an API console, admin dashboard, form
-                        builder, or internal tool and give users a calm visual
-                        editor for objects, arrays, enums, required fields, and
-                        validation rules.
+                        JSONJoy Builder is a React library for products where
+                        users need to create or maintain JSON Schema without
+                        editing raw schema files. Drop it into an API console,
+                        admin dashboard, form builder, or internal tool.
                       </p>
                       <p>
-                        Developers still get real JSON Schema on the other side.
-                        The editor works with Ajv, OpenAPI, generated forms,
-                        backend validation, and schema-driven configuration
-                        screens. For richer models, it supports composed schemas
-                        like <code>anyOf</code>, <code>oneOf</code>, and{" "}
-                        <code>allOf</code>, plus flexible object keys with{" "}
-                        <code>patternProperties</code>.
+                        The editor handles objects, arrays, enums, required
+                        fields, validation rules,{" "}
+                        <code>patternProperties</code>, and composed schemas
+                        with <code>anyOf</code>,{" "}
+                        <code>oneOf</code>, and <code>allOf</code>. Your app
+                        still gets standard JSON Schema for Ajv, OpenAPI, form
+                        generators, and backend validation.
                       </p>
                       <p>
-                        Use it as a controlled React JSON editor library. Your
-                        app owns the schema state, JSONJoy Builder handles the
-                        editing experience, and saving stays in your normal
-                        React flow.
+                        Install it from{" "}
+                        <a
+                          href="https://www.npmjs.com/package/jsonjoy-builder"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary"
+                        >
+                          npm
+                        </a>
+                        , browse the source on{" "}
+                        <a
+                          href="https://github.com/lovasoa/jsonjoy-builder"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-foreground underline decoration-border underline-offset-4 transition-colors hover:text-primary hover:decoration-primary"
+                        >
+                          GitHub
+                        </a>
+                        , and use it as a controlled React JSON Schema editor:
+                        pass in a schema, handle changes, and save through your
+                        normal React flow.
                       </p>
                     </div>
                   </div>

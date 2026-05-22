@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
-import type { JSONSchema, ObjectJSONSchema } from "../../types/jsonSchema.ts";
+import type { JsonSchema, ObjectJsonSchema } from "../../types/jsonSchema.ts";
 import { getEditorType } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 
@@ -19,10 +19,10 @@ export interface EnumChangeContext {
 }
 
 export interface TypeEditorProps {
-  schema: JSONSchema;
+  schema: JsonSchema;
   readOnly: boolean;
   validationNode: ValidationTreeNode | undefined;
-  onChange: (schema: ObjectJSONSchema) => void;
+  onChange: (schema: ObjectJsonSchema) => void;
   schemaKey?: string;
   onAddEnum?: (ctx: EnumChangeContext) => void;
   onDeleteEnum?: (ctx: EnumChangeContext) => void;

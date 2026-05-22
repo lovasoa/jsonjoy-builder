@@ -14,27 +14,27 @@ import {
   formatTranslation,
   useTranslation,
 } from "../../hooks/use-translation.ts";
-import type { JSONSchema } from "../../types/jsonSchema.ts";
+import type { JsonSchema } from "../../types/jsonSchema.ts";
 import {
   type ValidationResult,
   validateJson,
 } from "../../utils/jsonValidator.ts";
 
 /** @public */
-export interface JsonValidatorProps {
+export interface ValidateJsonDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  schema: JSONSchema;
+  schema: JsonSchema;
   autoFocus?: boolean;
 }
 
 /** @public */
-export function JsonValidator({
+export function ValidateJsonDialog({
   open,
   onOpenChange,
   schema,
   autoFocus = true,
-}: JsonValidatorProps) {
+}: ValidateJsonDialogProps) {
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
   const [validationResult, setValidationResult] =

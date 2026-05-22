@@ -1,6 +1,6 @@
 import z from "zod";
 import type { Translation } from "../i18n/translation-keys.ts";
-import { baseSchema, type JSONSchema } from "./jsonSchema.ts";
+import { baseSchema, type JsonSchema } from "./jsonSchema.ts";
 
 function refineRangeConsistency(
   min: number | undefined,
@@ -225,7 +225,7 @@ export interface ValidationTreeNode {
 }
 
 export function buildValidationTree(
-  schema: JSONSchema,
+  schema: JsonSchema,
   t: Translation,
 ): ValidationTreeNode {
   // Helper to determine a concrete type string from a schema.type which may be string | string[] | undefined
@@ -271,7 +271,7 @@ export function buildValidationTree(
     return node;
   }
 
-  // schema is an object-shaped JSONSchema
+  // schema is an object-shaped JsonSchema
   const sch = schema as Record<string, unknown>;
   const currentType = deriveType(sch);
 
@@ -284,7 +284,7 @@ export function buildValidationTree(
     const properties = sch.properties;
     if (properties && typeof properties === "object") {
       for (const [propName, propSchema] of Object.entries(
-        properties as Record<string, JSONSchema>,
+        properties as Record<string, JsonSchema>,
       )) {
         children[propName] = buildValidationTree(propSchema, t);
       }
@@ -292,7 +292,7 @@ export function buildValidationTree(
     // handle dependentSchemas, patternProperties etc. if present (shallow support)
     if (sch.patternProperties && typeof sch.patternProperties === "object") {
       for (const [patternName, patternSchema] of Object.entries(
-        sch.patternProperties as Record<string, JSONSchema>,
+        sch.patternProperties as Record<string, JsonSchema>,
       )) {
         children[`pattern:${patternName}`] = buildValidationTree(
           patternSchema,
@@ -310,11 +310,11 @@ export function buildValidationTree(
         children[`items[${idx}]`] = buildValidationTree(it, t);
       });
     } else if (items) {
-      children.items = buildValidationTree(items as JSONSchema, t);
+      children.items = buildValidationTree(items as JsonSchema, t);
     }
 
     if (Array.isArray(sch.prefixItems)) {
-      (sch.prefixItems as JSONSchema[]).forEach((it, idx) => {
+      (sch.prefixItems as JsonSchema[]).forEach((it, idx) => {
         children[`prefixItems[${idx}]`] = buildValidationTree(it, t);
       });
     }
@@ -331,7 +331,7 @@ export function buildValidationTree(
     if (Array.isArray(arr)) {
       arr.forEach((subSchema, idx) => {
         children[[comb, idx].join(":")] = buildValidationTree(
-          subSchema as JSONSchema,
+          subSchema as JsonSchema,
           t,
         );
       });
@@ -339,13 +339,13 @@ export function buildValidationTree(
   }
 
   if (sch.not) {
-    children.not = buildValidationTree(sch.not as JSONSchema, t);
+    children.not = buildValidationTree(sch.not as JsonSchema, t);
   }
 
   // $defs / definitions / dependentSchemas (shallow)
   if (sch.$defs && typeof sch.$defs === "object") {
     for (const [defName, defSchema] of Object.entries(
-      sch.$defs as Record<string, JSONSchema>,
+      sch.$defs as Record<string, JsonSchema>,
     )) {
       children[`$defs:${defName}`] = buildValidationTree(defSchema, t);
     }
@@ -355,7 +355,7 @@ export function buildValidationTree(
   const definitions = (sch as Record<string, unknown>).definitions;
   if (definitions && typeof definitions === "object") {
     for (const [defName, defSchema] of Object.entries(
-      definitions as Record<string, JSONSchema>,
+      definitions as Record<string, JsonSchema>,
     )) {
       children[`definitions:${defName}`] = buildValidationTree(defSchema, t);
     }

@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import type { Property } from "../../lib/schemaEditor.ts";
-import type { ObjectJSONSchema } from "../../types/jsonSchema.ts";
+import type { ObjectJsonSchema } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import SchemaPropertyEditor, {
   PatternSchemaPropertyEditor,
@@ -22,8 +22,8 @@ interface SchemaPropertyRowsProps {
   onNameChange: (oldName: string, newName: string) => void;
   onPatternNameChange: (oldName: string, newName: string) => void;
   onRequiredChange: (name: string, required: boolean) => void;
-  onSchemaChange: (name: string, schema: ObjectJSONSchema) => void;
-  onPatternSchemaChange: (name: string, schema: ObjectJSONSchema) => void;
+  onSchemaChange: (name: string, schema: ObjectJsonSchema) => void;
+  onPatternSchemaChange: (name: string, schema: ObjectJsonSchema) => void;
 }
 
 const getSchemaKey = (prefix: string | undefined, name: string) =>

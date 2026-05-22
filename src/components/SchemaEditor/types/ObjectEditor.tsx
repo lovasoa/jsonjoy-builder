@@ -11,7 +11,7 @@ import {
   updateObjectProperty,
   updatePropertyRequired,
 } from "../../../lib/schemaEditor.ts";
-import type { NewField, ObjectJSONSchema } from "../../../types/jsonSchema.ts";
+import type { NewField, ObjectJsonSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
 import { ButtonToggle } from "../../ui/button-toggle.tsx";
 import AddFieldButton from "../AddFieldButton.tsx";
@@ -35,7 +35,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   const patternProperties = getSchemaPatternProperties(schema);
 
   // Create a normalized schema object
-  const normalizedSchema: ObjectJSONSchema = isBooleanSchema(schema)
+  const normalizedSchema: ObjectJsonSchema = isBooleanSchema(schema)
     ? { type: "object", properties: {} }
     : { ...schema, type: "object", properties: schema.properties || {} };
 
@@ -122,7 +122,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   const handlePropertySchemaChange = (
     propertyName: string,
-    propertySchema: ObjectJSONSchema,
+    propertySchema: ObjectJsonSchema,
   ) => {
     const newSchema = updateObjectProperty(
       normalizedSchema,
@@ -134,7 +134,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
 
   const handlePatternPropertySchemaChange = (
     propertyName: string,
-    propertySchema: ObjectJSONSchema,
+    propertySchema: ObjectJsonSchema,
   ) => {
     const newSchema = updateObjectPatternProperty(
       normalizedSchema,

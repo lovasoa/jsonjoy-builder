@@ -4,7 +4,7 @@ import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { cn } from "../../../lib/utils.ts";
-import type { ObjectJSONSchema } from "../../../types/jsonSchema.ts";
+import type { ObjectJsonSchema } from "../../../types/jsonSchema.ts";
 import {
   isBooleanSchema,
   withObjectSchema,
@@ -65,7 +65,7 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
   // Handle validation change
   const handleValidationChange = (property: Property, value: unknown) => {
     // Create a safe base schema with necessary properties
-    const baseProperties: Partial<ObjectJSONSchema> = {
+    const baseProperties: Partial<ObjectJsonSchema> = {
       type: integer ? "integer" : "number",
     };
 
@@ -85,7 +85,7 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
     // Only add the property if the value is defined, otherwise remove it
     if (value !== undefined) {
       // Create updated object with modified property
-      const updatedProperties: Partial<ObjectJSONSchema> = {
+      const updatedProperties: Partial<ObjectJsonSchema> = {
         ...baseProperties,
       };
 
@@ -100,49 +100,49 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
         updatedProperties.multipleOf = value as number;
       else if (property === "enum") updatedProperties.enum = value as unknown[];
 
-      onChange(updatedProperties as ObjectJSONSchema);
+      onChange(updatedProperties as ObjectJsonSchema);
       return;
     }
 
     // Handle removing a property (value is undefined)
     if (property === "minimum") {
       const { minimum: _, ...rest } = baseProperties;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
     if (property === "maximum") {
       const { maximum: _, ...rest } = baseProperties;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
     if (property === "exclusiveMinimum") {
       const { exclusiveMinimum: _, ...rest } = baseProperties;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
     if (property === "exclusiveMaximum") {
       const { exclusiveMaximum: _, ...rest } = baseProperties;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
     if (property === "multipleOf") {
       const { multipleOf: _, ...rest } = baseProperties;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
     if (property === "enum") {
       const { enum: _, ...rest } = baseProperties;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
     // Fallback case - just use the base properties
-    onChange(baseProperties as ObjectJSONSchema);
+    onChange(baseProperties as ObjectJsonSchema);
   };
 
   const applyEnumValues = (values: number[]) => {

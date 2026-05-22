@@ -1,8 +1,8 @@
-# JSON Schema Builder
+# JSONJoy Builder
 
 [![image](https://github.com/user-attachments/assets/6be1cecf-e0d9-4597-ab04-7124e37e332d)](https://json.ophir.dev)
 
-A modern, React-based visual JSON Schema editor for creating and manipulating JSON Schema definitions with an intuitive interface.
+A React component library for building and editing JSON Schema with a visual UI, a JSON source editor, schema inference, and JSON validation.
 
 **Try online**: https://json.ophir.dev
 
@@ -10,243 +10,308 @@ A modern, React-based visual JSON Schema editor for creating and manipulating JS
 [![NPM Version](https://img.shields.io/npm/v/jsonjoy-builder)](https://www.npmjs.com/package/jsonjoy-builder)
 [![NPM License](https://img.shields.io/npm/l/jsonjoy-builder)](https://www.npmjs.com/package/jsonjoy-builder)
 
-## Features
-
-- **Visual Schema Editor**: Design your JSON Schema through an intuitive interface without writing raw JSON
-- **Real-time JSON Preview**: See your schema in JSON format as you build it visually
-- **Schema Inference**: Generate schemas automatically from existing JSON data
-- **JSON Validation**: Test JSON data against your schema with detailed validation feedback
-- **Combinator Types**: Full support for `anyOf`, `oneOf`, and `allOf` schema composition
-- **Additional Properties**: Control whether objects allow extra properties beyond the defined ones
-- **Responsive Design**: Fully responsive interface that works on desktop and mobile devices
-
-## Getting Started
-
-### Installing
+## Install
 
 ```bash
 npm install jsonjoy-builder
 ```
 
-Also install react if you haven't done so yet.
+JSONJoy Builder expects React, React DOM, and Monaco Editor to be available in your app:
 
-Then use like this:
-
-```jsx
-import "jsonjoy-builder/styles.css";
-import { type JSONSchema, SchemaVisualEditor } from "jsonjoy-builder";
-import { useState } from "react";
-
-export function App() {
-  const [schema, setSchema] = useState<JSONSchema>({});
-  return (
-    <div>
-      <h1>JSONJoy Builder</h1>
-      <SchemaVisualEditor schema={schema} onChange={setSchema}/>
-    </div>
-  );
-}
+```bash
+npm install react react-dom monaco-editor
 ```
 
-### Enum Change Callbacks
-
-You can subscribe to enum value changes in the visual editor via `onAddEnum` and `onDeleteEnum`.
-
-Both callbacks receive a single context object:
-
-```ts
-type EnumChangeContext = {
-  value: string | number | boolean;
-  index: number;
-  schemaKey?: string;
-};
-```
-
-- `value`: enum value that was added/removed
-- `index`: index in the enum list at the time of the change
-- `schemaKey`: path-like key of the edited field (for example: `person.firstName`, `hobbies[].name`)
-
-Example:
+Import the stylesheet once, usually in your app entry point:
 
 ```tsx
 import "jsonjoy-builder/styles.css";
-import { type JSONSchema, JsonSchemaEditor } from "jsonjoy-builder";
+```
+
+## Basic Usage
+
+Use `SchemaBuilder` when you want the full editor: visual editing on one side and editable JSON source on the other.
+
+```tsx
+import "jsonjoy-builder/styles.css";
+import { SchemaBuilder, type JsonSchema } from "jsonjoy-builder";
 import { useState } from "react";
 
 export function App() {
-  const [schema, setSchema] = useState<JSONSchema>({ type: "object" });
+  const [schema, setSchema] = useState<JsonSchema>({
+    type: "object",
+    properties: {},
+  });
 
   return (
-    <JsonSchemaEditor
-      schema={schema}
+    <SchemaBuilder
+      value={schema}
+      onChange={setSchema}
       readOnly={false}
-      setSchema={setSchema}
-      onAddEnum={({ value, index, schemaKey }) => {
-        console.log("enum:add", { value, index, schemaKey });
-      }}
-      onDeleteEnum={({ value, index, schemaKey }) => {
-        console.log("enum:delete", { value, index, schemaKey });
-      }}
     />
   );
 }
 ```
 
-### Styling
+The editor is controlled: pass the current `value`, then persist updates from `onChange`.
 
-To style the component, add custom CSS. For basic styling, there are some CSS custom properties ("variables")
-you can set:
+## Choosing a Component
 
-```css
-.jsonjoy {
-  --jsonjoy-background: #f8fafc;
-  --jsonjoy-foreground: #020817;
-  --jsonjoy-card: #fff;
-  --jsonjoy-card-foreground: #020817;
-  --jsonjoy-popover: #fff;
-  --jsonjoy-popover-foreground: #020817;
-  --jsonjoy-primary: #0080ff;
-  --jsonjoy-primary-foreground: #f8fafc;
-  --jsonjoy-secondary: #f1f5f9;
-  --jsonjoy-secondary-foreground: #0f172a;
-  --jsonjoy-muted: #f1f5f9;
-  --jsonjoy-muted-foreground: #64748b;
-  --jsonjoy-accent: #f1f5f9;
-  --jsonjoy-accent-foreground: #0f172a;
-  --jsonjoy-destructive: #ef4444;
-  --jsonjoy-destructive-foreground: #f8fafc;
-  --jsonjoy-border: #e2e8f0;
-  --jsonjoy-input: #e2e8f0;
-  --jsonjoy-ring: #020817;
-  --jsonjoy-radius: .8rem;
-  --jsonjoy-font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-}
-.jsonjoy.dark {
-  /** same, but for dark mode */
-}
+`SchemaBuilder` is the best default for application screens. It includes the visual editor, JSON source editor, fullscreen mode, and a draggable split view on desktop.
+
+```tsx
+<SchemaBuilder value={schema} onChange={setSchema} readOnly={false} />
 ```
 
-### Localization
+`SchemaFieldsEditor` renders only the visual schema builder. Use it when your app already has its own source preview, tabs, or surrounding layout.
 
-By default, the editor uses English. To localize, you need to set a language via the `TranslationContext`:
+```tsx
+import { SchemaFieldsEditor } from "jsonjoy-builder";
 
-```jsx
-import "jsonjoy-builder/styles.css";
-import { type JSONSchema, SchemaVisualEditor, TranslationContext, de } from "jsonjoy-builder";
+<SchemaFieldsEditor
+  value={schema}
+  onChange={setSchema}
+  readOnly={false}
+/>
+```
+
+`SchemaJsonEditor` renders only the Monaco JSON editor. It can be read-only or editable depending on whether you pass `readOnly`.
+
+```tsx
+import { SchemaJsonEditor } from "jsonjoy-builder";
+
+<SchemaJsonEditor value={schema} onChange={setSchema} />
+```
+
+## Working With Schema Changes
+
+Most apps only need to handle the whole-schema change callback:
+
+```tsx
+const [schema, setSchema] = useState<JsonSchema>({ type: "object" });
+
+<SchemaBuilder
+  value={schema}
+  onChange={(nextSchema) => {
+    setSchema(nextSchema);
+    saveDraft(nextSchema);
+  }}
+  readOnly={false}
+/>
+```
+
+For visual-editor-only usage, the same pattern is named `onChange`:
+
+```tsx
+<SchemaFieldsEditor
+  value={schema}
+  onChange={setSchema}
+  readOnly={false}
+/>
+```
+
+For quick setup, omit `value` and start with `defaultValue`:
+
+```tsx
+<SchemaBuilder defaultValue={{ type: "object" }} onChange={setSchema} />
+```
+
+## Schema Inference
+
+Use `InferSchemaDialog` when you want users to paste example JSON and generate a starting schema.
+
+```tsx
+import {
+  InferSchemaDialog,
+  SchemaBuilder,
+  type JsonSchema,
+} from "jsonjoy-builder";
 import { useState } from "react";
 
 export function App() {
-  const [schema, setSchema] = useState<JSONSchema>({});
+  const [schema, setSchema] = useState<JsonSchema>({ type: "object" });
+  const [inferOpen, setInferOpen] = useState(false);
+
   return (
-    <TranslationContext value={de}>
-      <SchemaVisualEditor schema={schema} onChange={setSchema}/>
-    </TranslationContext>
+    <>
+      <button type="button" onClick={() => setInferOpen(true)}>
+        Infer from JSON
+      </button>
+
+      <SchemaBuilder
+        value={schema}
+        onChange={setSchema}
+        readOnly={false}
+      />
+
+      <InferSchemaDialog
+        open={inferOpen}
+        onOpenChange={setInferOpen}
+        onInfer={setSchema}
+      />
+    </>
   );
 }
 ```
 
-Currently we have localizations for English, German, French, Russian, Ukrainian, Spanish and Chinese. You can define your own translation like this.
-If you do, consider opening a PR with the translations!
+Inference detects object properties, arrays, strings, numbers, booleans, required fields, and common string formats such as dates, emails, and URIs.
+
+## JSON Validation
+
+Use `ValidateJsonDialog` when you want users to test JSON data against the current schema.
+
+```tsx
+import { ValidateJsonDialog, type JsonSchema } from "jsonjoy-builder";
+import { useState } from "react";
+
+export function ValidateButton({ schema }: { schema: JsonSchema }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button type="button" onClick={() => setOpen(true)}>
+        Validate JSON
+      </button>
+
+      <ValidateJsonDialog
+        open={open}
+        onOpenChange={setOpen}
+        schema={schema}
+      />
+    </>
+  );
+}
+```
+
+Validation runs as the user types and reports syntax errors, schema validation errors, and line or column locations when available.
+
+## Themes and Styling
+
+JSONJoy Builder ships with default light and dark theme variables. All exported components include a `.jsonjoy` wrapper, so you can theme one editor instance or your whole app.
+
+```css
+.jsonjoy {
+  --background: hsl(210 40% 98%);
+  --foreground: hsl(222.2 84% 4.9%);
+  --card: hsl(0 0% 100%);
+  --card-foreground: hsl(222.2 84% 4.9%);
+  --popover: hsl(0 0% 100%);
+  --popover-foreground: hsl(222.2 84% 4.9%);
+  --primary: hsl(210 100% 50%);
+  --primary-foreground: hsl(210 40% 98%);
+  --secondary: hsl(210 40% 96.1%);
+  --secondary-foreground: hsl(222.2 47.4% 11.2%);
+  --muted: hsl(210 40% 96.1%);
+  --muted-foreground: hsl(215.4 16.3% 46.9%);
+  --accent: hsl(210 40% 96.1%);
+  --accent-foreground: hsl(222.2 47.4% 11.2%);
+  --destructive: hsl(0 84.2% 60.2%);
+  --destructive-foreground: hsl(210 40% 98%);
+  --border: hsl(214.3 31.8% 91.4%);
+  --input: hsl(214.3 31.8% 91.4%);
+  --ring: hsl(222.2 84% 4.9%);
+  --radius: 0.8rem;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+```
+
+For dark mode, add `dark` to the `.jsonjoy` element or to one of its ancestors:
+
+```tsx
+<div className="dark">
+  <SchemaBuilder value={schema} onChange={setSchema} readOnly={false} />
+</div>
+```
+
+Monaco automatically follows the detected light or dark JSONJoy theme.
+
+## Localization
+
+The default language is English. Pass a bundled locale directly to the component for simple localization.
+
+```tsx
+import {
+  SchemaBuilder,
+  de,
+} from "jsonjoy-builder";
+
+<SchemaBuilder value={schema} onChange={setSchema} locale={de} />
+```
+
+Bundled locales are exported for English, German, Spanish, French, Polish, Russian, Ukrainian, and Chinese.
+
+For app-wide defaults, wrap a section in `SchemaBuilderProvider`:
+
+```tsx
+import { SchemaBuilderProvider, fr } from "jsonjoy-builder";
+
+<SchemaBuilderProvider locale={fr} messages={{ schemaEditorTitle: "Schema" }}>
+  <SchemaBuilder value={schema} onChange={setSchema} />
+</SchemaBuilderProvider>
+```
+
+You can also provide your own translation object or override individual messages:
 
 ```ts
 import { type Translation } from "jsonjoy-builder";
 
-const es: Translation = {
-	// add translations here (see type Translation for the available keys and default values)
+const customTranslation: Translation = {
+  // Add every key from the Translation type.
 };
 ```
 
-See also the [English localizations file](https://github.com/lovasoa/jsonjoy-builder/blob/main/src/i18n/locales/en.ts) for the default localizations.
+Use [`src/i18n/locales/en.ts`](https://github.com/lovasoa/jsonjoy-builder/blob/main/src/i18n/locales/en.ts) as the reference for all available keys.
 
-### Development
+## Supported Schema Features
+
+The visual editor covers the common schema authoring flow:
+
+- Object fields and nested objects
+- Pattern properties for regex-matched property names
+- Required and optional fields
+- Strings, numbers, booleans, arrays, objects, and null values
+- String length, regex pattern, and format constraints
+- Number range, exclusivity, multiple-of, and enum constraints
+- Array item type, length, uniqueness, and contains constraints
+- Boolean allowed-value constraints
+- `anyOf`, `oneOf`, and `allOf` composition
+- `additionalProperties` controls
+
+You can still edit unsupported JSON Schema keywords directly in the JSON source editor.
+
+## Development
 
 ```bash
 git clone https://github.com/lovasoa/jsonjoy-builder.git
 cd jsonjoy-builder
 npm install
-```
-
-Start the development server:
-
-```bash
 npm run dev
 ```
 
-The demo application will be available at http://localhost:5173
+The demo application runs at http://localhost:5173.
 
-### Building for Production
-
-Build this library for production:
+Build the library:
 
 ```bash
 npm run build
 ```
 
-The built files will be available in the `dist` directory.
-
-## Project Architecture
-
-### Core Components
-
-- **JsonSchemaEditor**: The main component that provides tabs for switching between visual and JSON views
-- **SchemaVisualEditor**: Handles the visual representation and editing of schemas
-- **JsonSchemaVisualizer**: Provides JSON view with Monaco editor for direct schema editing
-- **SchemaInferencer**: Dialog component for generating schemas from JSON data
-- **JsonValidator**: Dialog component for validating JSON against the current schema
-
-### Key Features
-
-#### Schema Inference
-
-The `SchemaInferencer` component can automatically generate JSON Schema definitions from existing JSON data. This feature uses a recursion-based inference system to detect:
-
-- Object structures and properties
-- Array types and their item schemas
-- String formats (dates, emails, URIs)
-- Numeric types (integers vs. floats)
-- Required fields
-
-#### Combinator Schemas
-
-The editor supports composing schemas with `anyOf`, `oneOf`, and `allOf` combinators. Each combinator option can be edited independently with its own type and constraints.
-
-#### JSON Validation
-
-Validate any JSON document against your schema with:
-- Real-time feedback
-- Detailed error reporting
-- Format validation for emails, dates, and other special formats
-
-## Technology Stack
-
-- **React**: UI framework
-- **TypeScript**: Type-safe development
-- **Rsbuild** / **Rslib**: Build tool and development server
-- **ShadCN UI**: Component library
-- **Monaco Editor**: Code editor for JSON viewing/editing
-- **Ajv**: JSON Schema validation
-- **Zod**: Type-safe json parsing in ts
-- **Lucide Icons**: Icon library
-- **Node.js Test Runner**: Simple built-in testing
-
-## Development Scripts
+Common scripts:
 
 | Command | Description |
 |---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run build:dev` | Build with development settings |
-| `npm run lint` | Run linter |
-| `npm run format` | Format code |
-| `npm run check` | Lint and format check (Biome) |
-| `npm run fix` | Fix linting issues |
+| `npm run dev` | Start the demo development server |
+| `npm run build` | Build the library for production |
+| `npm run build:demo` | Build the demo app |
+| `npm run preview` | Preview the production demo build |
+| `npm run check` | Run Biome checks |
+| `npm run fix` | Fix Biome issues |
 | `npm run typecheck` | Type check with TypeScript |
-| `npm run preview` | Preview production build |
 | `npm run test` | Run tests |
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+MIT
 
 ## Author
 

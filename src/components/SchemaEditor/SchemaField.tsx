@@ -1,9 +1,9 @@
 import React, { Suspense } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type {
-  JSONSchema as JSONSchemaType,
+  JsonSchema as JsonSchemaType,
   NewField,
-  ObjectJSONSchema,
+  ObjectJsonSchema,
   SchemaType,
 } from "../../types/jsonSchema.ts";
 import {
@@ -17,7 +17,7 @@ import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 // to maintain backward compatibility during migration
 interface SchemaFieldProps {
   name: string;
-  schema: JSONSchemaType;
+  schema: JsonSchemaType;
   required?: boolean;
   readOnly: boolean;
   onDelete: () => void;
@@ -85,7 +85,7 @@ const SchemaField: React.FC<SchemaFieldProps> = (props) => {
   };
 
   // Handle schema change
-  const handleSchemaChange = (newSchema: ObjectJSONSchema) => {
+  const handleSchemaChange = (newSchema: ObjectJsonSchema) => {
     // Type will be defined in the schema
     const type = newSchema.type || "object";
 

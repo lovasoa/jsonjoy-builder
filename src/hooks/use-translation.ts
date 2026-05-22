@@ -1,9 +1,8 @@
-import { useContext } from "react";
 import { en } from "../i18n/locales/en.ts";
-import { TranslationContext } from "../i18n/translation-context.ts";
+import { useSchemaBuilderConfig } from "../i18n/schema-builder-config.tsx";
 
 export function useTranslation() {
-  const translation = useContext(TranslationContext);
+  const translation = useSchemaBuilderConfig();
   return translation ?? en;
 }
 

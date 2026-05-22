@@ -11,39 +11,72 @@ import {
   TabsList,
   TabsTrigger,
 } from "../../components/ui/tabs.tsx";
+import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
+import type { Translation } from "../../i18n/translation-keys.ts";
 import { cn } from "../../lib/utils.ts";
-import type { JSONSchema } from "../../types/jsonSchema.ts";
-import JsonSchemaVisualizer from "./JsonSchemaVisualizer.tsx";
-import SchemaVisualEditor from "./SchemaVisualEditor.tsx";
-import type { EnumChangeContext } from "./TypeEditor.tsx";
+import type { JsonSchema } from "../../types/jsonSchema.ts";
+import SchemaFieldsEditor from "./SchemaFieldsEditor.tsx";
+import SchemaJsonEditor from "./SchemaJsonEditor.tsx";
 
 /** @public */
-export interface JsonSchemaEditorProps {
-  schema?: JSONSchema;
-  readOnly: boolean;
-  setSchema?: (schema: JSONSchema) => void;
-  onAddEnum?: (ctx: EnumChangeContext) => void;
-  onDeleteEnum?: (ctx: EnumChangeContext) => void;
+export interface SchemaBuilderProps {
+  value?: JsonSchema;
+  defaultValue?: JsonSchema;
+  onChange?: (schema: JsonSchema) => void;
+  readOnly?: boolean;
+  className?: string;
+  autoFocus?: boolean;
+  locale?: Translation;
+  messages?: Partial<Translation>;
+}
+
+/** @public */
+const SchemaBuilder: FC<SchemaBuilderProps> = ({
+  value,
+  defaultValue,
+  onChange,
+  readOnly = false,
+  className,
+  autoFocus = true,
+  locale,
+  messages,
+}) => {
+  const [schema, setSchema] = useControllableSchema({
+    value,
+    defaultValue,
+    onChange,
+  });
+
+  return (
+    <SchemaBuilderProvider locale={locale} messages={messages}>
+      <SchemaBuilderContent
+        value={schema}
+        onChange={setSchema}
+        readOnly={readOnly}
+        className={className}
+        autoFocus={autoFocus}
+      />
+    </SchemaBuilderProvider>
+  );
+};
+
+interface SchemaBuilderContentProps {
+  value: JsonSchema;
+  onChange: (schema: JsonSchema) => void;
+  readOnly?: boolean;
   className?: string;
   autoFocus?: boolean;
 }
 
-/** @public */
-const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
-  schema = { type: "object" },
+const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
+  value,
+  onChange,
   readOnly = false,
-  setSchema,
-  onAddEnum,
-  onDeleteEnum,
   className,
   autoFocus = true,
 }) => {
-  // Handle schema changes and propagate to parent if needed
-  const handleSchemaChange = (newSchema: JSONSchema) => {
-    setSchema(newSchema);
-  };
-
   const t = useTranslation();
 
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -127,13 +160,11 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               isFullscreen ? "h-screen" : "h-[500px]",
             )}
           >
-            <SchemaVisualEditor
+            <SchemaFieldsEditor
               readOnly={readOnly}
-              schema={schema}
-              onChange={handleSchemaChange}
+              value={value}
+              onChange={onChange}
               autoFocus={autoFocus}
-              onAddEnum={onAddEnum}
-              onDeleteEnum={onDeleteEnum}
             />
           </TabsContent>
 
@@ -144,9 +175,10 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
               isFullscreen ? "h-screen" : "h-[500px]",
             )}
           >
-            <JsonSchemaVisualizer
-              schema={schema}
-              onChange={handleSchemaChange}
+            <SchemaJsonEditor
+              value={value}
+              onChange={onChange}
+              readOnly={readOnly}
               autoFocus={autoFocus}
             />
           </TabsContent>
@@ -177,13 +209,11 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             className="h-full min-h-0"
             style={{ width: `${leftPanelWidth}%` }}
           >
-            <SchemaVisualEditor
+            <SchemaFieldsEditor
               readOnly={readOnly}
-              schema={schema}
-              onChange={handleSchemaChange}
+              value={value}
+              onChange={onChange}
               autoFocus={autoFocus}
-              onAddEnum={onAddEnum}
-              onDeleteEnum={onDeleteEnum}
             />
           </div>
           {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}
@@ -196,9 +226,10 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
             className="h-full min-h-0"
             style={{ width: `${100 - leftPanelWidth}%` }}
           >
-            <JsonSchemaVisualizer
-              schema={schema}
-              onChange={handleSchemaChange}
+            <SchemaJsonEditor
+              value={value}
+              onChange={onChange}
+              readOnly={readOnly}
               autoFocus={autoFocus}
             />
           </div>
@@ -208,4 +239,4 @@ const JsonSchemaEditor: FC<JsonSchemaEditorProps> = ({
   );
 };
 
-export default JsonSchemaEditor;
+export default SchemaBuilder;

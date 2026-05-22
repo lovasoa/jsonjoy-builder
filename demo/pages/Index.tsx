@@ -12,9 +12,6 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { exampleSchema } from "../../demo/utils/schemaExample.ts";
-import { JsonValidator } from "../../src/components/features/JsonValidator.tsx";
-import { SchemaInferencer } from "../../src/components/features/SchemaInferencer.tsx";
-import JsonSchemaEditor from "../../src/components/SchemaEditor/JsonSchemaEditor.tsx";
 import { Button } from "../../src/components/ui/button.tsx";
 import {
   Select,
@@ -24,8 +21,13 @@ import {
   SelectValue,
 } from "../../src/components/ui/select.tsx";
 import { en } from "../../src/i18n/locales/en.ts";
-import { TranslationContext } from "../../src/i18n/translation-context.ts";
-import type { JSONSchema } from "../../src/types/jsonSchema.ts";
+import {
+  InferSchemaDialog,
+  type JsonSchema,
+  SchemaBuilder,
+  SchemaBuilderProvider,
+  ValidateJsonDialog,
+} from "../../src/index.ts";
 
 const tokenClasses = {
   accent: "text-primary",
@@ -77,7 +79,7 @@ const CodeWindow = ({
 );
 
 const Index = () => {
-  const [schema, setSchema] = useState<JSONSchema>(exampleSchema);
+  const [schema, setSchema] = useState<JsonSchema>(exampleSchema);
   const [readOnly, setReadOnly] = useState<boolean>(false);
   const [inferDialogOpen, setInferDialogOpen] = useState(false);
   const [validateDialogOpen, setValidateDialogOpen] = useState(false);
@@ -111,7 +113,7 @@ const Index = () => {
   };
 
   return (
-    <TranslationContext value={translation}>
+    <SchemaBuilderProvider locale={translation}>
       <div className="min-h-screen bg-linear-to-b from-background to-background/95 relative overflow-hidden jsonjoy">
         {/* Background accent */}
         <div
@@ -219,23 +221,23 @@ const Index = () => {
 
           {/* Schema Editor - full width on large screens */}
           <div className="max-w-4xl mx-auto lg:max-w-none">
-            <JsonSchemaEditor
-              schema={schema}
+            <SchemaBuilder
+              value={schema}
               readOnly={readOnly}
-              setSchema={setSchema}
+              onChange={setSchema}
               className="shadow-lg animate-in border-border/50 backdrop-blur-xs"
             />
           </div>
 
           {/* Schema inferencer component */}
-          <SchemaInferencer
+          <InferSchemaDialog
             open={inferDialogOpen}
             onOpenChange={setInferDialogOpen}
-            onSchemaInferred={setSchema}
+            onInfer={setSchema}
           />
 
           {/* JSON validator component */}
-          <JsonValidator
+          <ValidateJsonDialog
             open={validateDialogOpen}
             onOpenChange={setValidateDialogOpen}
             schema={schema}
@@ -369,9 +371,8 @@ const Index = () => {
                       </p>
                       <p>
                         The editor handles objects, arrays, enums, required
-                        fields, validation rules,{" "}
-                        <code>patternProperties</code>, and composed schemas
-                        with <code>anyOf</code>,{" "}
+                        fields, validation rules, <code>patternProperties</code>
+                        , and composed schemas with <code>anyOf</code>,{" "}
                         <code>oneOf</code>, and <code>allOf</code>. Your app
                         still gets standard JSON Schema for Ajv, OpenAPI, form
                         generators, and backend validation.
@@ -419,9 +420,7 @@ const Index = () => {
                       ;{"\n"}
                       <span className={tokenClasses.keyword}>import</span>{" "}
                       {"{ "}
-                      <span className={tokenClasses.type}>
-                        JsonSchemaEditor
-                      </span>
+                      <span className={tokenClasses.type}>SchemaBuilder</span>
                       {" } "}
                       <span className={tokenClasses.keyword}>from</span>{" "}
                       <span className={tokenClasses.string}>
@@ -455,15 +454,14 @@ const Index = () => {
                       <span className={tokenClasses.keyword}>return</span> (
                       {"\n    "}
                       <span className={tokenClasses.type}>
-                        &lt;JsonSchemaEditor
+                        &lt;SchemaBuilder
                       </span>
                       {"\n      "}
-                      <span className={tokenClasses.property}>schema</span>=
-                      {"{"}
+                      <span className={tokenClasses.property}>value</span>={"{"}
                       <span className={tokenClasses.property}>schema</span>
                       {"}"}
                       {"\n      "}
-                      <span className={tokenClasses.property}>setSchema</span>=
+                      <span className={tokenClasses.property}>onChange</span>=
                       {"{"}
                       <span className={tokenClasses.function}>setSchema</span>
                       {"}"}
@@ -659,7 +657,7 @@ const Index = () => {
           </div>
         </div>
       </div>
-    </TranslationContext>
+    </SchemaBuilderProvider>
   );
 };
 

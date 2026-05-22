@@ -5,8 +5,8 @@ import { useTranslation } from "../../../hooks/use-translation.ts";
 import type { Translation } from "../../../i18n/translation-keys.ts";
 import { cn } from "../../../lib/utils.ts";
 import type {
-  JSONSchema,
-  ObjectJSONSchema,
+  JsonSchema,
+  ObjectJsonSchema,
   SchemaEditorType,
   SchemaType,
 } from "../../../types/jsonSchema.ts";
@@ -61,7 +61,7 @@ function getCombinatorStrings(
   }
 }
 
-const DEFAULT_SCHEMAS: Record<SchemaEditorType, ObjectJSONSchema> = {
+const DEFAULT_SCHEMAS: Record<SchemaEditorType, ObjectJsonSchema> = {
   string: { type: "string" },
   number: { type: "number" },
   integer: { type: "integer" },
@@ -95,7 +95,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   const t = useTranslation();
   const strings = getCombinatorStrings(t, combinator);
 
-  const rawOptions: JSONSchema[] = isBooleanSchema(schema)
+  const rawOptions: JsonSchema[] = isBooleanSchema(schema)
     ? []
     : (schema[combinator] ?? []);
 
@@ -122,14 +122,14 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   }, [descFocusId, ids]);
 
   const updateOptions = useCallback(
-    (newOptions: JSONSchema[]) => {
+    (newOptions: JsonSchema[]) => {
       const base = isBooleanSchema(schema) ? {} : schema;
       const {
         [combinator]: _old,
         type: _type,
         ...rest
-      } = base as ObjectJSONSchema &
-        Record<Combinator, JSONSchema[] | undefined>;
+      } = base as ObjectJsonSchema &
+        Record<Combinator, JsonSchema[] | undefined>;
       onChange({ ...rest, [combinator]: newOptions });
     },
     [schema, onChange, combinator],
@@ -152,7 +152,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   const handleOptionTypeChange = (index: number, newType: SchemaEditorType) => {
     const newOptions = [...options];
     const prevDesc = getSchemaDescription(options[index]);
-    let next: ObjectJSONSchema = DEFAULT_SCHEMAS[newType as SchemaType] ??
+    let next: ObjectJsonSchema = DEFAULT_SCHEMAS[newType as SchemaType] ??
       DEFAULT_SCHEMAS[newType as Combinator] ?? { type: "string" };
     if (prevDesc !== "") {
       next = { ...next, description: prevDesc };
@@ -165,7 +165,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
     const opt = options[index];
     const description = value === "" ? undefined : value;
 
-    let updated: JSONSchema;
+    let updated: JsonSchema;
     if (isBooleanSchema(opt)) {
       if (opt === true) {
         updated = description !== undefined ? { description } : true;
@@ -173,7 +173,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
         updated = description !== undefined ? { description } : false;
       }
     } else {
-      const base = { ...(opt as ObjectJSONSchema) };
+      const base = { ...(opt as ObjectJsonSchema) };
       if (description !== undefined) {
         base.description = description;
       } else {
@@ -189,7 +189,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
 
   const handleOptionSchemaChange = (
     index: number,
-    updatedSchema: ObjectJSONSchema,
+    updatedSchema: ObjectJsonSchema,
   ) => {
     const newOptions = [...options];
     newOptions[index] = updatedSchema;

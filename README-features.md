@@ -51,8 +51,8 @@ The features are organized as follows:
 src/
   components/
     features/
-      SchemaInferencer.tsx    # Component for inferring schemas from JSON
-      JsonValidator.tsx       # Component for validating JSON against schema
+      InferSchemaDialog.tsx    # Component for inferring schemas from JSON
+      ValidateJsonDialog.tsx       # Component for validating JSON against schema
   lib/
     schema-inference.ts       # Core schema inference logic as a service
   pages/

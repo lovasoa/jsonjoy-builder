@@ -12,7 +12,6 @@ const simpleTypes = [
 ] as const;
 
 // Define base schema first - Zod is the source of truth
-/** @public */
 export const baseSchema = z.object({
   // Base schema properties
   $id: z.string().optional(),
@@ -67,33 +66,33 @@ export const baseSchema = z.object({
 
 // Define recursive schema type
 /** @public */
-export type JSONSchema =
+export type JsonSchema =
   | boolean
   | (z.infer<typeof baseSchema> & {
       // Recursive properties
-      $defs?: Record<string, JSONSchema>;
-      contentSchema?: JSONSchema;
-      items?: JSONSchema;
-      prefixItems?: JSONSchema[];
-      contains?: JSONSchema;
-      unevaluatedItems?: JSONSchema;
-      properties?: Record<string, JSONSchema>;
-      patternProperties?: Record<string, JSONSchema>;
-      additionalProperties?: JSONSchema | boolean;
-      propertyNames?: JSONSchema;
-      dependentSchemas?: Record<string, JSONSchema>;
-      unevaluatedProperties?: JSONSchema;
-      allOf?: JSONSchema[];
-      anyOf?: JSONSchema[];
-      oneOf?: JSONSchema[];
-      not?: JSONSchema;
-      if?: JSONSchema;
-      then?: JSONSchema;
-      else?: JSONSchema;
+      $defs?: Record<string, JsonSchema>;
+      contentSchema?: JsonSchema;
+      items?: JsonSchema;
+      prefixItems?: JsonSchema[];
+      contains?: JsonSchema;
+      unevaluatedItems?: JsonSchema;
+      properties?: Record<string, JsonSchema>;
+      patternProperties?: Record<string, JsonSchema>;
+      additionalProperties?: JsonSchema | boolean;
+      propertyNames?: JsonSchema;
+      dependentSchemas?: Record<string, JsonSchema>;
+      unevaluatedProperties?: JsonSchema;
+      allOf?: JsonSchema[];
+      anyOf?: JsonSchema[];
+      oneOf?: JsonSchema[];
+      not?: JsonSchema;
+      if?: JsonSchema;
+      then?: JsonSchema;
+      else?: JsonSchema;
     });
 
 // Define Zod schema with recursive types
-export const jsonSchemaType: z.ZodType<JSONSchema> = z.lazy(() =>
+export const jsonSchemaType: z.ZodType<JsonSchema> = z.lazy(() =>
   z.union([
     baseSchema.extend({
       $defs: z.record(z.string(), jsonSchemaType).optional(),
@@ -129,68 +128,68 @@ export interface NewField {
   type: SchemaEditorType;
   description: string;
   required: boolean;
-  validation?: ObjectJSONSchema;
+  validation?: ObjectJsonSchema;
   additionalProperties?: boolean;
 }
 
 export interface SchemaEditorState {
-  schema: JSONSchema;
+  schema: JsonSchema;
   fieldInfo: {
     type: SchemaType;
     properties: Array<{
       name: string;
       path: string[];
-      schema: JSONSchema;
+      schema: JsonSchema;
       required: boolean;
     }>;
   } | null;
   handleAddField: (newField: NewField, parentPath?: string[]) => void;
   handleEditField: (path: string[], updatedField: NewField) => void;
   handleDeleteField: (path: string[]) => void;
-  handleSchemaEdit: (schema: JSONSchema) => void;
+  handleSchemaEdit: (schema: JsonSchema) => void;
 }
 
-export type ObjectJSONSchema = Exclude<JSONSchema, boolean>;
+export type ObjectJsonSchema = Exclude<JsonSchema, boolean>;
 
 /** Virtual type used in the editor UI to represent combinator schemas */
 export type SchemaEditorType = SchemaType | "anyOf" | "oneOf" | "allOf";
 
-export function isBooleanSchema(schema: JSONSchema): schema is boolean {
+export function isBooleanSchema(schema: JsonSchema): schema is boolean {
   return typeof schema === "boolean";
 }
 
-export function isObjectSchema(schema: JSONSchema): schema is ObjectJSONSchema {
+export function isObjectSchema(schema: JsonSchema): schema is ObjectJsonSchema {
   return !isBooleanSchema(schema);
 }
 
-export function asObjectSchema(schema: JSONSchema): ObjectJSONSchema {
+export function asObjectSchema(schema: JsonSchema): ObjectJsonSchema {
   return isObjectSchema(schema) ? schema : { type: "null" };
 }
-export function getSchemaDescription(schema: JSONSchema): string {
+export function getSchemaDescription(schema: JsonSchema): string {
   return isObjectSchema(schema) ? schema.description || "" : "";
 }
 
 export function withObjectSchema<T>(
-  schema: JSONSchema,
-  fn: (schema: ObjectJSONSchema) => T,
+  schema: JsonSchema,
+  fn: (schema: ObjectJsonSchema) => T,
   defaultValue: T,
 ): T {
   return isObjectSchema(schema) ? fn(schema) : defaultValue;
 }
 
-export function isAnyOfSchema(schema: JSONSchema): boolean {
+export function isAnyOfSchema(schema: JsonSchema): boolean {
   return isObjectSchema(schema) && Array.isArray(schema.anyOf);
 }
 
-export function isOneOfSchema(schema: JSONSchema): boolean {
+export function isOneOfSchema(schema: JsonSchema): boolean {
   return isObjectSchema(schema) && Array.isArray(schema.oneOf);
 }
 
-export function isAllOfSchema(schema: JSONSchema): boolean {
+export function isAllOfSchema(schema: JsonSchema): boolean {
   return isObjectSchema(schema) && Array.isArray(schema.allOf);
 }
 
-export function getEditorType(schema: JSONSchema): SchemaEditorType {
+export function getEditorType(schema: JsonSchema): SchemaEditorType {
   if (isAnyOfSchema(schema)) return "anyOf";
   if (isOneOfSchema(schema)) return "oneOf";
   if (isAllOfSchema(schema)) return "allOf";

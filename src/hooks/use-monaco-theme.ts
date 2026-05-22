@@ -1,9 +1,8 @@
 import type * as Monaco from "monaco-editor";
 import type { languages as MonacoLanguages } from "monaco-editor";
-import * as MonacoModule from "monaco-editor";
 import { useEffect, useState } from "react";
 import draft07Schema from "../lib/json-schema-draft-07.json";
-import type { JSONSchema } from "../types/jsonSchema.ts";
+import type { JsonSchema } from "../types/jsonSchema.ts";
 
 const DRAFT_07_SCHEMA_URIS = [
   "https://json-schema.org/draft-07/schema",
@@ -172,8 +171,10 @@ export function useMonacoTheme() {
   // Helper to configure JSON language validation
   const configureJsonDefaults = (
     monaco?: typeof Monaco,
-    schema?: JSONSchema,
+    schema?: JsonSchema,
   ) => {
+    if (!monaco) return;
+
     // Create a new diagnostics options object
     const diagnosticsOptions: MonacoLanguages.json.DiagnosticsOptions = {
       validate: true,
@@ -197,13 +198,14 @@ export function useMonacoTheme() {
               $schema: DEFAULT_DRAFT_07_SCHEMA_URI,
               type: "object",
               additionalProperties: true,
-            } satisfies JSONSchema),
+            } satisfies JsonSchema),
         },
       ],
     };
 
-    const jsonDefaults = (monaco || MonacoModule).languages.json.jsonDefaults;
-    jsonDefaults.setDiagnosticsOptions(diagnosticsOptions);
+    monaco.languages.json.jsonDefaults.setDiagnosticsOptions(
+      diagnosticsOptions,
+    );
   };
 
   return {

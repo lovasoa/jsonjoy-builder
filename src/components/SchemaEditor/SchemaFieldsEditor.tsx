@@ -1,5 +1,8 @@
 import type { FC } from "react";
+import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
+import type { Translation } from "../../i18n/translation-keys.ts";
 import {
   createFieldSchema,
   removeObjectPatternProperty,
@@ -10,30 +13,68 @@ import {
   updateObjectProperty,
   updatePropertyRequired,
 } from "../../lib/schemaEditor.ts";
-import type { JSONSchema, NewField } from "../../types/jsonSchema.ts";
+import { cn } from "../../lib/utils.ts";
+import type { JsonSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
-import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 /** @public */
-export interface SchemaVisualEditorProps {
-  schema: JSONSchema;
-  readOnly: boolean;
-  onChange: (schema: JSONSchema) => void;
+export interface SchemaFieldsEditorProps {
+  value?: JsonSchema;
+  defaultValue?: JsonSchema;
+  onChange?: (schema: JsonSchema) => void;
+  readOnly?: boolean;
   autoFocus?: boolean;
-  onAddEnum?: (ctx: EnumChangeContext) => void;
-  onDeleteEnum?: (ctx: EnumChangeContext) => void;
+  className?: string;
+  locale?: Translation;
+  messages?: Partial<Translation>;
 }
 
 /** @public */
-const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
-  schema,
+const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
+  value,
+  defaultValue,
   onChange,
-  onAddEnum,
-  onDeleteEnum,
   readOnly = false,
   autoFocus = true,
+  className,
+  locale,
+  messages,
+}) => {
+  const [schema, setSchema] = useControllableSchema({
+    value,
+    defaultValue,
+    onChange,
+  });
+
+  return (
+    <SchemaBuilderProvider locale={locale} messages={messages}>
+      <SchemaFieldsEditorContent
+        schema={schema}
+        onChange={setSchema}
+        readOnly={readOnly}
+        autoFocus={autoFocus}
+        className={className}
+      />
+    </SchemaBuilderProvider>
+  );
+};
+
+interface SchemaFieldsEditorContentProps {
+  schema: JsonSchema;
+  readOnly: boolean;
+  onChange: (schema: JsonSchema) => void;
+  autoFocus?: boolean;
+  className?: string;
+}
+
+const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
+  schema,
+  onChange,
+  readOnly = false,
+  autoFocus = true,
+  className,
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
@@ -137,7 +178,12 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
         Object.keys(schema.patternProperties).length > 0));
 
   return (
-    <div className="p-4 h-full flex flex-col overflow-auto jsonjoy">
+    <div
+      className={cn(
+        "p-4 h-full flex flex-col overflow-auto jsonjoy",
+        className,
+      )}
+    >
       {!readOnly && (
         <div className="mb-6 shrink-0">
           <AddFieldButton
@@ -158,8 +204,6 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
           <SchemaFieldList
             schema={schema}
             readOnly={readOnly}
-            onAddEnum={onAddEnum}
-            onDeleteEnum={onDeleteEnum}
             onEditField={handleEditField}
             onDeleteField={handleDeleteField}
             onEditPatternField={handleEditPatternField}
@@ -172,4 +216,4 @@ const SchemaVisualEditor: FC<SchemaVisualEditorProps> = ({
   );
 };
 
-export default SchemaVisualEditor;
+export default SchemaFieldsEditor;

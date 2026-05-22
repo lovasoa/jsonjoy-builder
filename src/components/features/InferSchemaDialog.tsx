@@ -13,23 +13,23 @@ import {
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { createSchemaFromJson } from "../../lib/schema-inference.ts";
-import type { JSONSchema } from "../../types/jsonSchema.ts";
+import type { JsonSchema } from "../../types/jsonSchema.ts";
 
 /** @public */
-export interface SchemaInferencerProps {
+export interface InferSchemaDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSchemaInferred: (schema: JSONSchema) => void;
+  onInfer: (schema: JsonSchema) => void;
   autoFocus?: boolean;
 }
 
 /** @public */
-export function SchemaInferencer({
+export function InferSchemaDialog({
   open,
   onOpenChange,
-  onSchemaInferred,
+  onInfer,
   autoFocus = true,
-}: SchemaInferencerProps) {
+}: InferSchemaDialogProps) {
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +65,7 @@ export function SchemaInferencer({
       // Use the schema inference service to create a schema
       const inferredSchema = createSchemaFromJson(jsonObject);
 
-      onSchemaInferred(inferredSchema);
+      onInfer(inferredSchema);
       onOpenChange(false);
     } catch (error) {
       console.error("Invalid JSON input:", error);

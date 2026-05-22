@@ -11,7 +11,7 @@ import {
 } from "../../../components/ui/select.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { cn } from "../../../lib/utils.ts";
-import type { ObjectJSONSchema } from "../../../types/jsonSchema.ts";
+import type { ObjectJsonSchema } from "../../../types/jsonSchema.ts";
 import {
   isBooleanSchema,
   withObjectSchema,
@@ -59,7 +59,7 @@ const StringEditor: React.FC<TypeEditorProps> = ({
     const { type: _, description: __, ...validationProps } = baseSchema;
 
     // Create the updated validation schema
-    const updatedValidation: ObjectJSONSchema = {
+    const updatedValidation: ObjectJsonSchema = {
       ...validationProps,
       type: "string",
       [property]: value,
@@ -71,7 +71,7 @@ const StringEditor: React.FC<TypeEditorProps> = ({
 
   const applyEnumValues = (values: string[]) => {
     if (values.length > 0) {
-      const updatedSchema: ObjectJSONSchema = {
+      const updatedSchema: ObjectJsonSchema = {
         ...(isBooleanSchema(schema)
           ? { type: "string" as const }
           : { ...schema }),
@@ -88,11 +88,11 @@ const StringEditor: React.FC<TypeEditorProps> = ({
 
     if (!isBooleanSchema(baseSchema) && "enum" in baseSchema) {
       const { enum: _, ...rest } = baseSchema;
-      onChange(rest as ObjectJSONSchema);
+      onChange(rest as ObjectJsonSchema);
       return;
     }
 
-    onChange(baseSchema as ObjectJSONSchema);
+    onChange(baseSchema as ObjectJsonSchema);
   };
 
   // Handle adding enum value

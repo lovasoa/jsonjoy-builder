@@ -1,4 +1,4 @@
-import { asObjectSchema, type JSONSchema } from "../types/jsonSchema.ts";
+import { asObjectSchema, type JsonSchema } from "../types/jsonSchema.ts";
 
 /**
  * Merges two JSON schemas.
@@ -6,7 +6,7 @@ import { asObjectSchema, type JSONSchema } from "../types/jsonSchema.ts";
  * If schemas are identical, returns the first schema.
  * If schemas are incompatible, returns a schema with oneOf.
  */
-function mergeSchemas(schema1: JSONSchema, schema2: JSONSchema): JSONSchema {
+function mergeSchemas(schema1: JsonSchema, schema2: JsonSchema): JsonSchema {
   const s1 = asObjectSchema(schema1);
   const s2 = asObjectSchema(schema2);
 
@@ -45,8 +45,8 @@ function mergeSchemas(schema1: JSONSchema, schema2: JSONSchema): JSONSchema {
 
 // --- Helper Functions for Type Inference ---
 
-function inferObjectSchema(obj: Record<string, unknown>): JSONSchema {
-  const properties: Record<string, JSONSchema> = {};
+function inferObjectSchema(obj: Record<string, unknown>): JsonSchema {
+  const properties: Record<string, JsonSchema> = {};
   const required: string[] = [];
 
   for (const [key, value] of Object.entries(obj)) {
@@ -64,10 +64,10 @@ function inferObjectSchema(obj: Record<string, unknown>): JSONSchema {
 }
 
 function detectEnumsInArrayItems(
-  mergedProperties: Record<string, JSONSchema>,
+  mergedProperties: Record<string, JsonSchema>,
   originalArray: Record<string, unknown>[],
   totalItems: number,
-): Record<string, JSONSchema> {
+): Record<string, JsonSchema> {
   if (totalItems < 10 || Object.keys(mergedProperties).length === 0) {
     return mergedProperties; // Not enough data or no properties to check
   }
@@ -113,9 +113,9 @@ function detectEnumsInArrayItems(
 }
 
 function detectSemanticFormatsInArrayItems(
-  mergedProperties: Record<string, JSONSchema>,
+  mergedProperties: Record<string, JsonSchema>,
   originalArray: Record<string, unknown>[],
-): Record<string, JSONSchema> {
+): Record<string, JsonSchema> {
   const updatedProperties = { ...mergedProperties };
 
   for (const key in updatedProperties) {
@@ -196,10 +196,10 @@ function detectSemanticFormatsInArrayItems(
 }
 
 function processArrayOfObjects(
-  itemSchemas: JSONSchema[],
+  itemSchemas: JsonSchema[],
   originalArray: Record<string, unknown>[],
-): JSONSchema {
-  let mergedProperties: Record<string, JSONSchema> = {};
+): JsonSchema {
+  let mergedProperties: Record<string, JsonSchema> = {};
   const propertyCounts: Record<string, number> = {};
   const totalItems = itemSchemas.length;
 
@@ -240,7 +240,7 @@ function processArrayOfObjects(
   };
 }
 
-function inferArraySchema(obj: unknown[]): JSONSchema {
+function inferArraySchema(obj: unknown[]): JsonSchema {
   if (obj.length === 0) return { type: "array", items: {} };
 
   const itemSchemas = obj.map((item) => inferSchema(item)); // Recursive call
@@ -294,7 +294,7 @@ function inferArraySchema(obj: unknown[]): JSONSchema {
   };
 }
 
-function inferStringSchema(str: string): JSONSchema {
+function inferStringSchema(str: string): JsonSchema {
   const formats: Record<string, RegExp> = {
     date: /^\d{4}-\d{2}-\d{2}$/,
     "date-time":
@@ -313,7 +313,7 @@ function inferStringSchema(str: string): JSONSchema {
   return { type: "string" };
 }
 
-function inferNumberSchema(num: number): JSONSchema {
+function inferNumberSchema(num: number): JsonSchema {
   return Number.isInteger(num) ? { type: "integer" } : { type: "number" };
 }
 
@@ -323,7 +323,7 @@ function inferNumberSchema(num: number): JSONSchema {
  * Infers a JSON Schema from a JSON object
  * Based on json-schema-generator approach
  */
-export function inferSchema(obj: unknown): JSONSchema {
+export function inferSchema(obj: unknown): JsonSchema {
   if (obj === null) return { type: "null" };
 
   const type = Array.isArray(obj) ? "array" : typeof obj;
@@ -348,7 +348,7 @@ export function inferSchema(obj: unknown): JSONSchema {
 /**
  * Creates a full JSON Schema document from a JSON object
  */
-export function createSchemaFromJson(jsonObject: unknown): JSONSchema {
+export function createSchemaFromJson(jsonObject: unknown): JsonSchema {
   const inferredSchema = inferSchema(jsonObject);
 
   // Ensure the root schema is always an object, even if input is array/primitive
@@ -384,5 +384,5 @@ export function createSchemaFromJson(jsonObject: unknown): JSONSchema {
     finalSchema.type = "object";
   }
 
-  return finalSchema as JSONSchema;
+  return finalSchema as JsonSchema;
 }

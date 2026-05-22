@@ -6,7 +6,7 @@ import { useTranslation } from "../../../hooks/use-translation.ts";
 import { getArrayItemsSchema } from "../../../lib/schemaEditor.ts";
 import { cn } from "../../../lib/utils.ts";
 import type {
-  ObjectJSONSchema,
+  ObjectJsonSchema,
   SchemaEditorType,
   SchemaType,
 } from "../../../types/jsonSchema.ts";
@@ -59,7 +59,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   const handleValidationChange = () => {
     const propsToKeep = buildValidationProps();
 
-    onChange(propsToKeep as ObjectJSONSchema);
+    onChange(propsToKeep as ObjectJsonSchema);
   };
 
   /**
@@ -78,7 +78,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
     maxItems?: number;
     uniqueItems?: boolean;
   } = {}) => {
-    const validationProps: ObjectJSONSchema = {
+    const validationProps: ObjectJsonSchema = {
       type: "array",
       ...(isBooleanSchema(schema) ? {} : schema),
       minItems: overrideMinItems || minItems,
@@ -99,12 +99,12 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
       }
     }
 
-    return propsToKeep as ObjectJSONSchema;
+    return propsToKeep as ObjectJsonSchema;
   };
 
   // Handle item schema changes
-  const handleItemSchemaChange = (updatedItemSchema: ObjectJSONSchema) => {
-    const updatedSchema: ObjectJSONSchema = {
+  const handleItemSchemaChange = (updatedItemSchema: ObjectJsonSchema) => {
+    const updatedSchema: ObjectJsonSchema = {
       type: "array",
       ...(isBooleanSchema(schema) ? {} : schema),
       items: updatedItemSchema,
@@ -228,9 +228,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
       <div
         className={cn(
           "space-y-2 pt-4 border-border/40",
-          !readOnly || !!minItems || !!maxItems || !!uniqueItems
-            ? "border-t"
-            : null,
+          !readOnly || minItems || maxItems || uniqueItems ? "border-t" : null,
         )}
       >
         <div className="flex items-center justify-between mb-4">

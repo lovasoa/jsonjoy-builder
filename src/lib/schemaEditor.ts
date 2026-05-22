@@ -1,17 +1,17 @@
 import type {
-  JSONSchema,
+  JsonSchema,
   NewField,
-  ObjectJSONSchema,
+  ObjectJsonSchema,
 } from "../types/jsonSchema.ts";
 import { isBooleanSchema, isObjectSchema } from "../types/jsonSchema.ts";
 
 export type Property = {
   name: string;
-  schema: JSONSchema;
+  schema: JsonSchema;
   required: boolean;
 };
 
-export function copySchema<T extends JSONSchema>(schema: T): T {
+export function copySchema<T extends JsonSchema>(schema: T): T {
   if (typeof structuredClone === "function") return structuredClone(schema);
   return JSON.parse(JSON.stringify(schema));
 }
@@ -20,10 +20,10 @@ export function copySchema<T extends JSONSchema>(schema: T): T {
  * Updates a property in an object schema
  */
 export function updateObjectProperty(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   propertyName: string,
-  propertySchema: JSONSchema,
-): ObjectJSONSchema {
+  propertySchema: JsonSchema,
+): ObjectJsonSchema {
   return updateObjectSchemaEntry(
     schema,
     "properties",
@@ -33,10 +33,10 @@ export function updateObjectProperty(
 }
 
 export function updateObjectPatternProperty(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   propertyName: string,
-  propertySchema: JSONSchema,
-): ObjectJSONSchema {
+  propertySchema: JsonSchema,
+): ObjectJsonSchema {
   return updateObjectSchemaEntry(
     schema,
     "patternProperties",
@@ -46,11 +46,11 @@ export function updateObjectPatternProperty(
 }
 
 function updateObjectSchemaEntry(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   schemaProperty: "properties" | "patternProperties",
   propertyName: string,
-  propertySchema: JSONSchema,
-): ObjectJSONSchema {
+  propertySchema: JsonSchema,
+): ObjectJsonSchema {
   if (!isObjectSchema(schema)) return schema;
 
   const newSchema = copySchema(schema);
@@ -66,9 +66,9 @@ function updateObjectSchemaEntry(
  * Removes a property from an object schema
  */
 export function removeObjectProperty(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   propertyName: string,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   const newSchema = removeObjectSchemaEntry(schema, "properties", propertyName);
 
   // Also remove from required array if present
@@ -82,17 +82,17 @@ export function removeObjectProperty(
 }
 
 export function removeObjectPatternProperty(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   propertyName: string,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   return removeObjectSchemaEntry(schema, "patternProperties", propertyName);
 }
 
 function removeObjectSchemaEntry(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   schemaProperty: "properties" | "patternProperties",
   propertyName: string,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
@@ -110,10 +110,10 @@ function removeObjectSchemaEntry(
  * Updates the 'required' status of a property
  */
 export function updatePropertyRequired(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   propertyName: string,
   required: boolean,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   if (!isObjectSchema(schema)) return schema;
 
   const newSchema = copySchema(schema);
@@ -140,9 +140,9 @@ export function updatePropertyRequired(
  * Updates an array schema's items
  */
 export function updateArrayItems(
-  schema: JSONSchema,
-  itemsSchema: JSONSchema,
-): JSONSchema {
+  schema: JsonSchema,
+  itemsSchema: JsonSchema,
+): JsonSchema {
   if (isObjectSchema(schema) && schema.type === "array") {
     return {
       ...schema,
@@ -155,7 +155,7 @@ export function updateArrayItems(
 /**
  * Creates a schema for a new field
  */
-export function createFieldSchema(field: NewField): JSONSchema {
+export function createFieldSchema(field: NewField): JsonSchema {
   const { type, description, validation, additionalProperties } = field;
 
   if (type === "anyOf" || type === "oneOf" || type === "allOf") {
@@ -199,29 +199,29 @@ export function validateFieldName(name: string): boolean {
 /**
  * Gets properties from an object schema
  */
-export function getSchemaProperties(schema: JSONSchema): Property[] {
+export function getSchemaProperties(schema: JsonSchema): Property[] {
   const required = isObjectSchema(schema) ? schema.required || [] : [];
   return getObjectSchemaEntries(schema, "properties").map((entry) =>
     propertyFromEntry(entry, required),
   );
 }
 
-export function getSchemaPatternProperties(schema: JSONSchema): Property[] {
+export function getSchemaPatternProperties(schema: JsonSchema): Property[] {
   return getObjectSchemaEntries(schema, "patternProperties").map((entry) =>
     propertyFromEntry(entry),
   );
 }
 
 function getObjectSchemaEntries(
-  schema: JSONSchema,
+  schema: JsonSchema,
   schemaProperty: "properties" | "patternProperties",
-): Array<[string, JSONSchema]> {
+): Array<[string, JsonSchema]> {
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return [];
   return Object.entries(schema[schemaProperty]);
 }
 
 function propertyFromEntry(
-  [name, propSchema]: [string, JSONSchema],
+  [name, propSchema]: [string, JsonSchema],
   required: string[] = [],
 ): Property {
   return {
@@ -234,7 +234,7 @@ function propertyFromEntry(
 /**
  * Gets the items schema from an array schema
  */
-export function getArrayItemsSchema(schema: JSONSchema): JSONSchema | null {
+export function getArrayItemsSchema(schema: JsonSchema): JsonSchema | null {
   if (isBooleanSchema(schema)) return null;
   if (schema.type !== "array") return null;
 
@@ -245,10 +245,10 @@ export function getArrayItemsSchema(schema: JSONSchema): JSONSchema | null {
  * Renames a property while preserving order in the object schema
  */
 export function renameObjectProperty(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   oldName: string,
   newName: string,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   const newSchema = renameObjectSchemaEntry(
     schema,
     "properties",
@@ -267,23 +267,23 @@ export function renameObjectProperty(
 }
 
 export function renameObjectPatternProperty(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   oldName: string,
   newName: string,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   return renameObjectSchemaEntry(schema, "patternProperties", oldName, newName);
 }
 
 function renameObjectSchemaEntry(
-  schema: ObjectJSONSchema,
+  schema: ObjectJsonSchema,
   schemaProperty: "properties" | "patternProperties",
   oldName: string,
   newName: string,
-): ObjectJSONSchema {
+): ObjectJsonSchema {
   if (!isObjectSchema(schema) || !schema[schemaProperty]) return schema;
 
   const newSchema = copySchema(schema);
-  const newProperties: Record<string, JSONSchema> = {};
+  const newProperties: Record<string, JsonSchema> = {};
 
   // Iterate through properties in order, replacing old key with new key
   for (const [key, value] of Object.entries(newSchema[schemaProperty])) {
@@ -301,7 +301,7 @@ function renameObjectSchemaEntry(
 /**
  * Checks if a schema has children
  */
-export function hasChildren(schema: JSONSchema): boolean {
+export function hasChildren(schema: JsonSchema): boolean {
   if (!isObjectSchema(schema)) return false;
 
   if (schema.type === "object" && schema.properties) {

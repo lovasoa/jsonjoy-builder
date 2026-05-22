@@ -6,9 +6,9 @@ import {
   type Property,
 } from "../../lib/schemaEditor.ts";
 import type {
-  JSONSchema as JSONSchemaType,
+  JsonSchema as JsonSchemaType,
   NewField,
-  ObjectJSONSchema,
+  ObjectJsonSchema,
   SchemaEditorType,
 } from "../../types/jsonSchema.ts";
 import { getEditorType } from "../../types/jsonSchema.ts";
@@ -17,7 +17,7 @@ import SchemaPropertyRows from "./SchemaPropertyRows.tsx";
 import type { EnumChangeContext } from "./TypeEditor.tsx";
 
 interface SchemaFieldListProps {
-  schema: JSONSchemaType;
+  schema: JsonSchemaType;
   readOnly: boolean;
   onAddEnum?: (ctx: EnumChangeContext) => void;
   onDeleteEnum?: (ctx: EnumChangeContext) => void;
@@ -46,7 +46,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   const patternProperties = getSchemaPatternProperties(schema);
 
   // Get schema type as a valid SchemaType
-  const getValidSchemaType = (propSchema: JSONSchemaType): SchemaEditorType => {
+  const getValidSchemaType = (propSchema: JsonSchemaType): SchemaEditorType => {
     if (typeof propSchema === "boolean") return "object";
 
     // Handle array of types by picking the first one
@@ -105,7 +105,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
 
   const createFieldForSchemaChange = (
     property: Property,
-    updatedSchema: ObjectJSONSchema,
+    updatedSchema: ObjectJsonSchema,
   ): NewField => {
     const type = updatedSchema.type || "object";
     // Ensure we're using a single type, not an array of types
@@ -123,7 +123,7 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     schemaProperties: Property[],
     editField: (name: string, updatedField: NewField) => void,
     name: string,
-    updatedSchema: ObjectJSONSchema,
+    updatedSchema: ObjectJsonSchema,
   ) => {
     const property = schemaProperties.find((prop) => prop.name === name);
     if (!property) return;

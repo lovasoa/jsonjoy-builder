@@ -1,6 +1,6 @@
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
-import type { JSONSchema } from "../types/jsonSchema.ts";
+import type { JsonSchema } from "../types/jsonSchema.ts";
 
 // Initialize Ajv with all supported formats and meta-schemas
 const ajv = new Ajv({
@@ -153,7 +153,7 @@ export function extractErrorPosition(
  */
 export function validateJson(
   jsonInput: string,
-  schema: JSONSchema,
+  schema: JsonSchema,
 ): ValidationResult {
   if (!jsonInput.trim()) {
     return {

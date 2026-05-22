@@ -2,14 +2,14 @@ import { render } from "@testing-library/react";
 import "global-jsdom/register";
 import { describe, test } from "node:test";
 import React from "react";
-import SchemaVisualEditor from "../../../src/components/SchemaEditor/SchemaVisualEditor.tsx";
+import { SchemaFieldsEditor } from "../../../src/index.ts";
 
-describe("SchemaVisualEditor", () => {
+describe("SchemaFieldsEditor", () => {
   test("write mode does show constraints", (t) => {
-    const element = React.createElement(SchemaVisualEditor, {
+    const element = React.createElement(SchemaFieldsEditor, {
       readOnly: false,
       onChange: () => {},
-      schema: {
+      value: {
         type: "object",
         properties: {
           name: {
@@ -21,10 +21,10 @@ describe("SchemaVisualEditor", () => {
     t.assert.snapshot(render(element).container.innerHTML);
   });
   test("read-only mode doesn't show constraints", (t) => {
-    const element = React.createElement(SchemaVisualEditor, {
+    const element = React.createElement(SchemaFieldsEditor, {
       readOnly: true,
       onChange: () => {},
-      schema: {
+      value: {
         type: "object",
         properties: {
           name: {

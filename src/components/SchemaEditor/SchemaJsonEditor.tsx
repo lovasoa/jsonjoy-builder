@@ -1,25 +1,70 @@
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Download, FileJson, Loader2 } from "lucide-react";
 import { type FC, useRef } from "react";
+import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
+import type { Translation } from "../../i18n/translation-keys.ts";
 import { cn } from "../../lib/utils.ts";
-import type { JSONSchema } from "../../types/jsonSchema.ts";
+import type { JsonSchema } from "../../types/jsonSchema.ts";
 
 /** @public */
-export interface JsonSchemaVisualizerProps {
-  schema: JSONSchema;
-  className?: string;
-  onChange?: (schema: JSONSchema) => void;
+export interface SchemaJsonEditorProps {
+  value?: JsonSchema;
+  defaultValue?: JsonSchema;
+  onChange?: (schema: JsonSchema) => void;
+  readOnly?: boolean;
   autoFocus?: boolean;
+  className?: string;
+  locale?: Translation;
+  messages?: Partial<Translation>;
 }
 
 /** @public */
-const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
-  schema,
-  className,
+const SchemaJsonEditor: FC<SchemaJsonEditorProps> = ({
+  value,
+  defaultValue,
   onChange,
+  readOnly = false,
   autoFocus = true,
+  className,
+  locale,
+  messages,
+}) => {
+  const [schema, setSchema] = useControllableSchema({
+    value,
+    defaultValue,
+    onChange,
+  });
+
+  return (
+    <SchemaBuilderProvider locale={locale} messages={messages}>
+      <SchemaJsonEditorContent
+        value={schema}
+        onChange={setSchema}
+        readOnly={readOnly}
+        autoFocus={autoFocus}
+        className={className}
+      />
+    </SchemaBuilderProvider>
+  );
+};
+
+interface SchemaJsonEditorContentProps {
+  value: JsonSchema;
+  onChange: (schema: JsonSchema) => void;
+  readOnly?: boolean;
+  autoFocus?: boolean;
+  className?: string;
+}
+
+const SchemaJsonEditorContent: FC<SchemaJsonEditorContentProps> = ({
+  value,
+  onChange,
+  readOnly = false,
+  autoFocus = true,
+  className,
 }) => {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const {
@@ -43,21 +88,19 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
     }
   };
 
-  const handleEditorChange = (value: string | undefined) => {
-    if (!value) return;
+  const handleEditorChange = (nextValue: string | undefined) => {
+    if (readOnly || !nextValue) return;
 
     try {
-      const parsedJson = JSON.parse(value);
-      if (onChange) {
-        onChange(parsedJson);
-      }
+      const parsedJson = JSON.parse(nextValue);
+      onChange(parsedJson);
     } catch (_error) {
       // Monaco will show the error inline, no need for additional error handling
     }
   };
 
   const handleDownload = () => {
-    const content = JSON.stringify(schema, null, 2);
+    const content = JSON.stringify(value, null, 2);
     const blob = new Blob([content], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -95,7 +138,7 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
         <Editor
           height="100%"
           defaultLanguage="json"
-          value={JSON.stringify(schema, null, 2)}
+          value={JSON.stringify(value, null, 2)}
           onChange={handleEditorChange}
           beforeMount={handleBeforeMount}
           onMount={handleEditorDidMount}
@@ -105,7 +148,7 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           }
-          options={defaultEditorOptions}
+          options={{ ...defaultEditorOptions, readOnly }}
           theme={currentTheme}
         />
       </div>
@@ -113,4 +156,4 @@ const JsonSchemaVisualizer: FC<JsonSchemaVisualizerProps> = ({
   );
 };
 
-export default JsonSchemaVisualizer;
+export default SchemaJsonEditor;

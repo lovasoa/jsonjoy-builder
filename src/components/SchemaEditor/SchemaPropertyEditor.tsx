@@ -4,8 +4,8 @@ import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
 import type {
-  JSONSchema,
-  ObjectJSONSchema,
+  JsonSchema,
+  ObjectJsonSchema,
   SchemaEditorType,
 } from "../../types/jsonSchema.ts";
 import {
@@ -21,7 +21,7 @@ import type { EnumChangeContext } from "./TypeEditor.tsx";
 import TypeEditor from "./TypeEditor.tsx";
 export interface SchemaPropertyEditorProps {
   name: string;
-  schema: JSONSchema;
+  schema: JsonSchema;
   schemaKey?: string;
   required: boolean;
   readOnly: boolean;
@@ -32,13 +32,13 @@ export interface SchemaPropertyEditorProps {
   onDelete: () => void;
   onNameChange: (newName: string) => void;
   onRequiredChange: (required: boolean) => void;
-  onSchemaChange: (schema: ObjectJSONSchema) => void;
+  onSchemaChange: (schema: ObjectJsonSchema) => void;
   depth?: number;
 }
 
 interface SchemaPropertyEditorFrameProps {
   name: string;
-  schema: JSONSchema;
+  schema: JsonSchema;
   schemaKey?: string;
   readOnly: boolean;
   autoFocus?: boolean;
@@ -47,7 +47,7 @@ interface SchemaPropertyEditorFrameProps {
   onDeleteEnum?: (ctx: EnumChangeContext) => void;
   onDelete: () => void;
   onNameChange: (newName: string) => void;
-  onSchemaChange: (schema: ObjectJSONSchema) => void;
+  onSchemaChange: (schema: ObjectJsonSchema) => void;
   depth?: number;
   nameAriaLabel?: string;
   nameClassName?: string;
@@ -111,7 +111,7 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
   };
 
   // Handle schema changes, preserving description
-  const handleSchemaUpdate = (updatedSchema: ObjectJSONSchema) => {
+  const handleSchemaUpdate = (updatedSchema: ObjectJsonSchema) => {
     const description = getSchemaDescription(schema);
     onSchemaChange({
       ...updatedSchema,

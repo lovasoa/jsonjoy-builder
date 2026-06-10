@@ -48,7 +48,7 @@ export const en: Translation = {
   schemaEditorTitle: "JSON Schema Editor",
   schemaEditorToggleFullscreen: "Toggle fullscreen",
   schemaEditorEditModeVisual: "Visual",
-  schemaEditorEditModeJson: "JSON",
+  schemaEditorEditModeJson: "Source",
   schemaEditorLoading: "Loading editor...",
 
   arrayNoConstraint: "No constraint",
@@ -172,9 +172,9 @@ export const en: Translation = {
   validatorErrorLocationLineAndColumn: "Line {line}, Col {column}",
   validatorErrorLocationLineOnly: "Line {line}",
 
-  visualizerDownloadTitle: "Download Schema",
-  visualizerDownloadFileName: "schema.json",
-  visualizerSource: "JSON Schema Source",
+  visualizerDownloadTitle: "Download schema",
+  visualizerDownloadFileName: "schema",
+  visualizerSource: "Schema Source",
 
   visualEditorNoFieldsHint1: "No fields defined yet",
   visualEditorNoFieldsHint2: "Add your first field to get started",

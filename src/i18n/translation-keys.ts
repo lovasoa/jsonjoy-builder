@@ -773,7 +773,7 @@ export interface Translation {
   /**
    * The translation for the key `schemaEditorEditModeJson`. English default is:
    *
-   * > JSON
+   * > Source
    */
   readonly schemaEditorEditModeJson: string;
   /**
@@ -884,19 +884,19 @@ export interface Translation {
   /**
    * The translation for the key `visualizerDownloadTitle`. English default is:
    *
-   * > Download Schema
+   * > Download schema
    */
   readonly visualizerDownloadTitle: string;
   /**
    * The translation for the key `visualizerDownloadFileName`. English default is:
    *
-   * > schema.json
+   * > schema
    */
   readonly visualizerDownloadFileName: string;
   /**
    * The translation for the key `visualizerSource`. English default is:
    *
-   * > JSON Schema Source
+   * > Schema Source
    */
   readonly visualizerSource: string;
 

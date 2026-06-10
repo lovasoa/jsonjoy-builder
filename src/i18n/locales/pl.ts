@@ -48,7 +48,7 @@ export const pl: Translation = {
   schemaEditorTitle: "Edytor schematu JSON",
   schemaEditorToggleFullscreen: "Przełącz tryb pełnoekranowy",
   schemaEditorEditModeVisual: "Wizualny",
-  schemaEditorEditModeJson: "JSON",
+  schemaEditorEditModeJson: "Źródło",
   schemaEditorLoading: "Ładowanie edytora...",
 
   arrayNoConstraint: "Bez ograniczeń",
@@ -178,8 +178,8 @@ export const pl: Translation = {
   validatorErrorLocationLineOnly: "Linia {line}",
 
   visualizerDownloadTitle: "Pobierz schemat",
-  visualizerDownloadFileName: "schema.json",
-  visualizerSource: "Schemat JSON",
+  visualizerDownloadFileName: "schema",
+  visualizerSource: "Źródło schematu",
 
   visualEditorNoFieldsHint1: "Nie zdefiniowano jeszcze pól",
   visualEditorNoFieldsHint2: "Dodaj swoje pierwsze pole, aby rozpocząć",

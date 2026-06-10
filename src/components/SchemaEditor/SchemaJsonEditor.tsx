@@ -1,13 +1,26 @@
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
-import { Download, FileJson, Loader2 } from "lucide-react";
-import { type FC, useRef } from "react";
+import { Download, FileCode, Loader2 } from "lucide-react";
+import { type FC, useEffect, useMemo, useRef, useState } from "react";
 import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
 import type { Translation } from "../../i18n/translation-keys.ts";
+import {
+  getSchemaSourceFileName,
+  getSchemaSourceMimeType,
+  type SchemaSourceFormat,
+  schemaToSource,
+  sourceToSchema,
+} from "../../lib/schema-source.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JsonSchema } from "../../types/jsonSchema.ts";
+
+const schemaSourceFormats: SchemaSourceFormat[] = ["yaml", "json"];
+const schemaSourceFormatLabels: Record<SchemaSourceFormat, string> = {
+  yaml: "YAML",
+  json: "JSON",
+};
 
 /** @public */
 export interface SchemaJsonEditorProps {
@@ -67,18 +80,26 @@ const SchemaJsonEditorContent: FC<SchemaJsonEditorContentProps> = ({
   className,
 }) => {
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
-  const {
-    currentTheme,
-    defineMonacoThemes,
-    configureJsonDefaults,
-    defaultEditorOptions,
-  } = useMonacoTheme();
+  const { currentTheme, defineMonacoThemes, defaultEditorOptions } =
+    useMonacoTheme();
 
   const t = useTranslation();
+  const valueJson = useMemo(() => JSON.stringify(value), [value]);
+  const [sourceFormat, setSourceFormat] = useState<SchemaSourceFormat>("yaml");
+  const [source, setSource] = useState(() => schemaToSource(value, "yaml"));
+  const lastEmittedJsonRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    if (lastEmittedJsonRef.current === valueJson) {
+      lastEmittedJsonRef.current = null;
+      return;
+    }
+
+    setSource(schemaToSource(value, sourceFormat));
+  }, [value, valueJson, sourceFormat]);
 
   const handleBeforeMount: BeforeMount = (monaco) => {
     defineMonacoThemes(monaco);
-    configureJsonDefaults(monaco);
   };
 
   const handleEditorDidMount: OnMount = (editor) => {
@@ -89,23 +110,39 @@ const SchemaJsonEditorContent: FC<SchemaJsonEditorContentProps> = ({
   };
 
   const handleEditorChange = (nextValue: string | undefined) => {
-    if (readOnly || !nextValue) return;
+    if (readOnly || nextValue === undefined) return;
+
+    setSource(nextValue);
 
     try {
-      const parsedJson = JSON.parse(nextValue);
-      onChange(parsedJson);
+      const parsedSchema = sourceToSchema(nextValue, sourceFormat);
+      lastEmittedJsonRef.current = JSON.stringify(parsedSchema);
+      onChange(parsedSchema);
     } catch (_error) {
-      // Monaco will show the error inline, no need for additional error handling
+      // Keep invalid source as an editable draft until it parses successfully.
     }
   };
 
+  const handleSourceFormatChange = (nextFormat: SchemaSourceFormat) => {
+    if (nextFormat === sourceFormat) return;
+
+    lastEmittedJsonRef.current = null;
+    setSourceFormat(nextFormat);
+    setSource(schemaToSource(value, nextFormat));
+  };
+
   const handleDownload = () => {
-    const content = JSON.stringify(value, null, 2);
-    const blob = new Blob([content], { type: "application/json" });
+    const content = schemaToSource(value, sourceFormat);
+    const blob = new Blob([content], {
+      type: getSchemaSourceMimeType(sourceFormat),
+    });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = t.visualizerDownloadFileName;
+    a.download = getSchemaSourceFileName(
+      sourceFormat,
+      t.visualizerDownloadFileName,
+    );
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -122,23 +159,43 @@ const SchemaJsonEditorContent: FC<SchemaJsonEditorContentProps> = ({
     >
       <div className="flex items-center justify-between bg-secondary/80 backdrop-blur-xs px-4 py-2 border-b shrink-0">
         <div className="flex items-center gap-2">
-          <FileJson size={18} />
+          <FileCode size={18} />
           <span className="font-medium text-sm">{t.visualizerSource}</span>
         </div>
-        <button
-          type="button"
-          onClick={handleDownload}
-          className="p-1.5 hover:bg-secondary rounded-md transition-colors"
-          title={t.visualizerDownloadTitle}
-        >
-          <Download size={16} />
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="grid h-8 grid-cols-2 items-center rounded-md bg-muted p-0.5 text-muted-foreground">
+            {schemaSourceFormats.map((format) => (
+              <button
+                key={format}
+                type="button"
+                aria-pressed={sourceFormat === format}
+                onClick={() => handleSourceFormatChange(format)}
+                className={cn(
+                  "inline-flex h-7 min-w-12 items-center justify-center rounded-sm px-2 text-xs font-medium transition-colors",
+                  sourceFormat === format
+                    ? "bg-background text-foreground shadow-xs"
+                    : "hover:text-foreground",
+                )}
+              >
+                {schemaSourceFormatLabels[format]}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            onClick={handleDownload}
+            className="p-1.5 hover:bg-secondary rounded-md transition-colors"
+            title={`${t.visualizerDownloadTitle} (${schemaSourceFormatLabels[sourceFormat]})`}
+          >
+            <Download size={16} />
+          </button>
+        </div>
       </div>
       <div className="grow flex min-h-0">
         <Editor
           height="100%"
-          defaultLanguage="json"
-          value={JSON.stringify(value, null, 2)}
+          language={sourceFormat}
+          value={source}
           onChange={handleEditorChange}
           beforeMount={handleBeforeMount}
           onMount={handleEditorDidMount}
@@ -148,7 +205,12 @@ const SchemaJsonEditorContent: FC<SchemaJsonEditorContentProps> = ({
               <Loader2 className="h-6 w-6 animate-spin" />
             </div>
           }
-          options={{ ...defaultEditorOptions, readOnly }}
+          options={{
+            ...defaultEditorOptions,
+            fontFamily:
+              "'SF Mono', Monaco, Menlo, Consolas, 'Liberation Mono', monospace",
+            readOnly,
+          }}
           theme={currentTheme}
         />
       </div>

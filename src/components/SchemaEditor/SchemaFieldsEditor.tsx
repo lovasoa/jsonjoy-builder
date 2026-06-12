@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import { type FC, useMemo } from "react";
 import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { ExternalRefResolverContext } from "../../hooks/use-external-ref.ts";
 import { RootSchemaContext } from "../../hooks/use-root-schema.ts";
@@ -18,10 +18,16 @@ import {
 } from "../../lib/schemaEditor.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JsonSchema, NewField } from "../../types/jsonSchema.ts";
-import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
+import {
+  asObjectSchema,
+  getEditorType,
+  isBooleanSchema,
+} from "../../types/jsonSchema.ts";
+import { buildValidationTree } from "../../types/validation.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
 import DefinitionsEditor from "./DefinitionsEditor.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
+import TypeEditor from "./TypeEditor.tsx";
 
 /** @public */
 export interface SchemaFieldsEditorProps {
@@ -192,6 +198,20 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
       (schema.patternProperties &&
         Object.keys(schema.patternProperties).length > 0));
 
+  // A root that is a combinator or a reference is edited as a whole:
+  // it has no field list of its own
+  const rootEditorType = getEditorType(schema);
+  const rootIsComposite =
+    rootEditorType === "anyOf" ||
+    rootEditorType === "oneOf" ||
+    rootEditorType === "allOf" ||
+    rootEditorType === "ref";
+
+  const rootValidationTree = useMemo(
+    () => (rootIsComposite ? buildValidationTree(schema, t) : undefined),
+    [rootIsComposite, schema, t],
+  );
+
   return (
     <RootSchemaContext.Provider value={schema}>
       <ExternalRefResolverContext.Provider value={resolveExternalRef}>
@@ -201,7 +221,7 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
             className,
           )}
         >
-          {!readOnly && (
+          {!readOnly && !rootIsComposite && (
             <div className="mb-6 shrink-0">
               <AddFieldButton
                 onAddField={handleAddField}
@@ -212,7 +232,17 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
           )}
 
           <div className="grow overflow-auto">
-            {!hasFields ? (
+            {rootIsComposite ? (
+              <div className="rounded-lg border p-3">
+                <TypeEditor
+                  schema={schema}
+                  readOnly={readOnly}
+                  validationNode={rootValidationTree}
+                  onChange={onChange}
+                  schemaKey="root"
+                />
+              </div>
+            ) : !hasFields ? (
               <div className="text-center py-10 text-muted-foreground">
                 <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
                 <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>

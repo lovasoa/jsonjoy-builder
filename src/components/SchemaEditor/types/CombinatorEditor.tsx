@@ -1,8 +1,10 @@
 import { ChevronDown, ChevronRight, CirclePlus, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
+import { useRootSchema } from "../../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import type { Translation } from "../../../i18n/translation-keys.ts";
+import { collectRefTargets } from "../../../lib/refUtils.ts";
 import { cn } from "../../../lib/utils.ts";
 import type {
   JsonSchema,
@@ -72,6 +74,7 @@ const DEFAULT_SCHEMAS: Record<SchemaEditorType, ObjectJsonSchema> = {
   anyOf: { anyOf: [{ type: "string" }, { type: "number" }] },
   oneOf: { oneOf: [{ type: "string" }, { type: "number" }] },
   allOf: { allOf: [{ type: "object" }] },
+  ref: { $ref: "#" },
 };
 
 let idCounter = 0;
@@ -94,6 +97,11 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
 }) => {
   const t = useTranslation();
   const strings = getCombinatorStrings(t, combinator);
+  const rootSchema = useRootSchema(schema);
+  const defaultRefTarget = useMemo(
+    () => collectRefTargets(rootSchema)[0]?.pointer ?? "#",
+    [rootSchema],
+  );
 
   const rawOptions: JsonSchema[] = isBooleanSchema(schema)
     ? []
@@ -152,8 +160,11 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   const handleOptionTypeChange = (index: number, newType: SchemaEditorType) => {
     const newOptions = [...options];
     const prevDesc = getSchemaDescription(options[index]);
-    let next: ObjectJsonSchema = DEFAULT_SCHEMAS[newType as SchemaType] ??
-      DEFAULT_SCHEMAS[newType as Combinator] ?? { type: "string" };
+    let next: ObjectJsonSchema =
+      newType === "ref"
+        ? { $ref: defaultRefTarget }
+        : (DEFAULT_SCHEMAS[newType as SchemaType] ??
+          DEFAULT_SCHEMAS[newType as Combinator] ?? { type: "string" });
     if (prevDesc !== "") {
       next = { ...next, description: prevDesc };
     }

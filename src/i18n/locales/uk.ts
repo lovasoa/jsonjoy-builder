@@ -146,6 +146,28 @@ export const uk: Translation = {
   allOfDescription: "Значення має відповідати всім цим схемам",
   allOfNoSchemas: "Схеми не визначені",
 
+  schemaTypeRef: "Посилання",
+  refDescription:
+    "Повторно використовує іншу схему, визначену в цьому документі",
+  refTargetLabel: "Ціль посилання",
+  refTargetPlaceholder: "#/$defs/example",
+  refSelectTarget: "Вибрати визначення",
+  refRootLabel: "Корінь документа",
+  refNoDefinitions: "У цьому документі ще немає визначень",
+  refBrokenWarning: "Це посилання не вказує на схему в цьому документі",
+  refExternalInfo: "Зовнішнє посилання — попередній перегляд тут неможливий",
+  refExternalLoading: "Завантаження зовнішньої схеми…",
+  refExternalError: "Не вдалося завантажити зовнішню схему:",
+  refPreviewShow: "Показати схему за посиланням",
+  refPreviewHide: "Сховати схему за посиланням",
+  definitionsTitle: "Визначення",
+  definitionsDescription:
+    "Багаторазові схеми, на які можна посилатися через $ref",
+  definitionAddButton: "Додати визначення",
+  definitionNamePlaceholder: "наприклад, address, vehicle",
+  definitionNameExists: "Визначення з таким іменем вже існує",
+  definitionBadge: "визначення",
+
   schemaTypeArray: "Список",
   schemaTypeBoolean: "Так/Ні",
   schemaTypeNumber: "Число",

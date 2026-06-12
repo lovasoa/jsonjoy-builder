@@ -716,6 +716,122 @@ export interface Translation {
   readonly allOfNoSchemas: string;
 
   /**
+   * The translation for the key `schemaTypeRef`. English default is:
+   *
+   * > Reference
+   */
+  readonly schemaTypeRef: string;
+  /**
+   * The translation for the key `refDescription`. English default is:
+   *
+   * > Reuses another schema defined in this document
+   */
+  readonly refDescription: string;
+  /**
+   * The translation for the key `refTargetLabel`. English default is:
+   *
+   * > Reference target
+   */
+  readonly refTargetLabel: string;
+  /**
+   * The translation for the key `refTargetPlaceholder`. English default is:
+   *
+   * > #/$defs/example
+   */
+  readonly refTargetPlaceholder: string;
+  /**
+   * The translation for the key `refSelectTarget`. English default is:
+   *
+   * > Select definition
+   */
+  readonly refSelectTarget: string;
+  /**
+   * The translation for the key `refRootLabel`. English default is:
+   *
+   * > Document root
+   */
+  readonly refRootLabel: string;
+  /**
+   * The translation for the key `refNoDefinitions`. English default is:
+   *
+   * > No definitions in this document yet
+   */
+  readonly refNoDefinitions: string;
+  /**
+   * The translation for the key `refBrokenWarning`. English default is:
+   *
+   * > This reference does not resolve to a schema in this document
+   */
+  readonly refBrokenWarning: string;
+  /**
+   * The translation for the key `refExternalInfo`. English default is:
+   *
+   * > External reference — cannot be previewed here
+   */
+  readonly refExternalInfo: string;
+  /**
+   * The translation for the key `refExternalLoading`. English default is:
+   *
+   * > Loading external schema…
+   */
+  readonly refExternalLoading: string;
+  /**
+   * The translation for the key `refExternalError`. English default is:
+   *
+   * > Could not load the external schema:
+   */
+  readonly refExternalError: string;
+  /**
+   * The translation for the key `refPreviewShow`. English default is:
+   *
+   * > Show referenced schema
+   */
+  readonly refPreviewShow: string;
+  /**
+   * The translation for the key `refPreviewHide`. English default is:
+   *
+   * > Hide referenced schema
+   */
+  readonly refPreviewHide: string;
+
+  /**
+   * The translation for the key `definitionsTitle`. English default is:
+   *
+   * > Definitions
+   */
+  readonly definitionsTitle: string;
+  /**
+   * The translation for the key `definitionsDescription`. English default is:
+   *
+   * > Reusable schemas that can be referenced elsewhere with $ref
+   */
+  readonly definitionsDescription: string;
+  /**
+   * The translation for the key `definitionAddButton`. English default is:
+   *
+   * > Add Definition
+   */
+  readonly definitionAddButton: string;
+  /**
+   * The translation for the key `definitionNamePlaceholder`. English default is:
+   *
+   * > e.g. address, vehicle
+   */
+  readonly definitionNamePlaceholder: string;
+  /**
+   * The translation for the key `definitionNameExists`. English default is:
+   *
+   * > A definition with this name already exists
+   */
+  readonly definitionNameExists: string;
+  /**
+   * The translation for the key `definitionBadge`. English default is:
+   *
+   * > definition
+   */
+  readonly definitionBadge: string;
+
+  /**
    * The translation for the key `schemaTypeString`. English default is:
    *
    * > Text

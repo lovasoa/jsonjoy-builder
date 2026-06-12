@@ -149,6 +149,29 @@ export const pl: Translation = {
   allOfDescription: "Wartość musi pasować do wszystkich tych schematów",
   allOfNoSchemas: "Nie zdefiniowano schematów",
 
+  schemaTypeRef: "Referencja",
+  refDescription:
+    "Wykorzystuje ponownie inny schemat zdefiniowany w tym dokumencie",
+  refTargetLabel: "Cel referencji",
+  refTargetPlaceholder: "#/$defs/przyklad",
+  refSelectTarget: "Wybierz definicję",
+  refRootLabel: "Korzeń dokumentu",
+  refNoDefinitions: "W tym dokumencie nie ma jeszcze definicji",
+  refBrokenWarning:
+    "Ta referencja nie wskazuje na żaden schemat w tym dokumencie",
+  refExternalInfo: "Referencja zewnętrzna — podgląd nie jest tu możliwy",
+  refExternalLoading: "Wczytywanie zewnętrznego schematu…",
+  refExternalError: "Nie udało się wczytać zewnętrznego schematu:",
+  refPreviewShow: "Pokaż schemat docelowy",
+  refPreviewHide: "Ukryj schemat docelowy",
+  definitionsTitle: "Definicje",
+  definitionsDescription:
+    "Schematy wielokrotnego użytku, do których można się odwoływać przez $ref",
+  definitionAddButton: "Dodaj definicję",
+  definitionNamePlaceholder: "np. adres, pojazd",
+  definitionNameExists: "Definicja o tej nazwie już istnieje",
+  definitionBadge: "definicja",
+
   schemaTypeArray: "Lista",
   schemaTypeBoolean: "Tak/Nie",
   schemaTypeNumber: "Liczba",

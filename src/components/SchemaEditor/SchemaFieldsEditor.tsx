@@ -1,8 +1,11 @@
-import type { FC } from "react";
+import { type FC, useMemo } from "react";
 import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
+import { ExternalRefResolverContext } from "../../hooks/use-external-ref.ts";
+import { RootSchemaContext } from "../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
 import type { Translation } from "../../i18n/translation-keys.ts";
+import type { ExternalRefResolver } from "../../lib/refUtils.ts";
 import {
   createFieldSchema,
   removeObjectPatternProperty,
@@ -15,9 +18,16 @@ import {
 } from "../../lib/schemaEditor.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JsonSchema, NewField } from "../../types/jsonSchema.ts";
-import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
+import {
+  asObjectSchema,
+  getEditorType,
+  isBooleanSchema,
+} from "../../types/jsonSchema.ts";
+import { buildValidationTree } from "../../types/validation.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
+import DefinitionsEditor from "./DefinitionsEditor.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
+import TypeEditor from "./TypeEditor.tsx";
 
 /** @public */
 export interface SchemaFieldsEditorProps {
@@ -29,6 +39,13 @@ export interface SchemaFieldsEditorProps {
   className?: string;
   locale?: Translation;
   messages?: Partial<Translation>;
+  /**
+   * Opt-in loader for external $ref targets, used to preview the
+   * referenced schemas. When omitted, external references are
+   * preserved but never loaded. Pass `fetchExternalRef` for plain
+   * HTTP(S) loading.
+   */
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 /** @public */
@@ -41,6 +58,7 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
   className,
   locale,
   messages,
+  resolveExternalRef,
 }) => {
   const [schema, setSchema] = useControllableSchema({
     value,
@@ -56,6 +74,7 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
         readOnly={readOnly}
         autoFocus={autoFocus}
         className={className}
+        resolveExternalRef={resolveExternalRef}
       />
     </SchemaBuilderProvider>
   );
@@ -67,6 +86,7 @@ interface SchemaFieldsEditorContentProps {
   onChange: (schema: JsonSchema) => void;
   autoFocus?: boolean;
   className?: string;
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
@@ -75,6 +95,7 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
   readOnly = false,
   autoFocus = true,
   className,
+  resolveExternalRef,
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
@@ -177,42 +198,77 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
       (schema.patternProperties &&
         Object.keys(schema.patternProperties).length > 0));
 
-  return (
-    <div
-      className={cn(
-        "p-4 h-full flex flex-col overflow-auto jsonjoy",
-        className,
-      )}
-    >
-      {!readOnly && (
-        <div className="mb-6 shrink-0">
-          <AddFieldButton
-            onAddField={handleAddField}
-            onAddPatternField={handleAddPatternField}
-            autoFocus={autoFocus}
-          />
-        </div>
-      )}
+  // A root that is a combinator or a reference is edited as a whole:
+  // it has no field list of its own
+  const rootEditorType = getEditorType(schema);
+  const rootIsComposite =
+    rootEditorType === "anyOf" ||
+    rootEditorType === "oneOf" ||
+    rootEditorType === "allOf" ||
+    rootEditorType === "ref";
 
-      <div className="grow overflow-auto">
-        {!hasFields ? (
-          <div className="text-center py-10 text-muted-foreground">
-            <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
-            <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
+  const rootValidationTree = useMemo(
+    () => (rootIsComposite ? buildValidationTree(schema, t) : undefined),
+    [rootIsComposite, schema, t],
+  );
+
+  return (
+    <RootSchemaContext.Provider value={schema}>
+      <ExternalRefResolverContext.Provider value={resolveExternalRef}>
+        <div
+          className={cn(
+            "p-4 h-full flex flex-col overflow-auto jsonjoy",
+            className,
+          )}
+        >
+          {!readOnly && !rootIsComposite && (
+            <div className="mb-6 shrink-0">
+              <AddFieldButton
+                onAddField={handleAddField}
+                onAddPatternField={handleAddPatternField}
+                autoFocus={autoFocus}
+              />
+            </div>
+          )}
+
+          <div className="grow overflow-auto">
+            {rootIsComposite ? (
+              <div className="rounded-lg border p-3">
+                <TypeEditor
+                  schema={schema}
+                  readOnly={readOnly}
+                  validationNode={rootValidationTree}
+                  onChange={onChange}
+                  schemaKey="root"
+                />
+              </div>
+            ) : !hasFields ? (
+              <div className="text-center py-10 text-muted-foreground">
+                <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
+                <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
+              </div>
+            ) : (
+              <SchemaFieldList
+                schema={schema}
+                readOnly={readOnly}
+                onEditField={handleEditField}
+                onDeleteField={handleDeleteField}
+                onEditPatternField={handleEditPatternField}
+                onDeletePatternField={handleDeletePatternField}
+                autoFocus={autoFocus}
+              />
+            )}
+
+            <DefinitionsEditor
+              schema={schema}
+              readOnly={readOnly}
+              onChange={onChange}
+              autoFocus={autoFocus}
+            />
           </div>
-        ) : (
-          <SchemaFieldList
-            schema={schema}
-            readOnly={readOnly}
-            onEditField={handleEditField}
-            onDeleteField={handleDeleteField}
-            onEditPatternField={handleEditPatternField}
-            onDeletePatternField={handleDeletePatternField}
-            autoFocus={autoFocus}
-          />
-        )}
-      </div>
-    </div>
+        </div>
+      </ExternalRefResolverContext.Provider>
+    </RootSchemaContext.Provider>
   );
 };
 

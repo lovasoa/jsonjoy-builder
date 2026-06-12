@@ -149,6 +149,28 @@ export const fr: Translation = {
   allOfDescription: "La valeur doit correspondre à tous ces schémas",
   allOfNoSchemas: "Aucun schéma défini",
 
+  schemaTypeRef: "Référence",
+  refDescription: "Réutilise un autre schéma défini dans ce document",
+  refTargetLabel: "Cible de la référence",
+  refTargetPlaceholder: "#/$defs/exemple",
+  refSelectTarget: "Choisir une définition",
+  refRootLabel: "Racine du document",
+  refNoDefinitions: "Aucune définition dans ce document pour l'instant",
+  refBrokenWarning:
+    "Cette référence ne correspond à aucun schéma de ce document",
+  refExternalInfo: "Référence externe — aperçu impossible ici",
+  refExternalLoading: "Chargement du schéma externe…",
+  refExternalError: "Impossible de charger le schéma externe :",
+  refPreviewShow: "Afficher le schéma référencé",
+  refPreviewHide: "Masquer le schéma référencé",
+  definitionsTitle: "Définitions",
+  definitionsDescription:
+    "Schémas réutilisables pouvant être référencés ailleurs avec $ref",
+  definitionAddButton: "Ajouter une définition",
+  definitionNamePlaceholder: "p. ex. adresse, vehicule",
+  definitionNameExists: "Une définition portant ce nom existe déjà",
+  definitionBadge: "définition",
+
   schemaTypeArray: "Liste",
   schemaTypeBoolean: "Oui/Non",
   schemaTypeNumber: "Nombre",

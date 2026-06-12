@@ -175,6 +175,35 @@ export function walkSchema(
 }
 
 /**
+ * Resolves a URI fragment (the part after "#") against a schema document.
+ * Supports "" (the document itself), "/..." JSON Pointers and plain-name
+ * fragments declared with $anchor or $dynamicAnchor.
+ */
+export function resolveFragment(
+  doc: JsonSchema,
+  fragment: string,
+): JsonSchema | undefined {
+  if (fragment === "") return doc;
+  if (fragment.startsWith("/")) return resolveJsonPointer(doc, fragment);
+
+  // Plain-name fragment: look for a matching $anchor / $dynamicAnchor
+  let anchorName: string;
+  try {
+    anchorName = decodeURIComponent(fragment);
+  } catch {
+    return undefined;
+  }
+  let found: JsonSchema | undefined;
+  walkSchema(doc, (schema) => {
+    if (found !== undefined) return;
+    if (schema.$anchor === anchorName || schema.$dynamicAnchor === anchorName) {
+      found = schema;
+    }
+  });
+  return found;
+}
+
+/**
  * Resolves a $ref value against the document root. Supports "#" (the root
  * itself), "#/..." JSON Pointers and "#name" plain-name fragments declared
  * with $anchor or $dynamicAnchor. Anything that does not start with "#"
@@ -182,33 +211,85 @@ export function walkSchema(
  */
 export function resolveRef(root: JsonSchema, ref: string): RefResolution {
   if (!ref.startsWith("#")) return { kind: "external" };
-  if (ref === "#") return { kind: "resolved", schema: root };
-
-  const fragment = ref.slice(1);
-  if (fragment.startsWith("/")) {
-    const schema = resolveJsonPointer(root, fragment);
-    return schema === undefined
-      ? { kind: "unresolved" }
-      : { kind: "resolved", schema };
-  }
-
-  // Plain-name fragment: look for a matching $anchor / $dynamicAnchor
-  let anchorName: string;
-  try {
-    anchorName = decodeURIComponent(fragment);
-  } catch {
-    return { kind: "unresolved" };
-  }
-  let found: JsonSchema | undefined;
-  walkSchema(root, (schema) => {
-    if (found !== undefined) return;
-    if (schema.$anchor === anchorName || schema.$dynamicAnchor === anchorName) {
-      found = schema;
-    }
-  });
-  return found === undefined
+  const schema = resolveFragment(root, ref.slice(1));
+  return schema === undefined
     ? { kind: "unresolved" }
-    : { kind: "resolved", schema: found };
+    : { kind: "resolved", schema };
+}
+
+/** Splits a $ref value into the document URI and its fragment */
+export function splitRefUri(ref: string): {
+  documentUri: string;
+  fragment: string;
+} {
+  const hashIndex = ref.indexOf("#");
+  if (hashIndex === -1) return { documentUri: ref, fragment: "" };
+  return {
+    documentUri: ref.slice(0, hashIndex),
+    fragment: ref.slice(hashIndex + 1),
+  };
+}
+
+/**
+ * Loads an external schema document. The resolver receives the document
+ * URI without its fragment; fragment resolution happens in the editor.
+ * The editor never loads anything unless the application opts in by
+ * passing a resolver to the resolveExternalRef prop.
+ *
+ * @public
+ */
+export type ExternalRefResolver = (documentUri: string) => Promise<JsonSchema>;
+
+/**
+ * A fetch-based resolver for applications that want external references
+ * loaded over plain HTTP(S). Pass it to the resolveExternalRef prop:
+ * `<SchemaBuilder resolveExternalRef={fetchExternalRef} ... />`
+ *
+ * @public
+ */
+export const fetchExternalRef: ExternalRefResolver = async (documentUri) => {
+  const response = await fetch(documentUri);
+  if (!response.ok) {
+    throw new Error(`${response.status} ${response.statusText}`);
+  }
+  const doc: unknown = await response.json();
+  if (
+    typeof doc !== "boolean" &&
+    (doc === null || typeof doc !== "object" || Array.isArray(doc))
+  ) {
+    throw new Error("The document is not a JSON Schema");
+  }
+  return doc as JsonSchema;
+};
+
+const externalDocumentCaches = new WeakMap<
+  ExternalRefResolver,
+  Map<string, Promise<JsonSchema>>
+>();
+
+/**
+ * Resolves an external document through the given resolver, caching
+ * documents per resolver so each one is loaded at most once per session.
+ * Failed loads are evicted from the cache so they can be retried.
+ */
+export function resolveExternalDocument(
+  resolver: ExternalRefResolver,
+  documentUri: string,
+): Promise<JsonSchema> {
+  let cache = externalDocumentCaches.get(resolver);
+  if (!cache) {
+    cache = new Map();
+    externalDocumentCaches.set(resolver, cache);
+  }
+
+  let promise = cache.get(documentUri);
+  if (!promise) {
+    const documents = cache;
+    promise = Promise.resolve(resolver(documentUri));
+    promise.catch(() => documents.delete(documentUri));
+    cache.set(documentUri, promise);
+  }
+  return promise;
 }
 
 /**

@@ -150,6 +150,8 @@ export const zh: Translation = {
   refNoDefinitions: "本文档中还没有定义",
   refBrokenWarning: "此引用没有指向本文档中的任何 Schema",
   refExternalInfo: "外部引用 — 无法在此预览",
+  refExternalLoading: "正在加载外部 Schema…",
+  refExternalError: "无法加载外部 Schema：",
   refPreviewShow: "显示被引用的 Schema",
   refPreviewHide: "隐藏被引用的 Schema",
   definitionsTitle: "定义",

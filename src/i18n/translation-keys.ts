@@ -770,6 +770,18 @@ export interface Translation {
    */
   readonly refExternalInfo: string;
   /**
+   * The translation for the key `refExternalLoading`. English default is:
+   *
+   * > Loading external schema…
+   */
+  readonly refExternalLoading: string;
+  /**
+   * The translation for the key `refExternalError`. English default is:
+   *
+   * > Could not load the external schema:
+   */
+  readonly refExternalError: string;
+  /**
    * The translation for the key `refPreviewShow`. English default is:
    *
    * > Show referenced schema

@@ -1,9 +1,11 @@
 import type { FC } from "react";
 import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
+import { ExternalRefResolverContext } from "../../hooks/use-external-ref.ts";
 import { RootSchemaContext } from "../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
 import type { Translation } from "../../i18n/translation-keys.ts";
+import type { ExternalRefResolver } from "../../lib/refUtils.ts";
 import {
   createFieldSchema,
   removeObjectPatternProperty,
@@ -31,6 +33,13 @@ export interface SchemaFieldsEditorProps {
   className?: string;
   locale?: Translation;
   messages?: Partial<Translation>;
+  /**
+   * Opt-in loader for external $ref targets, used to preview the
+   * referenced schemas. When omitted, external references are
+   * preserved but never loaded. Pass `fetchExternalRef` for plain
+   * HTTP(S) loading.
+   */
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 /** @public */
@@ -43,6 +52,7 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
   className,
   locale,
   messages,
+  resolveExternalRef,
 }) => {
   const [schema, setSchema] = useControllableSchema({
     value,
@@ -58,6 +68,7 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
         readOnly={readOnly}
         autoFocus={autoFocus}
         className={className}
+        resolveExternalRef={resolveExternalRef}
       />
     </SchemaBuilderProvider>
   );
@@ -69,6 +80,7 @@ interface SchemaFieldsEditorContentProps {
   onChange: (schema: JsonSchema) => void;
   autoFocus?: boolean;
   className?: string;
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
@@ -77,6 +89,7 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
   readOnly = false,
   autoFocus = true,
   className,
+  resolveExternalRef,
 }) => {
   const t = useTranslation();
   // Handle adding a top-level field
@@ -181,48 +194,50 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
 
   return (
     <RootSchemaContext.Provider value={schema}>
-      <div
-        className={cn(
-          "p-4 h-full flex flex-col overflow-auto jsonjoy",
-          className,
-        )}
-      >
-        {!readOnly && (
-          <div className="mb-6 shrink-0">
-            <AddFieldButton
-              onAddField={handleAddField}
-              onAddPatternField={handleAddPatternField}
+      <ExternalRefResolverContext.Provider value={resolveExternalRef}>
+        <div
+          className={cn(
+            "p-4 h-full flex flex-col overflow-auto jsonjoy",
+            className,
+          )}
+        >
+          {!readOnly && (
+            <div className="mb-6 shrink-0">
+              <AddFieldButton
+                onAddField={handleAddField}
+                onAddPatternField={handleAddPatternField}
+                autoFocus={autoFocus}
+              />
+            </div>
+          )}
+
+          <div className="grow overflow-auto">
+            {!hasFields ? (
+              <div className="text-center py-10 text-muted-foreground">
+                <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
+                <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
+              </div>
+            ) : (
+              <SchemaFieldList
+                schema={schema}
+                readOnly={readOnly}
+                onEditField={handleEditField}
+                onDeleteField={handleDeleteField}
+                onEditPatternField={handleEditPatternField}
+                onDeletePatternField={handleDeletePatternField}
+                autoFocus={autoFocus}
+              />
+            )}
+
+            <DefinitionsEditor
+              schema={schema}
+              readOnly={readOnly}
+              onChange={onChange}
               autoFocus={autoFocus}
             />
           </div>
-        )}
-
-        <div className="grow overflow-auto">
-          {!hasFields ? (
-            <div className="text-center py-10 text-muted-foreground">
-              <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
-              <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
-            </div>
-          ) : (
-            <SchemaFieldList
-              schema={schema}
-              readOnly={readOnly}
-              onEditField={handleEditField}
-              onDeleteField={handleDeleteField}
-              onEditPatternField={handleEditPatternField}
-              onDeletePatternField={handleDeletePatternField}
-              autoFocus={autoFocus}
-            />
-          )}
-
-          <DefinitionsEditor
-            schema={schema}
-            readOnly={readOnly}
-            onChange={onChange}
-            autoFocus={autoFocus}
-          />
         </div>
-      </div>
+      </ExternalRefResolverContext.Provider>
     </RootSchemaContext.Provider>
   );
 };

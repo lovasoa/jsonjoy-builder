@@ -160,6 +160,8 @@ export const pl: Translation = {
   refBrokenWarning:
     "Ta referencja nie wskazuje na żaden schemat w tym dokumencie",
   refExternalInfo: "Referencja zewnętrzna — podgląd nie jest tu możliwy",
+  refExternalLoading: "Wczytywanie zewnętrznego schematu…",
+  refExternalError: "Nie udało się wczytać zewnętrznego schematu:",
   refPreviewShow: "Pokaż schemat docelowy",
   refPreviewHide: "Ukryj schemat docelowy",
   definitionsTitle: "Definicje",

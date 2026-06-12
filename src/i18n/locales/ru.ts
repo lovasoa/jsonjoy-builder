@@ -158,6 +158,8 @@ export const ru: Translation = {
   refNoDefinitions: "В этом документе пока нет определений",
   refBrokenWarning: "Эта ссылка не указывает на схему в этом документе",
   refExternalInfo: "Внешняя ссылка — предпросмотр здесь невозможен",
+  refExternalLoading: "Загрузка внешней схемы…",
+  refExternalError: "Не удалось загрузить внешнюю схему:",
   refPreviewShow: "Показать схему по ссылке",
   refPreviewHide: "Скрыть схему по ссылке",
   definitionsTitle: "Определения",

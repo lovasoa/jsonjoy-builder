@@ -156,6 +156,8 @@ export const uk: Translation = {
   refNoDefinitions: "У цьому документі ще немає визначень",
   refBrokenWarning: "Це посилання не вказує на схему в цьому документі",
   refExternalInfo: "Зовнішнє посилання — попередній перегляд тут неможливий",
+  refExternalLoading: "Завантаження зовнішньої схеми…",
+  refExternalError: "Не вдалося завантажити зовнішню схему:",
   refPreviewShow: "Показати схему за посиланням",
   refPreviewHide: "Сховати схему за посиланням",
   definitionsTitle: "Визначення",

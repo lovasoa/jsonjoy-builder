@@ -1,10 +1,22 @@
-import { Check, ChevronDown, Eye, EyeOff, TriangleAlert } from "lucide-react";
+import {
+  Check,
+  ChevronDown,
+  Eye,
+  EyeOff,
+  Loader2,
+  TriangleAlert,
+} from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
-import { useRootSchema } from "../../../hooks/use-root-schema.ts";
+import { useExternalSchema } from "../../../hooks/use-external-ref.ts";
+import {
+  RootSchemaContext,
+  useRootSchema,
+} from "../../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { collectRefTargets, resolveRef } from "../../../lib/refUtils.ts";
 import { cn, getTypeColor, getTypeLabel } from "../../../lib/utils.ts";
+import type { JsonSchema } from "../../../types/jsonSchema.ts";
 import {
   asObjectSchema,
   getEditorType,
@@ -54,6 +66,30 @@ const RefEditor: React.FC<TypeEditorProps> = ({
   const resolution = useMemo(
     () => resolveRef(rootSchema, refValue),
     [rootSchema, refValue],
+  );
+  const externalSchema = useExternalSchema(
+    resolution.kind === "external" ? refValue : undefined,
+  );
+
+  // What to show below the target row: a document-local target, or an
+  // external one once its document has loaded. External previews carry
+  // their own root so nested refs resolve against the loaded document.
+  const preview =
+    resolution.kind === "resolved"
+      ? { schema: resolution.schema, root: undefined }
+      : externalSchema.status === "loaded"
+        ? { schema: externalSchema.schema, root: externalSchema.documentSchema }
+        : undefined;
+
+  const previewEditor = (previewSchema: JsonSchema) => (
+    <TypeEditor
+      schema={previewSchema}
+      readOnly
+      validationNode={undefined}
+      onChange={() => {}}
+      schemaKey={schemaKey ? `${schemaKey}.$ref` : "$ref"}
+      depth={depth + 1}
+    />
   );
 
   const commitTarget = (target: string) => {
@@ -161,30 +197,47 @@ const RefEditor: React.FC<TypeEditorProps> = ({
         )}
       </div>
 
-      {resolution.kind === "unresolved" && (
+      {(resolution.kind === "unresolved" ||
+        externalSchema.status === "broken") && (
         <p className="text-xs text-destructive flex items-center gap-1.5">
           <TriangleAlert size={14} className="shrink-0" />
           {t.refBrokenWarning}
         </p>
       )}
 
-      {resolution.kind === "external" && (
+      {resolution.kind === "external" &&
+        externalSchema.status === "unavailable" && (
+          <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+            <TriangleAlert size={14} className="shrink-0" />
+            {t.refExternalInfo}
+          </p>
+        )}
+
+      {externalSchema.status === "loading" && (
         <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-          <TriangleAlert size={14} className="shrink-0" />
-          {t.refExternalInfo}
+          <Loader2 size={14} className="shrink-0 animate-spin" />
+          {t.refExternalLoading}
         </p>
       )}
 
-      {resolution.kind === "resolved" && (
+      {externalSchema.status === "error" && (
+        <p className="text-xs text-destructive flex items-center gap-1.5">
+          <TriangleAlert size={14} className="shrink-0" />
+          {t.refExternalError}
+          <code className="font-mono">{externalSchema.message}</code>
+        </p>
+      )}
+
+      {preview !== undefined && (
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <span
               className={cn(
                 "text-xs px-2 py-0.5 rounded-md font-medium",
-                getTypeColor(getEditorType(resolution.schema)),
+                getTypeColor(getEditorType(preview.schema)),
               )}
             >
-              {getTypeLabel(t, getEditorType(resolution.schema))}
+              {getTypeLabel(t, getEditorType(preview.schema))}
             </span>
             <button
               type="button"
@@ -198,14 +251,15 @@ const RefEditor: React.FC<TypeEditorProps> = ({
 
           {showPreview && (
             <div className="rounded-lg border p-3 animate-in">
-              <TypeEditor
-                schema={resolution.schema}
-                readOnly
-                validationNode={undefined}
-                onChange={() => {}}
-                schemaKey={schemaKey ? `${schemaKey}.$ref` : "$ref"}
-                depth={depth + 1}
-              />
+              {/* External previews resolve their own nested refs against
+                  the loaded document, not the edited one */}
+              {preview.root === undefined ? (
+                previewEditor(preview.schema)
+              ) : (
+                <RootSchemaContext.Provider value={preview.root}>
+                  {previewEditor(preview.schema)}
+                </RootSchemaContext.Provider>
+              )}
             </div>
           )}
         </div>

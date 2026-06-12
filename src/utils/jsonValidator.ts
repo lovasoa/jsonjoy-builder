@@ -1,5 +1,10 @@
-import Ajv from "ajv";
+import Ajv, { type AnySchemaObject, type ValidateFunction } from "ajv";
 import addFormats from "ajv-formats";
+import {
+  type ExternalRefResolver,
+  resolveExternalDocument,
+  splitRefUri,
+} from "../lib/refUtils.ts";
 import type { JsonSchema } from "../types/jsonSchema.ts";
 
 // Initialize Ajv with all supported formats and meta-schemas
@@ -148,6 +153,78 @@ export function extractErrorPosition(
   return { line, column };
 }
 
+const emptyInputResult = (): ValidationResult => ({
+  valid: false,
+  errors: [
+    {
+      path: "/",
+      message: "Empty JSON input",
+    },
+  ],
+});
+
+function runCompiledValidation(
+  validate: ValidateFunction,
+  jsonInput: string,
+): ValidationResult {
+  const valid = validate(JSON.parse(jsonInput));
+
+  if (!valid) {
+    const errors =
+      validate.errors?.map((error) => {
+        const path = error.instancePath || "/";
+        const position = findLineNumberForPath(jsonInput, path);
+        return {
+          path,
+          message: error.message || "Unknown error",
+          line: position?.line,
+          column: position?.column,
+        };
+      }) || [];
+
+    return {
+      valid: false,
+      errors,
+    };
+  }
+
+  return {
+    valid: true,
+    errors: [],
+  };
+}
+
+function caughtErrorResult(
+  error: unknown,
+  jsonInput: string,
+): ValidationResult {
+  if (!(error instanceof Error)) {
+    return {
+      valid: false,
+      errors: [
+        {
+          path: "/",
+          message: `Unknown error: ${error}`,
+        },
+      ],
+    };
+  }
+
+  const { line, column } = extractErrorPosition(error, jsonInput);
+
+  return {
+    valid: false,
+    errors: [
+      {
+        path: "/",
+        message: error.message,
+        line,
+        column,
+      },
+    ],
+  };
+}
+
 /**
  * Validates a JSON string against a schema and returns validation results
  */
@@ -156,73 +233,65 @@ export function validateJson(
   schema: JsonSchema,
 ): ValidationResult {
   if (!jsonInput.trim()) {
-    return {
-      valid: false,
-      errors: [
-        {
-          path: "/",
-          message: "Empty JSON input",
-        },
-      ],
-    };
+    return emptyInputResult();
   }
 
   try {
-    // Parse the JSON input
-    const jsonObject = JSON.parse(jsonInput);
-
     // Use Ajv to validate the JSON against the schema
     const validate = ajv.compile(schema);
-    const valid = validate(jsonObject);
-
-    if (!valid) {
-      const errors =
-        validate.errors?.map((error) => {
-          const path = error.instancePath || "/";
-          const position = findLineNumberForPath(jsonInput, path);
-          return {
-            path,
-            message: error.message || "Unknown error",
-            line: position?.line,
-            column: position?.column,
-          };
-        }) || [];
-
-      return {
-        valid: false,
-        errors,
-      };
-    }
-
-    return {
-      valid: true,
-      errors: [],
-    };
+    return runCompiledValidation(validate, jsonInput);
   } catch (error) {
-    if (!(error instanceof Error)) {
-      return {
-        valid: false,
-        errors: [
-          {
-            path: "/",
-            message: `Unknown error: ${error}`,
-          },
-        ],
-      };
-    }
+    return caughtErrorResult(error, jsonInput);
+  }
+}
 
-    const { line, column } = extractErrorPosition(error, jsonInput);
+/**
+ * Validates a JSON string against a schema, loading any external $refs
+ * through the given resolver. Without a resolver this behaves exactly
+ * like validateJson: external references make the schema uncompilable
+ * and are reported as a validation error.
+ */
+export async function validateJsonAsync(
+  jsonInput: string,
+  schema: JsonSchema,
+  resolveExternalRef?: ExternalRefResolver,
+): Promise<ValidationResult> {
+  // Boolean schemas cannot contain references, so the synchronous path
+  // handles them (and the no-resolver case) directly
+  if (!resolveExternalRef || typeof schema === "boolean") {
+    return validateJson(jsonInput, schema);
+  }
 
-    return {
-      valid: false,
-      errors: [
-        {
-          path: "/",
-          message: error.message,
-          line,
-          column,
-        },
-      ],
-    };
+  if (!jsonInput.trim()) {
+    return emptyInputResult();
+  }
+
+  try {
+    // A fresh instance per call avoids schema-id collisions between
+    // edits; loaded documents are still cached by the shared resolver
+    // cache, so each external document is fetched at most once.
+    const asyncAjv = new Ajv({
+      allErrors: true,
+      strict: false,
+      validateSchema: false,
+      validateFormats: false,
+      loadSchema: async (uri: string): Promise<AnySchemaObject> => {
+        const { documentUri } = splitRefUri(uri);
+        const doc = await resolveExternalDocument(
+          resolveExternalRef,
+          documentUri || uri,
+        );
+        if (typeof doc === "boolean") {
+          throw new Error(`The schema at ${uri} is a boolean schema`);
+        }
+        return doc as AnySchemaObject;
+      },
+    });
+    addFormats(asyncAjv);
+
+    const validate = await asyncAjv.compileAsync(schema);
+    return runCompiledValidation(validate, jsonInput);
+  } catch (error) {
+    return caughtErrorResult(error, jsonInput);
   }
 }

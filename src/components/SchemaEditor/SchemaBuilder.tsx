@@ -9,6 +9,7 @@ import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
 import type { Translation } from "../../i18n/translation-keys.ts";
+import type { ExternalRefResolver } from "../../lib/refUtils.ts";
 import { cn } from "../../lib/utils.ts";
 import type { JsonSchema } from "../../types/jsonSchema.ts";
 import SchemaFieldsEditor from "./SchemaFieldsEditor.tsx";
@@ -24,6 +25,13 @@ export interface SchemaBuilderProps {
   autoFocus?: boolean;
   locale?: Translation;
   messages?: Partial<Translation>;
+  /**
+   * Opt-in loader for external $ref targets, used to preview the
+   * referenced schemas. When omitted, external references are
+   * preserved but never loaded. Pass `fetchExternalRef` for plain
+   * HTTP(S) loading.
+   */
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 /** @public */
@@ -36,6 +44,7 @@ const SchemaBuilder: FC<SchemaBuilderProps> = ({
   autoFocus = true,
   locale,
   messages,
+  resolveExternalRef,
 }) => {
   const [schema, setSchema] = useControllableSchema({
     value,
@@ -51,6 +60,7 @@ const SchemaBuilder: FC<SchemaBuilderProps> = ({
         readOnly={readOnly}
         className={className}
         autoFocus={autoFocus}
+        resolveExternalRef={resolveExternalRef}
       />
     </SchemaBuilderProvider>
   );
@@ -62,6 +72,7 @@ interface SchemaBuilderContentProps {
   readOnly?: boolean;
   className?: string;
   autoFocus?: boolean;
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
@@ -70,6 +81,7 @@ const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
   readOnly = false,
   className,
   autoFocus = true,
+  resolveExternalRef,
 }) => {
   const t = useTranslation();
 
@@ -174,6 +186,7 @@ const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
               value={value}
               onChange={onChange}
               autoFocus={autoFocus}
+              resolveExternalRef={resolveExternalRef}
             />
           ) : (
             <SchemaJsonEditor
@@ -215,6 +228,7 @@ const SchemaBuilderContent: FC<SchemaBuilderContentProps> = ({
               value={value}
               onChange={onChange}
               autoFocus={autoFocus}
+              resolveExternalRef={resolveExternalRef}
             />
           </div>
           {/** biome-ignore lint/a11y/noStaticElementInteractions: What exactly does this div do? */}

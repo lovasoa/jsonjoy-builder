@@ -159,6 +159,8 @@ export const fr: Translation = {
   refBrokenWarning:
     "Cette référence ne correspond à aucun schéma de ce document",
   refExternalInfo: "Référence externe — aperçu impossible ici",
+  refExternalLoading: "Chargement du schéma externe…",
+  refExternalError: "Impossible de charger le schéma externe :",
   refPreviewShow: "Afficher le schéma référencé",
   refPreviewHide: "Masquer le schéma référencé",
   definitionsTitle: "Définitions",

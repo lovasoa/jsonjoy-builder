@@ -6,7 +6,9 @@ import {
   getRootDefinitions,
   removeDefinition,
   renameDefinition,
+  resolveExternalDocument,
   resolveRef,
+  splitRefUri,
   updateDefinition,
 } from "../../src/lib/refUtils.ts";
 import type { ObjectJsonSchema } from "../../src/types/jsonSchema.ts";
@@ -261,5 +263,64 @@ describe("definition editing", () => {
       definitionPointer("$defs", "weird~name/with-slash"),
       "#/$defs/weird~0name~1with-slash",
     );
+  });
+});
+
+describe("external references", () => {
+  test("splitRefUri separates the document URI from the fragment", () => {
+    assert.deepStrictEqual(
+      splitRefUri("https://example.com/schema.json#/definitions/x"),
+      {
+        documentUri: "https://example.com/schema.json",
+        fragment: "/definitions/x",
+      },
+    );
+    assert.deepStrictEqual(splitRefUri("https://example.com/schema.json"), {
+      documentUri: "https://example.com/schema.json",
+      fragment: "",
+    });
+    assert.deepStrictEqual(splitRefUri("other.json#anchor"), {
+      documentUri: "other.json",
+      fragment: "anchor",
+    });
+  });
+
+  test("resolveExternalDocument loads each document only once", async () => {
+    let calls = 0;
+    const resolver = (uri: string) => {
+      calls++;
+      return Promise.resolve({ $id: uri, type: "object" as const });
+    };
+
+    const [first, second] = await Promise.all([
+      resolveExternalDocument(resolver, "https://example.com/a.json"),
+      resolveExternalDocument(resolver, "https://example.com/a.json"),
+    ]);
+    await resolveExternalDocument(resolver, "https://example.com/a.json");
+
+    assert.strictEqual(calls, 1);
+    assert.strictEqual(first, second);
+  });
+
+  test("resolveExternalDocument retries after a failed load", async () => {
+    let calls = 0;
+    const resolver = (uri: string) => {
+      calls++;
+      return calls === 1
+        ? Promise.reject(new Error("offline"))
+        : Promise.resolve({ $id: uri });
+    };
+
+    await assert.rejects(
+      resolveExternalDocument(resolver, "https://example.com/b.json"),
+      /offline/,
+    );
+    const doc = await resolveExternalDocument(
+      resolver,
+      "https://example.com/b.json",
+    );
+
+    assert.strictEqual(calls, 2);
+    assert.deepStrictEqual(doc, { $id: "https://example.com/b.json" });
   });
 });

@@ -159,6 +159,8 @@ export const de: Translation = {
   refBrokenWarning:
     "Diese Referenz verweist auf kein Schema in diesem Dokument",
   refExternalInfo: "Externe Referenz — kann hier nicht angezeigt werden",
+  refExternalLoading: "Externes Schema wird geladen…",
+  refExternalError: "Externes Schema konnte nicht geladen werden:",
   refPreviewShow: "Referenziertes Schema anzeigen",
   refPreviewHide: "Referenziertes Schema ausblenden",
   definitionsTitle: "Definitionen",

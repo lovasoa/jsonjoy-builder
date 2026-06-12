@@ -31,6 +31,10 @@ export {
   useSchemaBuilderConfig,
 } from "./i18n/schema-builder-config.tsx";
 export type { Translation } from "./i18n/translation-keys.ts";
+export {
+  type ExternalRefResolver,
+  fetchExternalRef,
+} from "./lib/refUtils.ts";
 export type { JsonSchema } from "./types/jsonSchema.ts";
 export {
   InferSchemaDialog,

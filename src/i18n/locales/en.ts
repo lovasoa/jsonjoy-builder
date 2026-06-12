@@ -155,6 +155,8 @@ export const en: Translation = {
   refBrokenWarning:
     "This reference does not resolve to a schema in this document",
   refExternalInfo: "External reference — cannot be previewed here",
+  refExternalLoading: "Loading external schema…",
+  refExternalError: "Could not load the external schema:",
   refPreviewShow: "Show referenced schema",
   refPreviewHide: "Hide referenced schema",
   definitionsTitle: "Definitions",

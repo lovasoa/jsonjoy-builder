@@ -159,6 +159,8 @@ export const es: Translation = {
   refBrokenWarning:
     "Esta referencia no apunta a ningún esquema de este documento",
   refExternalInfo: "Referencia externa — no se puede previsualizar aquí",
+  refExternalLoading: "Cargando el esquema externo…",
+  refExternalError: "No se pudo cargar el esquema externo:",
   refPreviewShow: "Mostrar esquema referenciado",
   refPreviewHide: "Ocultar esquema referenciado",
   definitionsTitle: "Definiciones",

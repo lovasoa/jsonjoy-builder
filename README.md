@@ -275,6 +275,8 @@ The visual editor covers the common schema authoring flow:
 - Array item type, length, uniqueness, and contains constraints
 - Boolean allowed-value constraints
 - `anyOf`, `oneOf`, and `allOf` composition
+- `$ref` references with a definition picker, broken-reference warnings, and a read-only preview of the referenced schema
+- Reusable definitions (`$defs` and legacy `definitions`): create, edit, and delete them in the visual editor; renaming a definition rewrites every `$ref` that points at it
 - `additionalProperties` controls
 
 You can still edit unsupported JSON Schema keywords directly in the JSON source editor.

@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { useControllableSchema } from "../../hooks/use-controllable-schema.ts";
+import { RootSchemaContext } from "../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
 import type { Translation } from "../../i18n/translation-keys.ts";
@@ -17,6 +18,7 @@ import { cn } from "../../lib/utils.ts";
 import type { JsonSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
+import DefinitionsEditor from "./DefinitionsEditor.tsx";
 import SchemaFieldList from "./SchemaFieldList.tsx";
 
 /** @public */
@@ -178,41 +180,50 @@ const SchemaFieldsEditorContent: FC<SchemaFieldsEditorContentProps> = ({
         Object.keys(schema.patternProperties).length > 0));
 
   return (
-    <div
-      className={cn(
-        "p-4 h-full flex flex-col overflow-auto jsonjoy",
-        className,
-      )}
-    >
-      {!readOnly && (
-        <div className="mb-6 shrink-0">
-          <AddFieldButton
-            onAddField={handleAddField}
-            onAddPatternField={handleAddPatternField}
+    <RootSchemaContext.Provider value={schema}>
+      <div
+        className={cn(
+          "p-4 h-full flex flex-col overflow-auto jsonjoy",
+          className,
+        )}
+      >
+        {!readOnly && (
+          <div className="mb-6 shrink-0">
+            <AddFieldButton
+              onAddField={handleAddField}
+              onAddPatternField={handleAddPatternField}
+              autoFocus={autoFocus}
+            />
+          </div>
+        )}
+
+        <div className="grow overflow-auto">
+          {!hasFields ? (
+            <div className="text-center py-10 text-muted-foreground">
+              <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
+              <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
+            </div>
+          ) : (
+            <SchemaFieldList
+              schema={schema}
+              readOnly={readOnly}
+              onEditField={handleEditField}
+              onDeleteField={handleDeleteField}
+              onEditPatternField={handleEditPatternField}
+              onDeletePatternField={handleDeletePatternField}
+              autoFocus={autoFocus}
+            />
+          )}
+
+          <DefinitionsEditor
+            schema={schema}
+            readOnly={readOnly}
+            onChange={onChange}
             autoFocus={autoFocus}
           />
         </div>
-      )}
-
-      <div className="grow overflow-auto">
-        {!hasFields ? (
-          <div className="text-center py-10 text-muted-foreground">
-            <p className="mb-3">{t.visualEditorNoFieldsHint1}</p>
-            <p className="text-sm">{t.visualEditorNoFieldsHint2}</p>
-          </div>
-        ) : (
-          <SchemaFieldList
-            schema={schema}
-            readOnly={readOnly}
-            onEditField={handleEditField}
-            onDeleteField={handleDeleteField}
-            onEditPatternField={handleEditPatternField}
-            onDeletePatternField={handleDeletePatternField}
-            autoFocus={autoFocus}
-          />
-        )}
       </div>
-    </div>
+    </RootSchemaContext.Provider>
   );
 };
 

@@ -1,5 +1,5 @@
 import { CirclePlus } from "lucide-react";
-import { type FC, type FormEvent, useId, useState } from "react";
+import { type FC, type FormEvent, useContext, useId, useState } from "react";
 import { Badge } from "../../components/ui/badge.tsx";
 import { Button } from "../../components/ui/button.tsx";
 import {
@@ -11,7 +11,9 @@ import {
   DialogTitle,
 } from "../../components/ui/dialog.tsx";
 import { Input } from "../../components/ui/input.tsx";
+import { RootSchemaContext } from "../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { collectRefTargets } from "../../lib/refUtils.ts";
 import { cn } from "../../lib/utils.ts";
 import type { NewField, SchemaEditorType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
@@ -45,6 +47,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const formId = useId();
 
   const t = useTranslation();
+  const rootSchema = useContext(RootSchemaContext);
   const regexError = (() => {
     if (!useNameRegex || !fieldName.trim()) return "";
     try {
@@ -74,6 +77,12 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
       required: useNameRegex ? false : fieldRequired,
       additionalProperties:
         fieldType === "object" ? additionalProperties : undefined,
+      // New references point at the first definition in the document,
+      // or at the root when there is none yet
+      validation:
+        fieldType === "ref" && rootSchema !== undefined
+          ? { $ref: collectRefTargets(rootSchema)[0]?.pointer ?? "#" }
+          : undefined,
     };
 
     if (useNameRegex) {
@@ -250,6 +259,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     {fieldType === "anyOf" && '{ "anyOf": [...] }'}
                     {fieldType === "oneOf" && '{ "oneOf": [...] }'}
                     {fieldType === "allOf" && '{ "allOf": [...] }'}
+                    {fieldType === "ref" && '{ "$ref": "#/$defs/address" }'}
                   </code>
                 </div>
               </div>

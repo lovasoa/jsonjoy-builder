@@ -148,6 +148,26 @@ export const ru: Translation = {
   allOfDescription: "Значение должно соответствовать всем этим схемам",
   allOfNoSchemas: "Схемы не определены",
 
+  schemaTypeRef: "Ссылка",
+  refDescription:
+    "Повторно использует другую схему, определённую в этом документе",
+  refTargetLabel: "Цель ссылки",
+  refTargetPlaceholder: "#/$defs/example",
+  refSelectTarget: "Выбрать определение",
+  refRootLabel: "Корень документа",
+  refNoDefinitions: "В этом документе пока нет определений",
+  refBrokenWarning: "Эта ссылка не указывает на схему в этом документе",
+  refExternalInfo: "Внешняя ссылка — предпросмотр здесь невозможен",
+  refPreviewShow: "Показать схему по ссылке",
+  refPreviewHide: "Скрыть схему по ссылке",
+  definitionsTitle: "Определения",
+  definitionsDescription:
+    "Переиспользуемые схемы, на которые можно ссылаться через $ref",
+  definitionAddButton: "Добавить определение",
+  definitionNamePlaceholder: "например, address, vehicle",
+  definitionNameExists: "Определение с таким именем уже существует",
+  definitionBadge: "определение",
+
   schemaTypeArray: "Список",
   schemaTypeBoolean: "Да/Нет",
   schemaTypeNumber: "Число",

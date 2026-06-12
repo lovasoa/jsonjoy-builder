@@ -158,6 +158,18 @@ export function updateArrayItems(
 export function createFieldSchema(field: NewField): JsonSchema {
   const { type, description, validation, additionalProperties } = field;
 
+  if (type === "ref") {
+    const schema =
+      isObjectSchema(validation) && typeof validation.$ref === "string"
+        ? validation
+        : { $ref: "#" };
+
+    return {
+      ...schema,
+      description: description || undefined,
+    };
+  }
+
   if (type === "anyOf" || type === "oneOf" || type === "allOf") {
     const schema = validation || {
       [type]:

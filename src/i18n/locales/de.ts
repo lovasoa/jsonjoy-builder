@@ -148,6 +148,27 @@ export const de: Translation = {
   allOfDescription: "Der Wert muss allen diesen Schemata entsprechen",
   allOfNoSchemas: "Keine Schemata definiert",
 
+  schemaTypeRef: "Referenz",
+  refDescription:
+    "Verwendet ein anderes in diesem Dokument definiertes Schema wieder",
+  refTargetLabel: "Referenzziel",
+  refTargetPlaceholder: "#/$defs/beispiel",
+  refSelectTarget: "Definition auswählen",
+  refRootLabel: "Dokumentwurzel",
+  refNoDefinitions: "Noch keine Definitionen in diesem Dokument",
+  refBrokenWarning:
+    "Diese Referenz verweist auf kein Schema in diesem Dokument",
+  refExternalInfo: "Externe Referenz — kann hier nicht angezeigt werden",
+  refPreviewShow: "Referenziertes Schema anzeigen",
+  refPreviewHide: "Referenziertes Schema ausblenden",
+  definitionsTitle: "Definitionen",
+  definitionsDescription:
+    "Wiederverwendbare Schemata, die an anderer Stelle mit $ref referenziert werden können",
+  definitionAddButton: "Definition hinzufügen",
+  definitionNamePlaceholder: "z. B. adresse, fahrzeug",
+  definitionNameExists: "Eine Definition mit diesem Namen existiert bereits",
+  definitionBadge: "Definition",
+
   schemaTypeArray: "Liste",
   schemaTypeBoolean: "Ja/Nein",
   schemaTypeNumber: "Zahl",

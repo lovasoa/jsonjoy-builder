@@ -2,16 +2,18 @@ import { useId, useMemo, useState } from "react";
 import { Input } from "../../../components/ui/input.tsx";
 import { Label } from "../../../components/ui/label.tsx";
 import { Switch } from "../../../components/ui/switch.tsx";
+import { useRootSchema } from "../../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../../hooks/use-translation.ts";
+import { collectRefTargets } from "../../../lib/refUtils.ts";
 import { getArrayItemsSchema } from "../../../lib/schemaEditor.ts";
 import { cn } from "../../../lib/utils.ts";
 import type {
   ObjectJsonSchema,
   SchemaEditorType,
-  SchemaType,
 } from "../../../types/jsonSchema.ts";
 import {
   asObjectSchema,
+  getEditorType,
   isBooleanSchema,
   withObjectSchema,
 } from "../../../types/jsonSchema.ts";
@@ -49,10 +51,11 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   const itemSchemaKey = schemaKey ? `${schemaKey}[]` : undefined;
 
   // Get the type of the array items
-  const itemType = withObjectSchema(
-    itemsSchema,
-    (s) => (s.type || "string") as SchemaType,
-    "string" as SchemaType,
+  const itemType = getEditorType(itemsSchema);
+  const rootSchema = useRootSchema(schema);
+  const defaultRefTarget = useMemo(
+    () => collectRefTargets(rootSchema)[0]?.pointer ?? "#",
+    [rootSchema],
   );
 
   // Handle validation settings change
@@ -259,11 +262,22 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
                         ],
                       };
                 handleItemSchemaChange({ ...rest, ...initial });
+              } else if (newType === "ref") {
+                const {
+                  type: _type,
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  $ref: _r,
+                  ...rest
+                } = asObjectSchema(itemsSchema);
+                handleItemSchemaChange({ ...rest, $ref: defaultRefTarget });
               } else {
                 const {
                   anyOf: _a,
                   oneOf: _o,
                   allOf: _al,
+                  $ref: _r,
                   ...rest
                 } = asObjectSchema(itemsSchema);
                 handleItemSchemaChange({ ...rest, type: newType });

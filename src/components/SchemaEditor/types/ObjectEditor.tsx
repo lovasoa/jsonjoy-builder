@@ -11,9 +11,9 @@ import {
   updateObjectProperty,
   updatePropertyRequired,
 } from "../../../lib/schemaEditor.ts";
+import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx";
 import type { NewField, ObjectJsonSchema } from "../../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../../types/jsonSchema.ts";
-import { ButtonToggle } from "../../ui/button-toggle.tsx";
 import AddFieldButton from "../AddFieldButton.tsx";
 import SchemaPropertyRows from "../SchemaPropertyRows.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
@@ -29,6 +29,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
   readOnly = false,
 }) => {
   const t = useTranslation();
+  const ButtonToggle = useComponent("ButtonToggle");
 
   // Get object properties
   const properties = getSchemaProperties(schema);
@@ -194,6 +195,7 @@ const ObjectEditor: React.FC<TypeEditorProps> = ({
           {/* Additional properties */}
           <ButtonToggle
             onClick={handleAdditionalPropertiesToggle}
+            aria-pressed={additionalProperties === false}
             className={
               additionalProperties === false
                 ? "bg-amber-50 text-amber-600"

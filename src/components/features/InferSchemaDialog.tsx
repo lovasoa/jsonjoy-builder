@@ -1,7 +1,6 @@
 import Editor, { type BeforeMount, type OnMount } from "@monaco-editor/react";
 import { Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
-import { Button } from "../../components/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +12,7 @@ import {
 import { useMonacoTheme } from "../../hooks/use-monaco-theme.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { createSchemaFromJson } from "../../lib/schema-inference.ts";
+import { useComponent } from "../../registry/SchemaBuilderRegistryContext.tsx";
 import type { JsonSchema } from "../../types/jsonSchema.ts";
 
 /** @public */
@@ -30,6 +30,7 @@ export function InferSchemaDialog({
   onInfer,
   autoFocus = true,
 }: InferSchemaDialogProps) {
+  const Button = useComponent("Button");
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
   const [error, setError] = useState<string | null>(null);

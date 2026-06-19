@@ -1,9 +1,8 @@
 import { X } from "lucide-react";
 import { useId, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
-import { Label } from "../../../components/ui/label.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { cn } from "../../../lib/utils.ts";
+import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx";
 import type { ObjectJsonSchema } from "../../../types/jsonSchema.ts";
 import {
   isBooleanSchema,
@@ -35,6 +34,8 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 }) => {
   const [enumValue, setEnumValue] = useState("");
   const t = useTranslation();
+  const Input = useComponent("Input");
+  const Label = useComponent("Label");
 
   const maximumId = useId();
   const minimumId = useId();
@@ -263,18 +264,13 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 
           {(!readOnly || !!minimum) && (
             <div className="space-y-2">
-              <Label
-                htmlFor={minimumId}
-                className={
-                  minimum !== undefined &&
-                  (!!minMaxError || !!redundantMinError) &&
-                  "text-destructive"
-                }
-              >
-                {t.numberMinimumLabel}
-              </Label>
               <Input
                 id={minimumId}
+                label={t.numberMinimumLabel}
+                aria-invalid={
+                  minimum !== undefined &&
+                  (!!minMaxError || !!redundantMinError)
+                }
                 type="number"
                 value={minimum !== undefined ? minimum : ""}
                 onChange={(e) => {
@@ -297,18 +293,13 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 
           {(!readOnly || !!maximum) && (
             <div className="space-y-2">
-              <Label
-                htmlFor={maximumId}
-                className={
-                  maximum !== undefined &&
-                  (!!minMaxError || !!redundantMaxError) &&
-                  "text-destructive"
-                }
-              >
-                {t.numberMaximumLabel}
-              </Label>
               <Input
                 id={maximumId}
+                label={t.numberMaximumLabel}
+                aria-invalid={
+                  maximum !== undefined &&
+                  (!!minMaxError || !!redundantMaxError)
+                }
                 type="number"
                 value={maximum ?? ""}
                 onChange={(e) => {
@@ -335,18 +326,13 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {(!readOnly || !!exclusiveMinimum) && (
             <div className="space-y-2">
-              <Label
-                htmlFor={exclusiveMinimumId}
-                className={
-                  exclusiveMinimum !== undefined &&
-                  (!!minMaxError || !!redundantMinError) &&
-                  "text-destructive"
-                }
-              >
-                {t.numberExclusiveMinimumLabel}
-              </Label>
               <Input
                 id={exclusiveMinimumId}
+                label={t.numberExclusiveMinimumLabel}
+                aria-invalid={
+                  exclusiveMinimum !== undefined &&
+                  (!!minMaxError || !!redundantMinError)
+                }
                 type="number"
                 value={exclusiveMinimum ?? ""}
                 onChange={(e) => {
@@ -369,18 +355,13 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 
           {(!readOnly || !!exclusiveMaximum) && (
             <div className="space-y-2">
-              <Label
-                htmlFor={exclusiveMaximumId}
-                className={
-                  exclusiveMaximum !== undefined &&
-                  (!!minMaxError || !!redundantMaxError) &&
-                  "text-destructive"
-                }
-              >
-                {t.numberExclusiveMaximumLabel}
-              </Label>
               <Input
                 id={exclusiveMaximumId}
+                label={t.numberExclusiveMaximumLabel}
+                aria-invalid={
+                  exclusiveMaximum !== undefined &&
+                  (!!minMaxError || !!redundantMaxError)
+                }
                 type="number"
                 value={exclusiveMaximum ?? ""}
                 onChange={(e) => {
@@ -405,14 +386,10 @@ const NumberEditor: React.FC<NumberEditorProps> = ({
 
       {(!readOnly || !!multipleOf) && (
         <div className="space-y-2">
-          <Label
-            htmlFor={multipleOfId}
-            className={!!multipleOfError && "text-destructive"}
-          >
-            {t.numberMultipleOfLabel}
-          </Label>
           <Input
             id={multipleOfId}
+            label={t.numberMultipleOfLabel}
+            aria-invalid={!!multipleOfError}
             type="number"
             value={multipleOf ?? ""}
             onChange={(e) => {

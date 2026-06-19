@@ -1,10 +1,8 @@
 import { useId, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
-import { Label } from "../../../components/ui/label.tsx";
-import { Switch } from "../../../components/ui/switch.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { getArrayItemsSchema } from "../../../lib/schemaEditor.ts";
 import { cn } from "../../../lib/utils.ts";
+import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx";
 import type {
   ObjectJsonSchema,
   SchemaEditorType,
@@ -30,6 +28,9 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   depth = 0,
 }) => {
   const t = useTranslation();
+  const Input = useComponent("Input");
+  const Label = useComponent("Label");
+  const Switch = useComponent("Switch");
   const [minItems, setMinItems] = useState<number | undefined>(
     withObjectSchema(schema, (s) => s.minItems, undefined),
   );
@@ -143,16 +144,10 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {(!readOnly || !!minItems) && (
             <div className="space-y-2">
-              <Label
-                htmlFor={minItemsId}
-                className={
-                  (!!minMaxError || !!minItemsError) && "text-destructive"
-                }
-              >
-                {t.arrayMinimumLabel}
-              </Label>
               <Input
                 id={minItemsId}
+                label={t.arrayMinimumLabel}
+                aria-invalid={!!minMaxError || !!minItemsError}
                 type="number"
                 min={0}
                 value={minItems ?? ""}
@@ -172,16 +167,10 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
 
           {(!readOnly || !!maxItems) && (
             <div className="space-y-2">
-              <Label
-                htmlFor={maxItemsId}
-                className={
-                  (!!minMaxError || !!maxItemsError) && "text-destructive"
-                }
-              >
-                {t.arrayMaximumLabel}
-              </Label>
               <Input
                 id={maxItemsId}
+                label={t.arrayMaximumLabel}
+                aria-invalid={!!minMaxError || !!maxItemsError}
                 type="number"
                 min={0}
                 value={maxItems ?? ""}

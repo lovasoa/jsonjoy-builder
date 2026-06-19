@@ -1,0 +1,4 @@
+# Normalize line endings to LF for all text files on every platform.
+# Prevents Windows autocrlf checkouts (CRLF) from failing `biome check`
+# (biome.json enforces lineEnding: "lf").
+* text=auto eol=lf

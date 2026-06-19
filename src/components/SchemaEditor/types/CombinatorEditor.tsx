@@ -1,9 +1,9 @@
 import { ChevronDown, ChevronRight, CirclePlus, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import type { Translation } from "../../../i18n/translation-keys.ts";
 import { cn } from "../../../lib/utils.ts";
+import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx";
 import type {
   JsonSchema,
   ObjectJsonSchema,
@@ -93,6 +93,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   combinator,
 }) => {
   const t = useTranslation();
+  const Input = useComponent("Input");
   const strings = getCombinatorStrings(t, combinator);
 
   const rawOptions: JsonSchema[] = isBooleanSchema(schema)

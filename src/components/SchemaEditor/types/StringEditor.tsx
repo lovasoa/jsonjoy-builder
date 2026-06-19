@@ -1,9 +1,8 @@
 import { X } from "lucide-react";
 import { useId, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
-import { Label } from "../../../components/ui/label.tsx";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import { cn } from "../../../lib/utils.ts";
+import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx";
 import type { ObjectJsonSchema } from "../../../types/jsonSchema.ts";
 import {
   isBooleanSchema,
@@ -23,6 +22,8 @@ const StringEditor: React.FC<TypeEditorProps> = ({
   readOnly = false,
 }) => {
   const t = useTranslation();
+  const Input = useComponent("Input");
+  const Label = useComponent("Label");
   const [enumValue, setEnumValue] = useState("");
 
   const minLengthId = useId();
@@ -174,16 +175,10 @@ const StringEditor: React.FC<TypeEditorProps> = ({
 
         {(!readOnly || minLengthValue !== "") && (
           <div className="space-y-2">
-            <Label
-              htmlFor={minLengthId}
-              className={
-                (!!minMaxError || !!minLengthError) && "text-destructive"
-              }
-            >
-              {t.stringMinimumLengthLabel}
-            </Label>
             <Input
               id={minLengthId}
+              label={t.stringMinimumLengthLabel}
+              aria-invalid={!!minMaxError || !!minLengthError}
               type="number"
               min={0}
               value={minLengthValue}
@@ -205,16 +200,10 @@ const StringEditor: React.FC<TypeEditorProps> = ({
 
         {(!readOnly || maxLengthValue !== "") && (
           <div className="space-y-2">
-            <Label
-              htmlFor={maxLengthId}
-              className={
-                (!!minMaxError || !!maxLengthError) && "text-destructive"
-              }
-            >
-              {t.stringMaximumLengthLabel}
-            </Label>
             <Input
               id={maxLengthId}
+              label={t.stringMaximumLengthLabel}
+              aria-invalid={!!minMaxError || !!maxLengthError}
               type="number"
               min={0}
               disabled={readOnly}
@@ -244,14 +233,10 @@ const StringEditor: React.FC<TypeEditorProps> = ({
 
       {(!readOnly || patternValue !== "") && (
         <div className="space-y-2">
-          <Label
-            htmlFor={patternId}
-            className={!!patternError && "text-destructive"}
-          >
-            {t.stringPatternLabel}
-          </Label>
           <Input
             id={patternId}
+            label={t.stringPatternLabel}
+            aria-invalid={!!patternError}
             type="text"
             value={patternValue}
             onChange={(e) => {

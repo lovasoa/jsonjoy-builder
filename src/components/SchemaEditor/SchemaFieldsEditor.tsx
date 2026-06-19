@@ -14,6 +14,8 @@ import {
   updatePropertyRequired,
 } from "../../lib/schemaEditor.ts";
 import { cn } from "../../lib/utils.ts";
+import { SchemaBuilderRegistryProvider } from "../../registry/SchemaBuilderRegistryContext.tsx";
+import type { SchemaBuilderRegistry } from "../../registry/types.ts";
 import type { JsonSchema, NewField } from "../../types/jsonSchema.ts";
 import { asObjectSchema, isBooleanSchema } from "../../types/jsonSchema.ts";
 import AddFieldButton from "./AddFieldButton.tsx";
@@ -29,6 +31,7 @@ export interface SchemaFieldsEditorProps {
   className?: string;
   locale?: Translation;
   messages?: Partial<Translation>;
+  registry?: SchemaBuilderRegistry;
 }
 
 /** @public */
@@ -41,6 +44,7 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
   className,
   locale,
   messages,
+  registry,
 }) => {
   const [schema, setSchema] = useControllableSchema({
     value,
@@ -50,13 +54,15 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
 
   return (
     <SchemaBuilderProvider locale={locale} messages={messages}>
-      <SchemaFieldsEditorContent
-        schema={schema}
-        onChange={setSchema}
-        readOnly={readOnly}
-        autoFocus={autoFocus}
-        className={className}
-      />
+      <SchemaBuilderRegistryProvider value={registry}>
+        <SchemaFieldsEditorContent
+          schema={schema}
+          onChange={setSchema}
+          readOnly={readOnly}
+          autoFocus={autoFocus}
+          className={className}
+        />
+      </SchemaBuilderRegistryProvider>
     </SchemaBuilderProvider>
   );
 };

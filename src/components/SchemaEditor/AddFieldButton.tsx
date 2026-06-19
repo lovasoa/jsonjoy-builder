@@ -1,7 +1,5 @@
 import { CirclePlus } from "lucide-react";
 import { type FC, type FormEvent, useId, useState } from "react";
-import { Badge } from "../../components/ui/badge.tsx";
-import { Button } from "../../components/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
@@ -10,9 +8,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../../components/ui/dialog.tsx";
-import { Input } from "../../components/ui/input.tsx";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { cn } from "../../lib/utils.ts";
+import { useComponent } from "../../registry/SchemaBuilderRegistryContext.tsx";
 import type { NewField, SchemaEditorType } from "../../types/jsonSchema.ts";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
@@ -45,6 +43,9 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const formId = useId();
 
   const t = useTranslation();
+  const Badge = useComponent("Badge");
+  const Button = useComponent("Button");
+  const Input = useComponent("Input");
   const regexError = (() => {
     if (!useNameRegex || !fieldName.trim()) return "";
     try {

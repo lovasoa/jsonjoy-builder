@@ -7,7 +7,7 @@
  * Users wrap their design-system primitives to match these shapes.
  */
 
-/** @public */
+/** @experimental */
 export interface ButtonProps {
   children?: React.ReactNode;
   className?: string;
@@ -25,7 +25,7 @@ export interface ButtonProps {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 }
 
-/** @public */
+/** @experimental */
 export interface InputProps {
   /**
    * Field label. When provided, the Input is responsible for rendering it
@@ -52,7 +52,7 @@ export interface InputProps {
   "aria-describedby"?: string;
 }
 
-/** @public */
+/** @experimental */
 export interface SwitchProps {
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
@@ -61,21 +61,21 @@ export interface SwitchProps {
   id?: string;
 }
 
-/** @public */
+/** @experimental */
 export interface LabelProps {
   children?: React.ReactNode;
   className?: string;
   htmlFor?: string;
 }
 
-/** @public */
+/** @experimental */
 export interface BadgeProps {
   children?: React.ReactNode;
   className?: string;
   variant?: "default" | "secondary" | "destructive" | "outline";
 }
 
-/** @public */
+/** @experimental */
 export interface ButtonToggleProps {
   children?: React.ReactNode;
   className?: string;
@@ -88,7 +88,7 @@ export interface ButtonToggleProps {
   "aria-pressed"?: boolean | "true" | "false";
 }
 
-/** @public */
+/** @experimental */
 export interface SchemaDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -99,7 +99,7 @@ export interface SchemaDialogProps {
   children: React.ReactNode;
 }
 
-/** @public */
+/** @experimental */
 export interface SchemaBuilderComponents {
   Button: React.ComponentType<ButtonProps>;
   Input: React.ComponentType<InputProps>;
@@ -114,49 +114,49 @@ export interface SchemaBuilderComponents {
 // Slots
 // ──────────────────────────────────────────────
 
-/** @public */
+/** @experimental */
 export interface SlotChildrenProps {
   children: React.ReactNode;
   className?: string;
 }
 
-/** @public */
+/** @experimental */
 export type MobileMode = "visual" | "json";
 
-/** @public */
+/** @experimental */
 export interface MobileModeSwitchSlotProps {
   mode: MobileMode;
   onChange: (mode: MobileMode) => void;
   children?: React.ReactNode;
 }
 
-/** @public */
+/** @experimental */
 export interface FullscreenToggleSlotProps {
   isFullscreen: boolean;
   onToggle: () => void;
   children?: React.ReactNode;
 }
 
-/** @public */
+/** @experimental */
 export interface FieldFrameSlotProps extends SlotChildrenProps {
   depth?: number;
   expanded?: boolean;
   hasErrors?: boolean;
 }
 
-/** @public */
+/** @experimental */
 export type FieldHeaderSlotProps = SlotChildrenProps;
 
-/** @public */
+/** @experimental */
 export type FieldMainSlotProps = SlotChildrenProps;
 
-/** @public */
+/** @experimental */
 export type FieldActionsSlotProps = SlotChildrenProps;
 
-/** @public */
+/** @experimental */
 export type FieldBodySlotProps = SlotChildrenProps;
 
-/** @public */
+/** @experimental */
 export interface SchemaBuilderSlots {
   /** Wraps the entire editor tree. Override to add a root container or theme boundary. */
   Root: React.ComponentType<SlotChildrenProps>;
@@ -176,7 +176,7 @@ export interface SchemaBuilderSlots {
   FieldBody: React.ComponentType<FieldBodySlotProps>;
 }
 
-/** @public */
+/** @experimental */
 export type SchemaBuilderSlotProps = Partial<{
   [K in keyof SchemaBuilderSlots]: Record<string, unknown>;
 }>;
@@ -185,7 +185,7 @@ export type SchemaBuilderSlotProps = Partial<{
 // Root registry
 // ──────────────────────────────────────────────
 
-/** @public */
+/** @experimental */
 export interface SchemaBuilderRegistry {
   components?: Partial<SchemaBuilderComponents>;
   slots?: Partial<SchemaBuilderSlots>;

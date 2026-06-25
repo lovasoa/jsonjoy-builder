@@ -160,6 +160,8 @@ export const uk: Translation = {
   refExternalError: "Не вдалося завантажити зовнішню схему:",
   refPreviewShow: "Показати схему за посиланням",
   refPreviewHide: "Сховати схему за посиланням",
+  refPreviewDepthLimit: "Досягнуто ліміт глибини перегляду",
+  refExternalTimeout: "Перевищено час завантаження зовнішньої схеми",
   definitionsTitle: "Визначення",
   definitionsDescription:
     "Багаторазові схеми, на які можна посилатися через $ref",

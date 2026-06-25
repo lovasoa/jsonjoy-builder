@@ -163,6 +163,8 @@ export const fr: Translation = {
   refExternalError: "Impossible de charger le schéma externe :",
   refPreviewShow: "Afficher le schéma référencé",
   refPreviewHide: "Masquer le schéma référencé",
+  refPreviewDepthLimit: "Limite de profondeur d'aperçu atteinte",
+  refExternalTimeout: "Le chargement du schéma externe a expiré",
   definitionsTitle: "Définitions",
   definitionsDescription:
     "Schémas réutilisables pouvant être référencés ailleurs avec $ref",

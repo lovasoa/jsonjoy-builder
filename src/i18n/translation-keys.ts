@@ -793,6 +793,18 @@ export interface Translation {
    * > Hide referenced schema
    */
   readonly refPreviewHide: string;
+  /**
+   * The translation for the key `refPreviewDepthLimit`. English default is:
+   *
+   * > Preview depth limit reached
+   */
+  readonly refPreviewDepthLimit: string;
+  /**
+   * The translation for the key `refExternalTimeout`. English default is:
+   *
+   * > External schema load timed out
+   */
+  readonly refExternalTimeout: string;
 
   /**
    * The translation for the key `definitionsTitle`. English default is:

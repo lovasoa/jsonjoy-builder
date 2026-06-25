@@ -154,6 +154,8 @@ export const zh: Translation = {
   refExternalError: "无法加载外部 Schema：",
   refPreviewShow: "显示被引用的 Schema",
   refPreviewHide: "隐藏被引用的 Schema",
+  refPreviewDepthLimit: "已达到预览深度上限",
+  refExternalTimeout: "外部 Schema 加载超时",
   definitionsTitle: "定义",
   definitionsDescription: "可在其他地方通过 $ref 引用的可复用 Schema",
   definitionAddButton: "添加定义",

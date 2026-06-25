@@ -163,6 +163,8 @@ export const de: Translation = {
   refExternalError: "Externes Schema konnte nicht geladen werden:",
   refPreviewShow: "Referenziertes Schema anzeigen",
   refPreviewHide: "Referenziertes Schema ausblenden",
+  refPreviewDepthLimit: "Vorschautiefe erreicht",
+  refExternalTimeout: "Laden des externen Schemas hat zu lange gedauert",
   definitionsTitle: "Definitionen",
   definitionsDescription:
     "Wiederverwendbare Schemata, die an anderer Stelle mit $ref referenziert werden können",

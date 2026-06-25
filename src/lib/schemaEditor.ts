@@ -159,13 +159,12 @@ export function createFieldSchema(field: NewField): JsonSchema {
   const { type, description, validation, additionalProperties } = field;
 
   if (type === "ref") {
-    const schema =
+    const ref =
       isObjectSchema(validation) && typeof validation.$ref === "string"
-        ? validation
-        : { $ref: "#" };
-
+        ? validation.$ref
+        : "#";
     return {
-      ...schema,
+      $ref: ref,
       description: description || undefined,
     };
   }

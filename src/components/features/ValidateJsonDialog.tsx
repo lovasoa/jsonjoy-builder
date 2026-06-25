@@ -60,6 +60,8 @@ export function ValidateJsonDialog({
     defaultEditorOptions,
   } = useMonacoTheme();
 
+  const EXTERNAL_SCHEMA_TIMEOUT_MS = 10_000;
+
   const validateJsonAgainstSchema = useCallback(() => {
     const seq = ++validationSeqRef.current;
 
@@ -68,7 +70,14 @@ export function ValidateJsonDialog({
       return;
     }
 
-    void validateJsonAsync(jsonInput, schema, resolveExternalRef).then(
+    const timeoutPromise = new Promise<ValidationResult>((_, reject) =>
+      setTimeout(() => reject(new Error("timeout")), EXTERNAL_SCHEMA_TIMEOUT_MS),
+    );
+
+    void Promise.race([
+      validateJsonAsync(jsonInput, schema, resolveExternalRef),
+      timeoutPromise,
+    ]).then(
       (result) => {
         // Ignore results from validations that were superseded while
         // external schemas were loading
@@ -76,8 +85,16 @@ export function ValidateJsonDialog({
           setValidationResult(result);
         }
       },
+      () => {
+        if (seq === validationSeqRef.current) {
+          setValidationResult({
+            valid: false,
+            errors: [{ path: "", message: t.refExternalTimeout }],
+          });
+        }
+      },
     );
-  }, [jsonInput, schema, resolveExternalRef]);
+  }, [jsonInput, schema, resolveExternalRef, t.refExternalTimeout]);
 
   useEffect(() => {
     if (debounceTimerRef.current) {

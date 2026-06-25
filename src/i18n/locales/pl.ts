@@ -164,6 +164,8 @@ export const pl: Translation = {
   refExternalError: "Nie udało się wczytać zewnętrznego schematu:",
   refPreviewShow: "Pokaż schemat docelowy",
   refPreviewHide: "Ukryj schemat docelowy",
+  refPreviewDepthLimit: "Osiągnięto limit głębokości podglądu",
+  refExternalTimeout: "Przekroczono czas ładowania zewnętrznego schematu",
   definitionsTitle: "Definicje",
   definitionsDescription:
     "Schematy wielokrotnego użytku, do których można się odwoływać przez $ref",

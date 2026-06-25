@@ -25,6 +25,8 @@ import {
 import type { TypeEditorProps } from "../TypeEditor.tsx";
 import TypeEditor from "../TypeEditor.tsx";
 
+const MAX_REF_PREVIEW_DEPTH = 3;
+
 const RefEditor: React.FC<TypeEditorProps> = ({
   schema,
   readOnly = false,
@@ -249,7 +251,7 @@ const RefEditor: React.FC<TypeEditorProps> = ({
             </button>
           </div>
 
-          {showPreview && (
+          {showPreview && depth < MAX_REF_PREVIEW_DEPTH ? (
             <div className="rounded-lg border p-3 animate-in">
               {/* External previews resolve their own nested refs against
                   the loaded document, not the edited one */}
@@ -261,7 +263,11 @@ const RefEditor: React.FC<TypeEditorProps> = ({
                 </RootSchemaContext.Provider>
               )}
             </div>
-          )}
+          ) : showPreview ? (
+            <p className="text-xs text-muted-foreground italic">
+              {t.refPreviewDepthLimit}
+            </p>
+          ) : null}
         </div>
       )}
     </div>

@@ -162,6 +162,8 @@ export const ru: Translation = {
   refExternalError: "Не удалось загрузить внешнюю схему:",
   refPreviewShow: "Показать схему по ссылке",
   refPreviewHide: "Скрыть схему по ссылке",
+  refPreviewDepthLimit: "Достигнут предел глубины предпросмотра",
+  refExternalTimeout: "Превышено время загрузки внешней схемы",
   definitionsTitle: "Определения",
   definitionsDescription:
     "Переиспользуемые схемы, на которые можно ссылаться через $ref",

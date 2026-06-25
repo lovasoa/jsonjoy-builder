@@ -271,6 +271,11 @@ const externalDocumentCaches = new WeakMap<
  * Resolves an external document through the given resolver, caching
  * documents per resolver so each one is loaded at most once per session.
  * Failed loads are evicted from the cache so they can be retried.
+ *
+ * For caching to be effective, `resolver` must be a stable reference
+ * (e.g. a module-level function or a `useCallback`-stabilised value).
+ * A new inline arrow function on each render produces a new WeakMap key
+ * every time, silently bypassing the cache and re-fetching on every call.
  */
 export function resolveExternalDocument(
   resolver: ExternalRefResolver,

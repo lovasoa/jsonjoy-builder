@@ -159,6 +159,8 @@ export const en: Translation = {
   refExternalError: "Could not load the external schema:",
   refPreviewShow: "Show referenced schema",
   refPreviewHide: "Hide referenced schema",
+  refPreviewDepthLimit: "Preview depth limit reached",
+  refExternalTimeout: "External schema load timed out",
   definitionsTitle: "Definitions",
   definitionsDescription:
     "Reusable schemas that can be referenced elsewhere with $ref",

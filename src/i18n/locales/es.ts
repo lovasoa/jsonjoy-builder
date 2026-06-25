@@ -163,6 +163,8 @@ export const es: Translation = {
   refExternalError: "No se pudo cargar el esquema externo:",
   refPreviewShow: "Mostrar esquema referenciado",
   refPreviewHide: "Ocultar esquema referenciado",
+  refPreviewDepthLimit: "Límite de profundidad de vista previa alcanzado",
+  refExternalTimeout: "El tiempo de carga del esquema externo ha expirado",
   definitionsTitle: "Definiciones",
   definitionsDescription:
     "Esquemas reutilizables que se pueden referenciar en otros lugares con $ref",

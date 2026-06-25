@@ -1,11 +1,11 @@
-import { render, waitFor, within } from "@testing-library/react";
+import { fireEvent, render, waitFor, within } from "@testing-library/react";
 import "global-jsdom/register";
 import { describe, test } from "node:test";
 import React from "react";
 import RefEditor from "../../../../src/components/SchemaEditor/types/RefEditor.tsx";
 import { ExternalRefResolverContext } from "../../../../src/hooks/use-external-ref.ts";
 import { RootSchemaContext } from "../../../../src/hooks/use-root-schema.ts";
-import type { ExternalRefResolver } from "../../../../src/lib/refUtils.ts";
+import type { ExternalRefResolver } from "../../../../src/index.ts";
 import type { ObjectJsonSchema } from "../../../../src/types/jsonSchema.ts";
 
 const rootSchema: ObjectJsonSchema = {
@@ -25,6 +25,7 @@ function renderRefEditor(
   schema: ObjectJsonSchema,
   readOnly: boolean,
   resolveExternalRef?: ExternalRefResolver,
+  depth?: number,
 ) {
   const element = React.createElement(
     RootSchemaContext.Provider,
@@ -37,6 +38,7 @@ function renderRefEditor(
         onChange: () => {},
         schema,
         validationNode: undefined,
+        depth,
       }),
     ),
   );
@@ -83,6 +85,18 @@ describe("RefEditor", () => {
     );
 
     await waitFor(() => within(container).getByText("Show referenced schema"));
+    t.assert.snapshot(container.innerHTML);
+  });
+
+  test("shows depth-limit message instead of preview at max depth", (t) => {
+    const { container } = renderRefEditor(
+      { $ref: "#/$defs/address" },
+      false,
+      undefined,
+      3,
+    );
+    fireEvent.click(within(container).getByText("Show referenced schema"));
+    within(container).getByText("Preview depth limit reached");
     t.assert.snapshot(container.innerHTML);
   });
 

@@ -71,7 +71,10 @@ export function ValidateJsonDialog({
     }
 
     const timeoutPromise = new Promise<ValidationResult>((_, reject) =>
-      setTimeout(() => reject(new Error("timeout")), EXTERNAL_SCHEMA_TIMEOUT_MS),
+      setTimeout(
+        () => reject(new Error("timeout")),
+        EXTERNAL_SCHEMA_TIMEOUT_MS,
+      ),
     );
 
     void Promise.race([

@@ -7,6 +7,8 @@ import { useTranslation } from "../../hooks/use-translation.ts";
 import { SchemaBuilderProvider } from "../../i18n/schema-builder-config.tsx";
 import type { Translation } from "../../i18n/translation-keys.ts";
 import { cn } from "../../lib/utils.ts";
+import { SchemaBuilderRegistryProvider } from "../../registry/SchemaBuilderRegistryContext.tsx";
+import type { SchemaBuilderRegistry } from "../../registry/types.ts";
 import type { JsonSchema } from "../../types/jsonSchema.ts";
 
 /** @public */
@@ -19,6 +21,7 @@ export interface SchemaJsonEditorProps {
   className?: string;
   locale?: Translation;
   messages?: Partial<Translation>;
+  registry?: SchemaBuilderRegistry;
 }
 
 /** @public */
@@ -31,6 +34,7 @@ const SchemaJsonEditor: FC<SchemaJsonEditorProps> = ({
   className,
   locale,
   messages,
+  registry,
 }) => {
   const [schema, setSchema] = useControllableSchema({
     value,
@@ -40,13 +44,15 @@ const SchemaJsonEditor: FC<SchemaJsonEditorProps> = ({
 
   return (
     <SchemaBuilderProvider locale={locale} messages={messages}>
-      <SchemaJsonEditorContent
-        value={schema}
-        onChange={setSchema}
-        readOnly={readOnly}
-        autoFocus={autoFocus}
-        className={className}
-      />
+      <SchemaBuilderRegistryProvider value={registry}>
+        <SchemaJsonEditorContent
+          value={schema}
+          onChange={setSchema}
+          readOnly={readOnly}
+          autoFocus={autoFocus}
+          className={className}
+        />
+      </SchemaBuilderRegistryProvider>
     </SchemaBuilderProvider>
   );
 };

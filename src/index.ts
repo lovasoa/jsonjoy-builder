@@ -35,6 +35,19 @@ export {
   type ExternalRefResolver,
   fetchExternalRef,
 } from "./lib/refUtils.ts";
+export type {
+  SchemaBuilderComponents,
+  SchemaBuilderRegistry,
+  SchemaBuilderSlots,
+} from "./registry/index.ts";
+export {
+  mergeRegistry,
+  SchemaBuilderRegistryProvider,
+  useComponent,
+  useRegistry,
+  useSlot,
+  useSlotProps,
+} from "./registry/index.ts";
 export type { JsonSchema } from "./types/jsonSchema.ts";
 export {
   InferSchemaDialog,

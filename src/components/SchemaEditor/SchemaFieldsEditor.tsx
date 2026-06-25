@@ -17,6 +17,8 @@ import {
   updatePropertyRequired,
 } from "../../lib/schemaEditor.ts";
 import { cn } from "../../lib/utils.ts";
+import { SchemaBuilderRegistryProvider } from "../../registry/SchemaBuilderRegistryContext.tsx";
+import type { SchemaBuilderRegistry } from "../../registry/types.ts";
 import type { JsonSchema, NewField } from "../../types/jsonSchema.ts";
 import {
   asObjectSchema,
@@ -39,6 +41,7 @@ export interface SchemaFieldsEditorProps {
   className?: string;
   locale?: Translation;
   messages?: Partial<Translation>;
+  registry?: SchemaBuilderRegistry;
   /**
    * Opt-in loader for external $ref targets, used to preview the
    * referenced schemas. When omitted, external references are
@@ -58,6 +61,7 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
   className,
   locale,
   messages,
+  registry,
   resolveExternalRef,
 }) => {
   const [schema, setSchema] = useControllableSchema({
@@ -68,14 +72,16 @@ const SchemaFieldsEditor: FC<SchemaFieldsEditorProps> = ({
 
   return (
     <SchemaBuilderProvider locale={locale} messages={messages}>
-      <SchemaFieldsEditorContent
-        schema={schema}
-        onChange={setSchema}
-        readOnly={readOnly}
-        autoFocus={autoFocus}
-        className={className}
-        resolveExternalRef={resolveExternalRef}
-      />
+      <SchemaBuilderRegistryProvider value={registry}>
+        <SchemaFieldsEditorContent
+          schema={schema}
+          onChange={setSchema}
+          readOnly={readOnly}
+          autoFocus={autoFocus}
+          className={className}
+          resolveExternalRef={resolveExternalRef}
+        />
+      </SchemaBuilderRegistryProvider>
     </SchemaBuilderProvider>
   );
 };

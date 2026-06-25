@@ -14,7 +14,7 @@
     "react"
   ],
   "private": false,
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "sideEffects": false,
   "repository": {
@@ -57,6 +57,8 @@
     "typecheck": "tsc --build --force",
     "test": "tsx --tsconfig tsconfig.test.json --test test/**/*.test.{js,ts,tsx}",
     "test:snapshots": "tsx --test-update-snapshots --tsconfig tsconfig.test.json --test test/**/*.test.{js,ts,tsx}",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
     "prepack": "npm run build"
   },
   "dependencies": {
@@ -76,10 +78,17 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.12",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
     "@microsoft/api-extractor": "^7.52.11",
+    "@mui/icons-material": "^9.1.0",
+    "@mui/material": "^9.1.0",
     "@rsbuild/core": "^2.0.7",
     "@rsbuild/plugin-react": "^2.0.0",
     "@rslib/core": "^0.21.2",
+    "@storybook/addon-essentials": "^8.6.14",
+    "@storybook/react": "^8.6.14",
+    "@storybook/react-vite": "^8.6.14",
     "@tailwindcss/postcss": "^4.1.12",
     "@testing-library/react": "^16.3.0",
     "@types/node": "^25.0.3",
@@ -89,6 +98,7 @@
     "monaco-editor": "^0.53.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
+    "storybook": "^8.6.14",
     "tailwindcss": "^4.1.12",
     "tsx": "^4.20.6",
     "typescript": "^6.0.3"

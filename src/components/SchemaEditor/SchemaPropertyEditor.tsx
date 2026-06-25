@@ -1,10 +1,13 @@
 import { ChevronDown, ChevronRight, Link, Regex, X } from "lucide-react";
 import { type ReactNode, useEffect, useMemo, useState } from "react";
-import { Input } from "../../components/ui/input.tsx";
 import { useRootSchema } from "../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import { collectRefTargets } from "../../lib/refUtils.ts";
 import { cn } from "../../lib/utils.ts";
+import {
+  useComponent,
+  useSlot,
+} from "../../registry/SchemaBuilderRegistryContext.tsx";
 import type {
   JsonSchema,
   ObjectJsonSchema,
@@ -16,11 +19,10 @@ import {
   getSchemaDescription,
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
-import { Badge } from "../ui/badge.tsx";
-import { ButtonToggle } from "../ui/button-toggle.tsx";
 import TypeDropdown from "./TypeDropdown.tsx";
 import type { EnumChangeContext } from "./TypeEditor.tsx";
 import TypeEditor from "./TypeEditor.tsx";
+
 export interface SchemaPropertyEditorProps {
   name: string;
   schema: JsonSchema;
@@ -90,6 +92,13 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
     [rootSchema],
   );
 
+  const Input = useComponent("Input");
+  const Badge = useComponent("Badge");
+  const FieldFrame = useSlot("FieldFrame");
+  const FieldHeader = useSlot("FieldHeader");
+  const FieldActions = useSlot("FieldActions");
+  const FieldBody = useSlot("FieldBody");
+
   // Update temp values when props change
   useEffect(() => {
     setTempName(name);
@@ -128,186 +137,209 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
     });
   };
 
-  return (
-    <div
-      className={cn(
-        "mb-2 animate-in rounded-lg border transition-all duration-200",
-        depth > 0 && "ml-0 sm:ml-4 border-l border-l-border/40",
-      )}
-    >
-      <div className="relative json-field-row justify-between group">
-        <div className="flex items-center gap-2 grow min-w-0">
-          {/* Expand/collapse button */}
-          <button
-            type="button"
-            className="text-muted-foreground hover:text-foreground transition-colors"
-            onClick={() => setExpanded(!expanded)}
-            aria-label={expanded ? t.collapse : t.expand}
-          >
-            {expanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
-          </button>
+  const headerContent = (
+    <>
+      {/* Expand/collapse button */}
+      <button
+        type="button"
+        className="text-muted-foreground hover:text-foreground transition-colors"
+        onClick={() => setExpanded(!expanded)}
+        aria-label={expanded ? t.collapse : t.expand}
+      >
+        {expanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+      </button>
 
-          {/* Property name */}
-          <div className="flex items-center gap-2 grow min-w-0 overflow-visible">
-            <div className="flex items-center gap-2 min-w-0 grow overflow-visible">
-              {!readOnly && isEditingName ? (
-                <Input
-                  value={tempName}
-                  onChange={(e) => setTempName(e.target.value)}
-                  onBlur={handleNameSubmit}
-                  onKeyDown={(e) => e.key === "Enter" && handleNameSubmit()}
-                  className="h-8 text-sm font-medium min-w-[120px] max-w-full z-10"
-                  autoFocus={autoFocus}
-                  onFocus={(e) => e.target.select()}
-                />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsEditingName(true)}
-                  onKeyDown={(e) => e.key === "Enter" && setIsEditingName(true)}
-                  aria-label={nameAriaLabel}
-                  title={nameTitle}
-                  className={cn(
-                    "json-field-label font-medium cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate min-w-[80px] max-w-[50%]",
-                    nameClassName,
-                  )}
-                >
-                  {name}
-                </button>
-              )}
-              {/* Description */}
-              {!readOnly && isEditingDesc ? (
-                <Input
-                  value={tempDesc}
-                  onChange={(e) => setTempDesc(e.target.value)}
-                  onBlur={handleDescSubmit}
-                  onKeyDown={(e) => e.key === "Enter" && handleDescSubmit()}
-                  placeholder={t.propertyDescriptionPlaceholder}
-                  className="h-8 text-xs text-muted-foreground italic flex-1 min-w-[150px] z-10"
-                  autoFocus={autoFocus}
-                  onFocus={(e) => e.target.select()}
-                />
-              ) : tempDesc ? (
-                <button
-                  type="button"
-                  onClick={() => setIsEditingDesc(true)}
-                  onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
-                  className="text-xs text-muted-foreground italic cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate flex-1 max-w-[40%] mr-2"
-                >
-                  {tempDesc}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => setIsEditingDesc(true)}
-                  onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
-                  className="text-xs text-muted-foreground/50 italic cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all opacity-0 group-hover:opacity-100 text-left truncate flex-1 max-w-[40%] mr-2"
-                >
-                  {t.propertyDescriptionButton}
-                </button>
-              )}
-            </div>
-
-            {/* Type display */}
-            <div className="flex items-center gap-2 justify-end shrink-0">
-              <TypeDropdown
-                value={type}
-                readOnly={readOnly}
-                onChange={(newType: SchemaEditorType) => {
-                  if (
-                    newType === "anyOf" ||
-                    newType === "oneOf" ||
-                    newType === "allOf"
-                  ) {
-                    const {
-                      type: _type,
-                      anyOf: _a,
-                      oneOf: _o,
-                      allOf: _al,
-                      $ref: _r,
-                      ...rest
-                    } = asObjectSchema(schema);
-                    const initial =
-                      newType === "allOf"
-                        ? { allOf: [{ type: "object" as const }] }
-                        : {
-                            [newType]: [
-                              { type: "string" as const },
-                              { type: "number" as const },
-                            ],
-                          };
-                    onSchemaChange({ ...rest, ...initial });
-                  } else if (newType === "ref") {
-                    const {
-                      type: _type,
-                      anyOf: _a,
-                      oneOf: _o,
-                      allOf: _al,
-                      $ref: _r,
-                      ...rest
-                    } = asObjectSchema(schema);
-                    onSchemaChange({ ...rest, $ref: defaultRefTarget });
-                  } else {
-                    const {
-                      anyOf: _a,
-                      oneOf: _o,
-                      allOf: _al,
-                      $ref: _r,
-                      ...rest
-                    } = asObjectSchema(schema);
-                    onSchemaChange({ ...rest, type: newType });
-                  }
-                }}
-              />
-
-              {/* Status */}
-              {statusControl}
-            </div>
-          </div>
-        </div>
-
-        {/* Error badge */}
-        {validationNode?.cumulativeChildrenErrors > 0 && (
-          <Badge
-            className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums justify-center"
-            variant="destructive"
-          >
-            {validationNode.cumulativeChildrenErrors}
-          </Badge>
-        )}
-
-        {/* Delete button */}
-        {!readOnly && (
-          <div className="flex items-center gap-1 text-muted-foreground">
+      {/* Property name + description + type */}
+      <div className="flex items-center gap-2 grow min-w-0 overflow-visible">
+        <div className="flex items-center gap-2 min-w-0 grow overflow-visible">
+          {!readOnly && isEditingName ? (
+            <Input
+              value={tempName}
+              onChange={(e) => setTempName(e.target.value)}
+              onBlur={handleNameSubmit}
+              onKeyDown={(e) => e.key === "Enter" && handleNameSubmit()}
+              className="h-8 text-sm font-medium min-w-[120px] max-w-full z-10"
+              autoFocus={autoFocus}
+              onFocus={(e) => e.target.select()}
+            />
+          ) : (
             <button
               type="button"
-              onClick={onDelete}
-              className="p-1 rounded-md hover:bg-secondary hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
-              aria-label={t.propertyDelete}
+              onClick={() => setIsEditingName(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsEditingName(true)}
+              aria-label={nameAriaLabel}
+              title={nameTitle}
+              className={cn(
+                "json-field-label font-medium cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate min-w-[80px] max-w-[50%]",
+                nameClassName,
+              )}
             >
-              <X size={16} />
+              {name}
             </button>
-          </div>
-        )}
+          )}
+          {/* Description */}
+          {!readOnly && isEditingDesc ? (
+            <Input
+              value={tempDesc}
+              onChange={(e) => setTempDesc(e.target.value)}
+              onBlur={handleDescSubmit}
+              onKeyDown={(e) => e.key === "Enter" && handleDescSubmit()}
+              placeholder={t.propertyDescriptionPlaceholder}
+              className="h-8 text-xs text-muted-foreground italic flex-1 min-w-[150px] z-10"
+              autoFocus={autoFocus}
+              onFocus={(e) => e.target.select()}
+            />
+          ) : tempDesc ? (
+            <button
+              type="button"
+              onClick={() => setIsEditingDesc(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
+              className="text-xs text-muted-foreground italic cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all text-left truncate flex-1 max-w-[40%] mr-2"
+            >
+              {tempDesc}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setIsEditingDesc(true)}
+              onKeyDown={(e) => e.key === "Enter" && setIsEditingDesc(true)}
+              className="text-xs text-muted-foreground/50 italic cursor-text px-2 py-0.5 -mx-0.5 rounded-sm hover:bg-secondary/30 hover:shadow-xs hover:ring-1 hover:ring-ring/20 transition-all opacity-0 group-hover:opacity-100 text-left truncate flex-1 max-w-[40%] mr-2"
+            >
+              {t.propertyDescriptionButton}
+            </button>
+          )}
+        </div>
+
+        {/* Type display */}
+        <div className="flex items-center gap-2 justify-end shrink-0">
+          <TypeDropdown
+            value={type}
+            readOnly={readOnly}
+            onChange={(newType: SchemaEditorType) => {
+              if (
+                newType === "anyOf" ||
+                newType === "oneOf" ||
+                newType === "allOf"
+              ) {
+                const {
+                  type: _type,
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  $ref: _r,
+                  ...rest
+                } = asObjectSchema(schema);
+                const initial =
+                  newType === "allOf"
+                    ? { allOf: [{ type: "object" as const }] }
+                    : {
+                        [newType]: [
+                          { type: "string" as const },
+                          { type: "number" as const },
+                        ],
+                      };
+                onSchemaChange({ ...rest, ...initial });
+              } else if (newType === "ref") {
+                const {
+                  type: _type,
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  $ref: _r,
+                  ...rest
+                } = asObjectSchema(schema);
+                onSchemaChange({ ...rest, $ref: defaultRefTarget });
+              } else {
+                const {
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  $ref: _r,
+                  ...rest
+                } = asObjectSchema(schema);
+                onSchemaChange({ ...rest, type: newType });
+              }
+            }}
+          />
+
+          {/* Status */}
+          {statusControl}
+        </div>
+      </div>
+    </>
+  );
+
+  const actionsContent = (
+    <>
+      {/* Error badge */}
+      {validationNode?.cumulativeChildrenErrors > 0 && (
+        <Badge
+          className="h-5 min-w-5 rounded-full px-1 font-mono tabular-nums justify-center"
+          variant="destructive"
+        >
+          {validationNode.cumulativeChildrenErrors}
+        </Badge>
+      )}
+
+      {/* Delete button */}
+      {!readOnly && (
+        <div className="flex items-center gap-1 text-muted-foreground">
+          <button
+            type="button"
+            onClick={onDelete}
+            className="p-1 rounded-md hover:bg-secondary hover:text-destructive transition-colors opacity-0 group-hover:opacity-100"
+            aria-label={t.propertyDelete}
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+    </>
+  );
+
+  const bodyContent = (
+    <>
+      {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
+      <TypeEditor
+        schema={schema}
+        readOnly={readOnly}
+        validationNode={validationNode}
+        onChange={handleSchemaUpdate}
+        schemaKey={schemaKey ?? name}
+        onAddEnum={onAddEnum}
+        onDeleteEnum={onDeleteEnum}
+        depth={depth + 1}
+      />
+    </>
+  );
+
+  return (
+    <FieldFrame
+      depth={depth}
+      expanded={expanded}
+      hasErrors={(validationNode?.cumulativeChildrenErrors ?? 0) > 0}
+    >
+      <div
+        data-jsonjoy-slot="field-header"
+        className="relative json-field-row justify-between group"
+      >
+        <FieldHeader>{headerContent}</FieldHeader>
+
+        <FieldActions data-jsonjoy-slot="field-actions">
+          {actionsContent}
+        </FieldActions>
       </div>
 
       {/* Type-specific editor */}
       {expanded && (
-        <div className="pt-1 pb-2 px-2 sm:px-3 animate-in">
-          {readOnly && tempDesc && <p className="pb-2">{tempDesc}</p>}
-          <TypeEditor
-            schema={schema}
-            readOnly={readOnly}
-            validationNode={validationNode}
-            onChange={handleSchemaUpdate}
-            schemaKey={schemaKey ?? name}
-            onAddEnum={onAddEnum}
-            onDeleteEnum={onDeleteEnum}
-            depth={depth + 1}
-          />
+        <div
+          data-jsonjoy-slot="field-body"
+          className="pt-1 pb-2 px-2 sm:px-3 animate-in"
+        >
+          <FieldBody data-jsonjoy-slot="field-body">{bodyContent}</FieldBody>
         </div>
       )}
-    </div>
+    </FieldFrame>
   );
 };
 
@@ -318,6 +350,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
   ...props
 }) => {
   const t = useTranslation();
+  const ButtonToggle = useComponent("ButtonToggle");
 
   return (
     <SchemaPropertyEditorFrame
@@ -326,6 +359,7 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
       statusControl={
         <ButtonToggle
           onClick={() => !readOnly && onRequiredChange(!required)}
+          aria-pressed={required}
           className={
             required
               ? "bg-red-50 text-red-500"

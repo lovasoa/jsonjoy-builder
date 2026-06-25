@@ -1,11 +1,11 @@
 import { ChevronDown, ChevronRight, CirclePlus, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Input } from "../../../components/ui/input.tsx";
 import { useRootSchema } from "../../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../../hooks/use-translation.ts";
 import type { Translation } from "../../../i18n/translation-keys.ts";
 import { collectRefTargets } from "../../../lib/refUtils.ts";
 import { cn } from "../../../lib/utils.ts";
+import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx";
 import type {
   JsonSchema,
   ObjectJsonSchema,
@@ -96,6 +96,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
   combinator,
 }) => {
   const t = useTranslation();
+  const Input = useComponent("Input");
   const strings = getCombinatorStrings(t, combinator);
   const rootSchema = useRootSchema(schema);
   const defaultRefTarget = useMemo(

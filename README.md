@@ -291,6 +291,81 @@ const customTranslation: Translation = {
 
 Use [`src/i18n/locales/en.ts`](https://github.com/lovasoa/jsonjoy-builder/blob/main/src/i18n/locales/en.ts) as the reference for all available keys.
 
+## Plugin Registry
+
+The `registry` prop lets you replace any UI component or layout slot with your own design-system adapter. It works on `<SchemaBuilder>`, `<SchemaFieldsEditor>`, and `<SchemaJsonEditor>`.
+
+### Replace leaf components
+
+```tsx
+import { SchemaBuilder } from "jsonjoy-builder";
+
+<SchemaBuilder
+  value={schema}
+  onChange={setSchema}
+  registry={{
+    components: {
+      Button: MyButton,   // any React component matching ButtonProps
+      Input: MyInput,
+      Switch: MySwitch,
+    },
+  }}
+/>
+```
+
+### Replace layout slots
+
+```tsx
+registry={{
+  slots: {
+    // Layout wrappers that receive children and visual metadata
+    FieldFrame: MyFieldFrame,
+    FieldHeader: MyFieldHeader,
+    FieldMain: MyFieldMain,
+    FieldActions: MyFieldActions,
+    FieldBody: MyFieldBody,
+  },
+  slotProps: {
+    // Extra props forwarded to each slot component
+    FieldFrame: { variant: "compact" },
+  },
+}}
+```
+
+### Integration with a design system
+
+```tsx
+// Wrap in your own ThemeProvider, pass adapters via registry
+import { ThemeProvider, Button, TextField, Switch } from "./design-system";
+
+const adapters = {
+  Button: (props) => <Button variant="contained" {...props} />,
+  Input: (props) => <TextField size="small" {...props} />,
+  Switch: (props) => <Switch {...props} />,
+};
+
+function MySchemaEditor() {
+  return (
+    <ThemeProvider>
+      <SchemaBuilder
+        registry={{ components: adapters }}
+        // ...
+      />
+    </ThemeProvider>
+  );
+}
+```
+
+### API reference
+
+| Prop | Type | Purpose |
+|---|---|---|
+| `registry.components` | `Partial<SchemaBuilderComponents>` | Replace leaf primitives (Button, Input, Switch, Badge, Label, ButtonToggle, SchemaDialog) |
+| `registry.slots` | `Partial<SchemaBuilderSlots>` | Replace layout wrappers (FieldFrame, FieldHeader, FieldMain, FieldActions, FieldBody, Root, MobileModeSwitch, FullscreenToggle) |
+| `registry.slotProps` | `Partial<Record<string, Record<string, unknown>>>` | Extra props for each slot |
+
+All public types carry `/** @public */` and are exported from the package entry point.
+
 ## Supported Schema Features
 
 The visual editor covers the common schema authoring flow:

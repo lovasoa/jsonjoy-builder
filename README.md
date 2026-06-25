@@ -316,7 +316,7 @@ import { SchemaBuilder } from "jsonjoy-builder";
 ### Replace layout slots
 
 ```tsx
-registry={{
+<SchemaBuilder registry={{
   slots: {
     // Layout wrappers that receive children and visual metadata
     FieldFrame: MyFieldFrame,
@@ -329,7 +329,7 @@ registry={{
     // Extra props forwarded to each slot component
     FieldFrame: { variant: "compact" },
   },
-}}
+}}>
 ```
 
 ### Integration with a design system

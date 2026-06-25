@@ -5,7 +5,7 @@ import React from "react";
 import RefEditor from "../../../../src/components/SchemaEditor/types/RefEditor.tsx";
 import { ExternalRefResolverContext } from "../../../../src/hooks/use-external-ref.ts";
 import { RootSchemaContext } from "../../../../src/hooks/use-root-schema.ts";
-import type { ExternalRefResolver } from "../../../../src";
+import type { ExternalRefResolver } from "../../../../src/index.ts";
 import type { ObjectJsonSchema } from "../../../../src/types/jsonSchema.ts";
 
 const rootSchema: ObjectJsonSchema = {

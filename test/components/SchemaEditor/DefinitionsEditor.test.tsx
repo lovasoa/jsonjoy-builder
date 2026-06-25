@@ -19,10 +19,7 @@ const schemaWithDefs: ObjectJsonSchema = {
 
 const emptySchema: ObjectJsonSchema = { type: "object" };
 
-function renderDefinitionsEditor(
-  schema: ObjectJsonSchema,
-  readOnly: boolean,
-) {
+function renderDefinitionsEditor(schema: ObjectJsonSchema, readOnly: boolean) {
   const element = React.createElement(
     RootSchemaContext.Provider,
     { value: schema },

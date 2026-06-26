@@ -11,15 +11,35 @@ const ajv = new Ajv({
 });
 addFormats(ajv);
 
+/**
+ * A single validation problem found in the input.
+ * @public
+ */
 export interface ValidationError {
+  /**
+   * JSON Pointer (RFC 6901) to the offending value, e.g. `/user/age`.
+   * `"/"` denotes the document root (used for syntax errors and empty input).
+   */
   path: string;
+  /** Human-readable description of the problem (from ajv, or a parse error). */
   message: string;
+  /** 1-based line number of the error in the source text, when locatable. */
   line?: number;
+  /** 1-based column number of the error in the source text, when locatable. */
   column?: number;
 }
 
+/**
+ * Outcome of validating a JSON document against a schema.
+ * @public
+ */
 export interface ValidationResult {
+  /** `true` when the input parses and satisfies the schema. */
   valid: boolean;
+  /**
+   * The problems found. Empty (or omitted) when {@link ValidationResult.valid}
+   * is `true`; otherwise contains one entry per violation.
+   */
   errors?: ValidationError[];
 }
 
@@ -149,7 +169,18 @@ export function extractErrorPosition(
 }
 
 /**
- * Validates a JSON string against a schema and returns validation results
+ * Validates a JSON document against a JSON Schema.
+ *
+ * Never throws: malformed JSON, empty input, and schema violations are all
+ * reported through the returned {@link ValidationResult}. Schema-level errors
+ * carry a JSON Pointer `path`; syntax/parse errors are reported at the root
+ * (`"/"`) with `line`/`column` pointing at the offending position when known.
+ *
+ * @param jsonInput - The JSON document to validate, as a raw string.
+ * @param schema - The JSON Schema to validate against.
+ * @returns A {@link ValidationResult}; `valid` is `true` only when the input
+ * parses and satisfies the schema, otherwise `errors` lists each problem.
+ * @public
  */
 export function validateJson(
   jsonInput: string,

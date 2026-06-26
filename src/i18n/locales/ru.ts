@@ -49,7 +49,7 @@ export const ru: Translation = {
   schemaEditorTitle: "Редактор JSON-схем",
   schemaEditorToggleFullscreen: "Переключить полноэкранный режим",
   schemaEditorEditModeVisual: "Визуальный",
-  schemaEditorEditModeJson: "JSON",
+  schemaEditorEditModeJson: "Источник",
   schemaEditorLoading: "Загрузка редактора...",
 
   arrayNoConstraint: "Без ограничений",
@@ -177,8 +177,8 @@ export const ru: Translation = {
   validatorErrorLocationLineOnly: "Строка {line}",
 
   visualizerDownloadTitle: "Скачать схему",
-  visualizerDownloadFileName: "schema.json",
-  visualizerSource: "Источник схемы JSON",
+  visualizerDownloadFileName: "schema",
+  visualizerSource: "Источник схемы",
 
   visualEditorNoFieldsHint1: "Пока не определено ни одного поля",
   visualEditorNoFieldsHint2: "Добавьте ваше первое поле, чтобы начать",

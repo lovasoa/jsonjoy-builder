@@ -2,7 +2,7 @@
 
 [![image](https://github.com/user-attachments/assets/6be1cecf-e0d9-4597-ab04-7124e37e332d)](https://json.ophir.dev)
 
-A React component library for building and editing JSON Schema with a visual UI, a JSON source editor, schema inference, and JSON validation.
+A React component library for building and editing JSON Schema with a visual UI, a YAML/JSON source editor, schema inference, and JSON validation.
 
 **Try online**: https://json.ophir.dev
 
@@ -30,7 +30,7 @@ import "jsonjoy-builder/styles.css";
 
 ## Basic Usage
 
-Use `SchemaBuilder` when you want the full editor: visual editing on one side and editable JSON source on the other.
+Use `SchemaBuilder` when you want the full editor: visual editing on one side and editable YAML or JSON source on the other.
 
 ```tsx
 import "jsonjoy-builder/styles.css";
@@ -57,7 +57,7 @@ The editor is controlled: pass the current `value`, then persist updates from `o
 
 ## Choosing a Component
 
-`SchemaBuilder` is the best default for application screens. It includes the visual editor, JSON source editor, fullscreen mode, and a draggable split view on desktop.
+`SchemaBuilder` is the best default for application screens. It includes the visual editor, YAML/JSON source editor, fullscreen mode, and a draggable split view on desktop.
 
 ```tsx
 <SchemaBuilder value={schema} onChange={setSchema} readOnly={false} />
@@ -75,7 +75,7 @@ import { SchemaFieldsEditor } from "jsonjoy-builder";
 />
 ```
 
-`SchemaJsonEditor` renders only the Monaco JSON editor. It can be read-only or editable depending on whether you pass `readOnly`.
+`SchemaJsonEditor` renders only the Monaco schema source editor. It can be read-only or editable depending on whether you pass `readOnly`.
 
 ```tsx
 import { SchemaJsonEditor } from "jsonjoy-builder";
@@ -352,7 +352,7 @@ The visual editor covers the common schema authoring flow:
 - `anyOf`, `oneOf`, and `allOf` composition
 - `additionalProperties` controls
 
-You can still edit unsupported JSON Schema keywords directly in the JSON source editor.
+You can still edit unsupported JSON Schema keywords directly in the source editor.
 
 ## Development
 

@@ -47,7 +47,7 @@ export const zh: Translation = {
   schemaEditorTitle: "JSON Schema 编辑器",
   schemaEditorToggleFullscreen: "切换全屏",
   schemaEditorEditModeVisual: "可视化",
-  schemaEditorEditModeJson: "JSON",
+  schemaEditorEditModeJson: "源代码",
   schemaEditorLoading: "正在加载编辑器...",
 
   arrayNoConstraint: "无约束",
@@ -168,8 +168,8 @@ export const zh: Translation = {
   validatorErrorLocationLineOnly: "第 {line} 行",
 
   visualizerDownloadTitle: "下载 Schema",
-  visualizerDownloadFileName: "schema.json",
-  visualizerSource: "JSON Schema 源代码",
+  visualizerDownloadFileName: "schema",
+  visualizerSource: "Schema 源代码",
 
   visualEditorNoFieldsHint1: "没有定义字段",
   visualEditorNoFieldsHint2: "添加您的第一个字段以开始",

@@ -49,7 +49,7 @@ export const fr: Translation = {
   schemaEditorTitle: "Éditeur de schéma JSON",
   schemaEditorToggleFullscreen: "Basculer en plein écran",
   schemaEditorEditModeVisual: "Visuel",
-  schemaEditorEditModeJson: "JSON",
+  schemaEditorEditModeJson: "Source",
   schemaEditorLoading: "Chargement de l'éditeur...",
 
   arrayNoConstraint: "Pas de constrainte",
@@ -178,8 +178,8 @@ export const fr: Translation = {
   validatorErrorLocationLineOnly: "Ligne {line}",
 
   visualizerDownloadTitle: "Télécharger le schéma",
-  visualizerDownloadFileName: "schema.json",
-  visualizerSource: "Source du schéma JSON",
+  visualizerDownloadFileName: "schema",
+  visualizerSource: "Source du schéma",
 
   visualEditorNoFieldsHint1: "Aucun champ défini pour le moment",
   visualEditorNoFieldsHint2: "Ajoutez votre premier champ pour commencer",

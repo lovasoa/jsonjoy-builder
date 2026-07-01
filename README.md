@@ -185,6 +185,35 @@ export function ValidateButton({ schema }: { schema: JsonSchema }) {
 
 Validation runs as the user types and reports syntax errors, schema validation errors, and line or column locations when available.
 
+## External References
+
+By default the editor never loads anything over the network: external `$ref` targets (anything that does not start with `#`) are preserved exactly as written, but cannot be previewed or validated against. To opt in, pass a resolver through the `resolveExternalRef` prop:
+
+```tsx
+import { fetchExternalRef, SchemaBuilder, ValidateJsonDialog } from "jsonjoy-builder";
+
+<SchemaBuilder
+  value={schema}
+  onChange={setSchema}
+  resolveExternalRef={fetchExternalRef}
+/>
+
+<ValidateJsonDialog
+  open={open}
+  onOpenChange={setOpen}
+  schema={schema}
+  resolveExternalRef={fetchExternalRef}
+/>
+```
+
+With a resolver configured:
+
+- the reference editor loads external documents (e.g. `https://raw.githubusercontent.com/cloudevents/spec/refs/tags/v1.0.2/cloudevents/formats/cloudevents.json`), resolves URI fragments such as `…/schema.json#/definitions/specversion`, and shows the same read-only preview as for local references
+- `ValidateJsonDialog` validates documents against schemas that reference external documents, loading them (and any documents they reference in turn) on demand
+- each document is loaded at most once per session and failed loads are retried on the next attempt
+
+`fetchExternalRef` is a plain `fetch`-based loader, so the usual browser rules apply: the remote host must allow cross-origin requests. You can also pass your own resolver — anything `(documentUri: string) => Promise<JsonSchema>` — to serve schemas from a registry, a bundle, or an authenticated API. Relative references inside externally loaded documents are not resolved against the document's base URI.
+
 ## Themes and Styling
 
 JSONJoy Builder ships with default light and dark theme variables. All exported components include a `.jsonjoy` wrapper, so you can theme one editor instance or your whole app.
@@ -287,7 +316,7 @@ import { SchemaBuilder } from "jsonjoy-builder";
 ### Replace layout slots
 
 ```tsx
-registry={{
+<SchemaBuilder registry={{
   slots: {
     // Layout wrappers that receive children and visual metadata
     FieldFrame: MyFieldFrame,
@@ -300,7 +329,7 @@ registry={{
     // Extra props forwarded to each slot component
     FieldFrame: { variant: "compact" },
   },
-}}
+}}>
 ```
 
 ### Integration with a design system
@@ -350,6 +379,8 @@ The visual editor covers the common schema authoring flow:
 - Array item type, length, uniqueness, and contains constraints
 - Boolean allowed-value constraints
 - `anyOf`, `oneOf`, and `allOf` composition
+- `$ref` references with a definition picker, broken-reference warnings, and a read-only preview of the referenced schema; external references can be loaded through the opt-in `resolveExternalRef` prop
+- Reusable definitions (`$defs` and legacy `definitions`): create, edit, and delete them in the visual editor; renaming a definition rewrites every `$ref` that points at it
 - `additionalProperties` controls
 
 You can still edit unsupported JSON Schema keywords directly in the JSON source editor.

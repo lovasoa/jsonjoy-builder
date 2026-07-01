@@ -49,7 +49,12 @@ export interface MonacoEditorOptions {
 export const defaultEditorOptions: MonacoEditorOptions = {
   minimap: { enabled: false },
   fontSize: 14,
-  fontFamily: "var(--font-sans), 'SF Mono', Monaco, Menlo, Consolas, monospace",
+  // The same stack the Tailwind font-mono utility resolves to. A var()
+  // reference does not work here: the theme variables are compiled away,
+  // and an unresolvable var() invalidates the whole declaration, making
+  // the editor silently inherit Monaco's sans-serif UI font.
+  fontFamily:
+    'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
   lineNumbers: "on",
   roundedSelection: false,
   scrollBeyondLastLine: false,

@@ -1,5 +1,11 @@
 import { CirclePlus } from "lucide-react";
-import { type FC, type FormEvent, useId, useState } from "react";
+import { type FC, type FormEvent, useContext, useId, useState } from "react";
+import { RootSchemaContext } from "../../hooks/use-root-schema.ts";
+import { useTranslation } from "../../hooks/use-translation.ts";
+import { collectRefTargets } from "../../lib/refUtils.ts";
+import { cn } from "../../lib/utils.ts";
+import { useComponent } from "../../registry/index.ts";
+import type { NewField, SchemaEditorType } from "../../types/jsonSchema.ts";
 import {
   Dialog,
   DialogContent,
@@ -7,11 +13,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../../components/ui/dialog.tsx";
-import { useTranslation } from "../../hooks/use-translation.ts";
-import { cn } from "../../lib/utils.ts";
-import { useComponent } from "../../registry/SchemaBuilderRegistryContext.tsx";
-import type { NewField, SchemaEditorType } from "../../types/jsonSchema.ts";
+} from "../ui/dialog.tsx";
 import SchemaTypeSelector from "./SchemaTypeSelector.tsx";
 
 interface AddFieldButtonProps {
@@ -43,6 +45,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
   const formId = useId();
 
   const t = useTranslation();
+  const rootSchema = useContext(RootSchemaContext);
   const Badge = useComponent("Badge");
   const Button = useComponent("Button");
   const Input = useComponent("Input");
@@ -75,6 +78,12 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
       required: useNameRegex ? false : fieldRequired,
       additionalProperties:
         fieldType === "object" ? additionalProperties : undefined,
+      // New references point at the first definition in the document,
+      // or at the root when there is none yet
+      validation:
+        fieldType === "ref" && rootSchema !== undefined
+          ? { $ref: collectRefTargets(rootSchema)[0]?.pointer ?? "#" }
+          : undefined,
     };
 
     if (useNameRegex) {
@@ -251,6 +260,7 @@ const AddFieldButton: FC<AddFieldButtonProps> = ({
                     {fieldType === "anyOf" && '{ "anyOf": [...] }'}
                     {fieldType === "oneOf" && '{ "oneOf": [...] }'}
                     {fieldType === "allOf" && '{ "allOf": [...] }'}
+                    {fieldType === "ref" && '{ "$ref": "#/$defs/address" }'}
                   </code>
                 </div>
               </div>

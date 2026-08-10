@@ -1,7 +1,10 @@
 import { lazy, Suspense } from "react";
 import { useTranslation } from "../../hooks/use-translation.ts";
 import type { JsonSchema, ObjectJsonSchema } from "../../types/jsonSchema.ts";
-import { getEditorType } from "../../types/jsonSchema.ts";
+import {
+  getEditorType,
+  preserveNullableSchemaType,
+} from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 
 // Lazy load specific type editors to avoid circular dependencies
@@ -41,6 +44,9 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
 }) => {
   const t = useTranslation();
   const type = getEditorType(schema);
+  const handleChange = (updatedSchema: ObjectJsonSchema) => {
+    onChange(preserveNullableSchemaType(schema, updatedSchema));
+  };
 
   return (
     <Suspense fallback={<div>{t.schemaEditorLoading}</div>}>
@@ -48,7 +54,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <StringEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}
@@ -60,7 +66,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <NumberEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}
@@ -72,7 +78,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <NumberEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}
@@ -85,7 +91,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <BooleanEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}
@@ -97,7 +103,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <ObjectEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}
@@ -109,7 +115,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <ArrayEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}
@@ -121,7 +127,7 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
         <CombinatorEditor
           readOnly={readOnly}
           schema={schema}
-          onChange={onChange}
+          onChange={handleChange}
           schemaKey={schemaKey}
           onAddEnum={onAddEnum}
           onDeleteEnum={onDeleteEnum}

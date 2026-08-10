@@ -277,9 +277,13 @@ export function buildValidationTree(
     if (
       Array.isArray(declared) &&
       declared.length > 0 &&
-      typeof declared[0] === "string"
-    )
+      declared.every((type) => typeof type === "string")
+    ) {
+      if (declared.length === 2 && declared.includes("null")) {
+        return declared.find((type) => type !== "null");
+      }
       return declared[0];
+    }
     return undefined;
   };
 

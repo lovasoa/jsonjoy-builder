@@ -3,7 +3,11 @@ import type {
   NewField,
   ObjectJsonSchema,
 } from "../types/jsonSchema.ts";
-import { isBooleanSchema, isObjectSchema } from "../types/jsonSchema.ts";
+import {
+  getEditorType,
+  isBooleanSchema,
+  isObjectSchema,
+} from "../types/jsonSchema.ts";
 
 export type Property = {
   name: string;
@@ -143,7 +147,7 @@ export function updateArrayItems(
   schema: JsonSchema,
   itemsSchema: JsonSchema,
 ): JsonSchema {
-  if (isObjectSchema(schema) && schema.type === "array") {
+  if (isObjectSchema(schema) && getEditorType(schema) === "array") {
     return {
       ...schema,
       items: itemsSchema,
@@ -236,7 +240,7 @@ function propertyFromEntry(
  */
 export function getArrayItemsSchema(schema: JsonSchema): JsonSchema | null {
   if (isBooleanSchema(schema)) return null;
-  if (schema.type !== "array") return null;
+  if (getEditorType(schema) !== "array") return null;
 
   return schema.items || null;
 }
@@ -304,12 +308,18 @@ function renameObjectSchemaEntry(
 export function hasChildren(schema: JsonSchema): boolean {
   if (!isObjectSchema(schema)) return false;
 
-  if (schema.type === "object" && schema.properties) {
+  if (getEditorType(schema) === "object" && schema.properties) {
     return Object.keys(schema.properties).length > 0;
   }
 
-  if (schema.type === "array" && schema.items && isObjectSchema(schema.items)) {
-    return schema.items.type === "object" && !!schema.items.properties;
+  if (
+    getEditorType(schema) === "array" &&
+    schema.items &&
+    isObjectSchema(schema.items)
+  ) {
+    return (
+      getEditorType(schema.items) === "object" && !!schema.items.properties
+    );
   }
 
   return false;

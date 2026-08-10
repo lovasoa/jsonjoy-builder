@@ -15,6 +15,8 @@ import {
   asObjectSchema,
   getEditorType,
   getSchemaDescription,
+  isNullableSchema,
+  preserveNullableSchemaType,
 } from "../../types/jsonSchema.ts";
 import type { ValidationTreeNode } from "../../types/validation.ts";
 import TypeDropdown from "./TypeDropdown.tsx";
@@ -205,6 +207,7 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
         <div className="flex items-center gap-2 justify-end shrink-0">
           <TypeDropdown
             value={type}
+            nullable={isNullableSchema(schema)}
             readOnly={readOnly}
             onChange={(newType: SchemaEditorType) => {
               if (
@@ -236,7 +239,12 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
                   allOf: _al,
                   ...rest
                 } = asObjectSchema(schema);
-                onSchemaChange({ ...rest, type: newType });
+                onSchemaChange(
+                  preserveNullableSchemaType(schema, {
+                    ...rest,
+                    type: newType,
+                  }),
+                );
               }
             }}
           />

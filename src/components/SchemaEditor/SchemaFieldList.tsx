@@ -49,12 +49,6 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
   const getValidSchemaType = (propSchema: JsonSchemaType): SchemaEditorType => {
     if (typeof propSchema === "boolean") return "object";
 
-    // Handle array of types by picking the first one
-    const type = propSchema.type;
-    if (Array.isArray(type)) {
-      return type[0] || "object";
-    }
-
     return getEditorType(propSchema);
   };
 
@@ -107,12 +101,8 @@ const SchemaFieldList: FC<SchemaFieldListProps> = ({
     property: Property,
     updatedSchema: ObjectJsonSchema,
   ): NewField => {
-    const type = updatedSchema.type || "object";
-    // Ensure we're using a single type, not an array of types
-    const validType = Array.isArray(type) ? type[0] || "object" : type;
-
     return createUpdatedField(property, {
-      type: getEditorType(updatedSchema) || validType,
+      type: getEditorType(updatedSchema),
       description: updatedSchema.description || "",
       validation: updatedSchema,
     });

@@ -9,6 +9,7 @@ export interface TypeDropdownProps {
   onChange: (value: SchemaEditorType) => void;
   className?: string;
   readOnly: boolean;
+  nullable?: boolean;
 }
 
 const typeOptions: SchemaEditorType[] = [
@@ -28,6 +29,7 @@ export const TypeDropdown: React.FC<TypeDropdownProps> = ({
   onChange,
   className,
   readOnly,
+  nullable = false,
 }) => {
   const t = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
@@ -58,12 +60,15 @@ export const TypeDropdown: React.FC<TypeDropdownProps> = ({
           "text-xs px-3.5 py-1.5 rounded-md font-medium text-center flex items-center justify-between",
           getTypeColor(value),
           "hover:shadow-xs hover:ring-1 hover:ring-ring/30 active:scale-95 transition-all",
-          readOnly ? "" : "w-[92px]",
+          readOnly ? "" : nullable ? "w-[124px]" : "w-[92px]",
           className,
         )}
         onClick={() => !readOnly && setIsOpen(!isOpen)}
       >
-        <span>{getTypeLabel(t, value)}</span>
+        <span>
+          {getTypeLabel(t, value)}
+          {nullable ? ` | ${getTypeLabel(t, "null")}` : ""}
+        </span>
         {!readOnly && <ChevronDown size={14} className="ml-1" />}
       </button>
 

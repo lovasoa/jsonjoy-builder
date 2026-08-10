@@ -192,10 +192,59 @@ export function isAllOfSchema(schema: JsonSchema): boolean {
   return isObjectSchema(schema) && Array.isArray(schema.allOf);
 }
 
+/**
+ * Returns the editable type for the common nullable union form `T | null`.
+ * Other type arrays are left unsupported by the visual editor so they are not
+ * accidentally simplified to a single type.
+ */
+export function getNullableSchemaType(
+  schema: JsonSchema,
+): Exclude<SchemaType, "null"> | undefined {
+  if (!isObjectSchema(schema) || !Array.isArray(schema.type)) return undefined;
+  if (schema.type.length !== 2 || !schema.type.includes("null")) {
+    return undefined;
+  }
+
+  return schema.type.find(
+    (type): type is Exclude<SchemaType, "null"> => type !== "null",
+  );
+}
+
+export function isNullableSchema(schema: JsonSchema): boolean {
+  return getNullableSchemaType(schema) !== undefined;
+}
+
+/**
+ * Re-applies an existing `T | null` union after a type-specific editor emits a
+ * scalar type. The original array order is preserved so JSON source edits can
+ * round-trip without unrelated formatting changes.
+ */
+export function preserveNullableSchemaType(
+  source: JsonSchema,
+  updated: ObjectJsonSchema,
+): ObjectJsonSchema {
+  const nullableType = getNullableSchemaType(source);
+  if (!nullableType || !isObjectSchema(source)) return updated;
+  const sourceTypes = source.type;
+  if (!Array.isArray(sourceTypes)) return updated;
+  if (typeof updated.type !== "string" || updated.type === "null") {
+    return updated;
+  }
+
+  return {
+    ...updated,
+    type: sourceTypes.map((type) =>
+      type === "null" ? "null" : (updated.type as SchemaType),
+    ),
+  };
+}
+
 export function getEditorType(schema: JsonSchema): SchemaEditorType {
   if (isAnyOfSchema(schema)) return "anyOf";
   if (isOneOfSchema(schema)) return "oneOf";
   if (isAllOfSchema(schema)) return "allOf";
+  const nullableType = getNullableSchemaType(schema);
+  if (nullableType) return nullableType;
   return withObjectSchema(
     schema,
     (s) => (s.type || "object") as SchemaType,

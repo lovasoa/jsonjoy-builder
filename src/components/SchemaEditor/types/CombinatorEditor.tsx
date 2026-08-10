@@ -14,6 +14,8 @@ import {
   getEditorType,
   getSchemaDescription,
   isBooleanSchema,
+  isNullableSchema,
+  preserveNullableSchemaType,
 } from "../../../types/jsonSchema.ts";
 import TypeDropdown from "../TypeDropdown.tsx";
 import type { TypeEditorProps } from "../TypeEditor.tsx";
@@ -158,7 +160,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
     if (prevDesc !== "") {
       next = { ...next, description: prevDesc };
     }
-    newOptions[index] = next;
+    newOptions[index] = preserveNullableSchemaType(options[index], next);
     updateOptions(newOptions);
   };
 
@@ -296,6 +298,7 @@ const CombinatorEditor: React.FC<CombinatorEditorProps> = ({
                   <div className="flex shrink-0 items-center gap-2 sm:ml-auto">
                     <TypeDropdown
                       value={optionType}
+                      nullable={isNullableSchema(option)}
                       readOnly={readOnly}
                       onChange={(newType) =>
                         handleOptionTypeChange(index, newType)

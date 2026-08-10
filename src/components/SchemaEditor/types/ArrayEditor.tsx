@@ -6,11 +6,13 @@ import { useComponent } from "../../../registry/SchemaBuilderRegistryContext.tsx
 import type {
   ObjectJsonSchema,
   SchemaEditorType,
-  SchemaType,
 } from "../../../types/jsonSchema.ts";
 import {
   asObjectSchema,
+  getEditorType,
   isBooleanSchema,
+  isNullableSchema,
+  preserveNullableSchemaType,
   withObjectSchema,
 } from "../../../types/jsonSchema.ts";
 import TypeDropdown from "../TypeDropdown.tsx";
@@ -50,11 +52,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
   const itemSchemaKey = schemaKey ? `${schemaKey}[]` : undefined;
 
   // Get the type of the array items
-  const itemType = withObjectSchema(
-    itemsSchema,
-    (s) => (s.type || "string") as SchemaType,
-    "string" as SchemaType,
-  );
+  const itemType = getEditorType(itemsSchema);
 
   // Handle validation settings change
   const handleValidationChange = () => {
@@ -225,6 +223,7 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
           <TypeDropdown
             readOnly={readOnly}
             value={itemType}
+            nullable={isNullableSchema(itemsSchema)}
             onChange={(newType: SchemaEditorType) => {
               if (
                 newType === "anyOf" ||
@@ -255,7 +254,12 @@ const ArrayEditor: React.FC<TypeEditorProps> = ({
                   allOf: _al,
                   ...rest
                 } = asObjectSchema(itemsSchema);
-                handleItemSchemaChange({ ...rest, type: newType });
+                handleItemSchemaChange(
+                  preserveNullableSchemaType(itemsSchema, {
+                    ...rest,
+                    type: newType,
+                  }),
+                );
               }
             }}
           />

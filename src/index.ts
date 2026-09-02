@@ -35,6 +35,10 @@ export {
   type ExternalRefResolver,
   fetchExternalRef,
 } from "./lib/refUtils.ts";
+export {
+  createSchemaFromJson,
+  inferSchema,
+} from "./lib/schema-inference.ts";
 export type {
   SchemaBuilderComponents,
   SchemaBuilderRegistry,
@@ -49,6 +53,11 @@ export {
   useSlotProps,
 } from "./registry/index.ts";
 export type { JsonSchema } from "./types/jsonSchema.ts";
+export {
+  type ValidationError,
+  type ValidationResult,
+  validateJson,
+} from "./utils/jsonValidator.ts";
 export {
   InferSchemaDialog,
   type InferSchemaDialogProps,

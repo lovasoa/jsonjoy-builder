@@ -320,8 +320,16 @@ function inferNumberSchema(num: number): JsonSchema {
 // --- Main Inference Function ---
 
 /**
- * Infers a JSON Schema from a JSON object
- * Based on json-schema-generator approach
+ * Infers a JSON Schema fragment describing a single parsed JSON value.
+ *
+ * Recurses through objects and arrays, detecting primitive types, string
+ * formats (date, date-time, email, uuid, uri), enums and a few semantic
+ * formats across array items. The result is a bare schema fragment, not a
+ * full document — use {@link createSchemaFromJson} for a self-contained schema.
+ *
+ * @param obj - An already-parsed JSON value (object, array, or primitive).
+ * @returns The inferred JSON Schema fragment for that value.
+ * @public
  */
 export function inferSchema(obj: unknown): JsonSchema {
   if (obj === null) return { type: "null" };
@@ -346,7 +354,16 @@ export function inferSchema(obj: unknown): JsonSchema {
 }
 
 /**
- * Creates a full JSON Schema document from a JSON object
+ * Builds a complete, self-contained JSON Schema document from an example value.
+ *
+ * Wraps {@link inferSchema} and adds document-level fields (`$schema`, `title`,
+ * `description`). The root is always normalized to an `object` schema: object
+ * and array inputs are described directly, while a primitive root is wrapped
+ * under a `value` property.
+ *
+ * @param jsonObject - An already-parsed JSON value to derive the schema from.
+ * @returns A draft-07 JSON Schema document describing the input.
+ * @public
  */
 export function createSchemaFromJson(jsonObject: unknown): JsonSchema {
   const inferredSchema = inferSchema(jsonObject);

@@ -66,6 +66,12 @@ const typeOptions: TypeOption[] = [
     description: "allOfDescription",
     group: "composition",
   },
+  {
+    id: "ref",
+    label: "schemaTypeRef",
+    description: "refDescription",
+    group: "composition",
+  },
 ];
 
 const SchemaTypeSelector: FC<SchemaTypeSelectorProps> = ({

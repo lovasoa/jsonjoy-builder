@@ -29,6 +29,8 @@ export const getTypeColor = (type: SchemaEditorType): string => {
       return "text-cyan-500 bg-cyan-50";
     case "allOf":
       return "text-indigo-500 bg-indigo-50";
+    case "ref":
+      return "text-amber-600 bg-amber-50";
   }
 };
 
@@ -57,5 +59,7 @@ export const getTypeLabel = (
       return t.schemaTypeOneOf;
     case "allOf":
       return t.schemaTypeAllOf;
+    case "ref":
+      return t.schemaTypeRef;
   }
 };

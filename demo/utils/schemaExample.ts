@@ -3,6 +3,26 @@ import type { JsonSchema } from "../../src/index.ts";
 export const exampleSchema: JsonSchema = {
   $schema: "https://json-schema.org/draft-07/schema",
   type: "object",
+  $defs: {
+    address: {
+      type: "object",
+      description: "Address information",
+      properties: {
+        street: {
+          type: "string",
+          description: "Street address",
+        },
+        city: {
+          type: "string",
+          description: "City name",
+        },
+        zipCode: {
+          type: "string",
+          description: "Postal/ZIP code",
+        },
+      },
+    },
+  },
   properties: {
     person: {
       type: "object",
@@ -28,22 +48,7 @@ export const exampleSchema: JsonSchema = {
       required: ["firstName", "lastName"],
     },
     address: {
-      type: "object",
-      description: "Address information",
-      properties: {
-        street: {
-          type: "string",
-          description: "Street address",
-        },
-        city: {
-          type: "string",
-          description: "City name",
-        },
-        zipCode: {
-          type: "string",
-          description: "Postal/ZIP code",
-        },
-      },
+      $ref: "#/$defs/address",
     },
     hobbies: {
       type: "array",

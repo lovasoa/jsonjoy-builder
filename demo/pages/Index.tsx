@@ -15,6 +15,7 @@ import { exampleSchema } from "../../demo/utils/schemaExample.ts";
 import { Button } from "../../src/components/ui/button.tsx";
 import { en } from "../../src/i18n/locales/en.ts";
 import {
+  fetchExternalRef,
   InferSchemaDialog,
   type JsonSchema,
   SchemaBuilder,
@@ -221,6 +222,7 @@ const Index = () => {
               readOnly={readOnly}
               onChange={setSchema}
               className="shadow-lg animate-in border-border/50 backdrop-blur-xs"
+              resolveExternalRef={fetchExternalRef}
             />
           </div>
 
@@ -236,6 +238,7 @@ const Index = () => {
             open={validateDialogOpen}
             onOpenChange={setValidateDialogOpen}
             schema={schema}
+            resolveExternalRef={fetchExternalRef}
           />
 
           {/* How It Works - kept within max-w-4xl */}

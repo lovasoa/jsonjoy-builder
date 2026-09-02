@@ -11,6 +11,7 @@ const BooleanEditor = lazy(() => import("./types/BooleanEditor.tsx"));
 const ObjectEditor = lazy(() => import("./types/ObjectEditor.tsx"));
 const ArrayEditor = lazy(() => import("./types/ArrayEditor.tsx"));
 const CombinatorEditor = lazy(() => import("./types/CombinatorEditor.tsx"));
+const RefEditor = lazy(() => import("./types/RefEditor.tsx"));
 
 export interface EnumChangeContext {
   value: string | number | boolean;
@@ -107,6 +108,18 @@ const TypeEditor: React.FC<TypeEditorProps> = ({
       )}
       {type === "array" && (
         <ArrayEditor
+          readOnly={readOnly}
+          schema={schema}
+          onChange={onChange}
+          schemaKey={schemaKey}
+          onAddEnum={onAddEnum}
+          onDeleteEnum={onDeleteEnum}
+          depth={depth}
+          validationNode={validationNode}
+        />
+      )}
+      {type === "ref" && (
+        <RefEditor
           readOnly={readOnly}
           schema={schema}
           onChange={onChange}

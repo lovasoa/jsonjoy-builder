@@ -4,12 +4,11 @@ import type {
   JsonSchema as JsonSchemaType,
   NewField,
   ObjectJsonSchema,
-  SchemaType,
 } from "../../types/jsonSchema.ts";
 import {
   asObjectSchema,
+  getEditorType,
   getSchemaDescription,
-  withObjectSchema,
 } from "../../types/jsonSchema.ts";
 import SchemaPropertyEditor from "./SchemaPropertyEditor.tsx";
 
@@ -42,20 +41,10 @@ const SchemaField: React.FC<SchemaFieldProps> = (props) => {
   const handleNameChange = (newName: string) => {
     if (newName === name) return;
 
-    // Get type in a safe way
-    const type = withObjectSchema(
-      schema,
-      (s) => s.type || "object",
-      "object",
-    ) as SchemaType;
-
-    // Get description in a safe way
-    const description = getSchemaDescription(schema);
-
     onEdit({
       name: newName,
-      type: Array.isArray(type) ? type[0] : type,
-      description,
+      type: getEditorType(schema),
+      description: getSchemaDescription(schema),
       required,
       validation: asObjectSchema(schema),
     });
@@ -65,20 +54,10 @@ const SchemaField: React.FC<SchemaFieldProps> = (props) => {
   const handleRequiredChange = (isRequired: boolean) => {
     if (isRequired === required) return;
 
-    // Get type in a safe way
-    const type = withObjectSchema(
-      schema,
-      (s) => s.type || "object",
-      "object",
-    ) as SchemaType;
-
-    // Get description in a safe way
-    const description = getSchemaDescription(schema);
-
     onEdit({
       name,
-      type: Array.isArray(type) ? type[0] : type,
-      description,
+      type: getEditorType(schema),
+      description: getSchemaDescription(schema),
       required: isRequired,
       validation: asObjectSchema(schema),
     });
@@ -86,16 +65,10 @@ const SchemaField: React.FC<SchemaFieldProps> = (props) => {
 
   // Handle schema change
   const handleSchemaChange = (newSchema: ObjectJsonSchema) => {
-    // Type will be defined in the schema
-    const type = newSchema.type || "object";
-
-    // Description will be defined in the schema
-    const description = newSchema.description || "";
-
     onEdit({
       name,
-      type: Array.isArray(type) ? type[0] : type,
-      description,
+      type: getEditorType(newSchema),
+      description: newSchema.description || "",
       required,
       validation: newSchema,
     });

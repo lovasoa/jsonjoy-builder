@@ -1,6 +1,8 @@
-import { ChevronDown, ChevronRight, Regex, X } from "lucide-react";
-import { type ReactNode, useEffect, useState } from "react";
+import { ChevronDown, ChevronRight, Link, Regex, X } from "lucide-react";
+import { type ReactNode, useEffect, useMemo, useState } from "react";
+import { useRootSchema } from "../../hooks/use-root-schema.ts";
 import { useTranslation } from "../../hooks/use-translation.ts";
+import { collectRefTargets } from "../../lib/refUtils.ts";
 import { cn } from "../../lib/utils.ts";
 import {
   useComponent,
@@ -82,6 +84,13 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
   const [tempName, setTempName] = useState(name);
   const [tempDesc, setTempDesc] = useState(getSchemaDescription(schema));
   const type = getEditorType(schema);
+  const rootSchema = useRootSchema(schema);
+  // When switching a property to a reference, point it at the first
+  // definition in the document, or at the root when there is none yet.
+  const defaultRefTarget = useMemo(
+    () => collectRefTargets(rootSchema)[0]?.pointer ?? "#",
+    [rootSchema],
+  );
 
   const Input = useComponent("Input");
   const Badge = useComponent("Badge");
@@ -217,6 +226,7 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
                   anyOf: _a,
                   oneOf: _o,
                   allOf: _al,
+                  $ref: _r,
                   ...rest
                 } = asObjectSchema(schema);
                 const initial =
@@ -229,11 +239,22 @@ const SchemaPropertyEditorFrame: React.FC<SchemaPropertyEditorFrameProps> = ({
                         ],
                       };
                 onSchemaChange({ ...rest, ...initial });
+              } else if (newType === "ref") {
+                const {
+                  type: _type,
+                  anyOf: _a,
+                  oneOf: _o,
+                  allOf: _al,
+                  $ref: _r,
+                  ...rest
+                } = asObjectSchema(schema);
+                onSchemaChange({ ...rest, $ref: defaultRefTarget });
               } else {
                 const {
                   anyOf: _a,
                   oneOf: _o,
                   allOf: _al,
+                  $ref: _r,
                   ...rest
                 } = asObjectSchema(schema);
                 onSchemaChange({ ...rest, type: newType });
@@ -347,6 +368,37 @@ export const SchemaPropertyEditor: React.FC<SchemaPropertyEditorProps> = ({
         >
           {required ? t.propertyRequired : t.propertyOptional}
         </ButtonToggle>
+      }
+    />
+  );
+};
+
+export type DefinitionSchemaPropertyEditorProps = Omit<
+  SchemaPropertyEditorFrameProps,
+  "nameAriaLabel" | "nameClassName" | "nameTitle" | "statusControl"
+> & {
+  /** JSON Pointer of the definition, shown as the name tooltip */
+  pointer: string;
+};
+
+export const DefinitionSchemaPropertyEditor: React.FC<
+  DefinitionSchemaPropertyEditorProps
+> = ({ pointer, ...props }) => {
+  const t = useTranslation();
+
+  return (
+    <SchemaPropertyEditorFrame
+      {...props}
+      nameAriaLabel={`${t.definitionBadge}: ${props.name}`}
+      nameTitle={pointer}
+      statusControl={
+        <span
+          className="text-xs px-2 py-1 rounded-md font-medium min-w-[80px] text-center whitespace-nowrap bg-amber-50 text-amber-600 flex items-center justify-center gap-1"
+          title={pointer}
+        >
+          <Link size={12} aria-hidden="true" />
+          {t.definitionBadge}
+        </span>
       }
     />
   );

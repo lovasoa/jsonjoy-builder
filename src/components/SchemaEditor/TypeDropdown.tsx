@@ -21,6 +21,7 @@ const typeOptions: SchemaEditorType[] = [
   "anyOf",
   "oneOf",
   "allOf",
+  "ref",
 ];
 
 export const TypeDropdown: React.FC<TypeDropdownProps> = ({

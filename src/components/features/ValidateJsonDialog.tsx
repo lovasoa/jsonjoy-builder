@@ -14,10 +14,11 @@ import {
   formatTranslation,
   useTranslation,
 } from "../../hooks/use-translation.ts";
+import type { ExternalRefResolver } from "../../lib/refUtils.ts";
 import type { JsonSchema } from "../../types/jsonSchema.ts";
 import {
   type ValidationResult,
-  validateJson,
+  validateJsonAsync,
 } from "../../utils/jsonValidator.ts";
 
 /** @public */
@@ -26,6 +27,13 @@ export interface ValidateJsonDialogProps {
   onOpenChange: (open: boolean) => void;
   schema: JsonSchema;
   autoFocus?: boolean;
+  /**
+   * Opt-in loader for external $ref targets, so documents can be
+   * validated against schemas that reference other documents. When
+   * omitted, schemas containing external references fail to compile
+   * and are reported as a validation error.
+   */
+  resolveExternalRef?: ExternalRefResolver;
 }
 
 /** @public */
@@ -34,6 +42,7 @@ export function ValidateJsonDialog({
   onOpenChange,
   schema,
   autoFocus = true,
+  resolveExternalRef,
 }: ValidateJsonDialogProps) {
   const t = useTranslation();
   const [jsonInput, setJsonInput] = useState("");
@@ -41,6 +50,7 @@ export function ValidateJsonDialog({
     useState<ValidationResult | null>(null);
   const editorRef = useRef<Parameters<OnMount>[0] | null>(null);
   const debounceTimerRef = useRef<number | null>(null);
+  const validationSeqRef = useRef(0);
   const monacoRef = useRef<typeof Monaco | null>(null);
   const schemaMonacoRef = useRef<typeof Monaco | null>(null);
   const {
@@ -50,15 +60,44 @@ export function ValidateJsonDialog({
     defaultEditorOptions,
   } = useMonacoTheme();
 
+  const EXTERNAL_SCHEMA_TIMEOUT_MS = 10_000;
+
   const validateJsonAgainstSchema = useCallback(() => {
+    const seq = ++validationSeqRef.current;
+
     if (!jsonInput.trim()) {
       setValidationResult(null);
       return;
     }
 
-    const result = validateJson(jsonInput, schema);
-    setValidationResult(result);
-  }, [jsonInput, schema]);
+    const timeoutPromise = new Promise<ValidationResult>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("timeout")),
+        EXTERNAL_SCHEMA_TIMEOUT_MS,
+      ),
+    );
+
+    void Promise.race([
+      validateJsonAsync(jsonInput, schema, resolveExternalRef),
+      timeoutPromise,
+    ]).then(
+      (result) => {
+        // Ignore results from validations that were superseded while
+        // external schemas were loading
+        if (seq === validationSeqRef.current) {
+          setValidationResult(result);
+        }
+      },
+      () => {
+        if (seq === validationSeqRef.current) {
+          setValidationResult({
+            valid: false,
+            errors: [{ path: "", message: t.refExternalTimeout }],
+          });
+        }
+      },
+    );
+  }, [jsonInput, schema, resolveExternalRef, t.refExternalTimeout]);
 
   useEffect(() => {
     if (debounceTimerRef.current) {

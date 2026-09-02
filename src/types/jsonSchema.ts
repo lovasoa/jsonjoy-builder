@@ -154,8 +154,8 @@ export interface SchemaEditorState {
 
 export type ObjectJsonSchema = Exclude<JsonSchema, boolean>;
 
-/** Virtual type used in the editor UI to represent combinator schemas */
-export type SchemaEditorType = SchemaType | "anyOf" | "oneOf" | "allOf";
+/** Virtual type used in the editor UI to represent combinator and $ref schemas */
+export type SchemaEditorType = SchemaType | "anyOf" | "oneOf" | "allOf" | "ref";
 
 export function isBooleanSchema(schema: JsonSchema): schema is boolean {
   return typeof schema === "boolean";
@@ -192,10 +192,15 @@ export function isAllOfSchema(schema: JsonSchema): boolean {
   return isObjectSchema(schema) && Array.isArray(schema.allOf);
 }
 
+export function isRefSchema(schema: JsonSchema): boolean {
+  return isObjectSchema(schema) && typeof schema.$ref === "string";
+}
+
 export function getEditorType(schema: JsonSchema): SchemaEditorType {
   if (isAnyOfSchema(schema)) return "anyOf";
   if (isOneOfSchema(schema)) return "oneOf";
   if (isAllOfSchema(schema)) return "allOf";
+  if (isRefSchema(schema)) return "ref";
   return withObjectSchema(
     schema,
     (s) => (s.type || "object") as SchemaType,
